@@ -8,9 +8,11 @@ pub struct App {
 
 impl App {
   pub fn new(lines: Vec<String>) -> Self {
+    // create `App` with default `offset` starting at `0`
     Self { lines, offset: 0 }
   }
 
+  // FUNCTIONS THAT CALUCLATED OFSSET WITH NO UNDER-FLOW
   // those scroll with `usize::saturating_sub()` are making sure it is not less `< 0` as `usize` should always be positive
   // will scroll up/down by the `n` offset but never passing `zero` so never passes the final line `index` up/down directions
   // so here the `.min()` is here to not 'over-shoot' the end (pass over)

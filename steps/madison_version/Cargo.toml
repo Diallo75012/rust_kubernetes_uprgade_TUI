@@ -1,0 +1,10 @@
+[package]
+name = "step-madison-version"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+core         = { path = "../../core" }
+async-trait  = "0.1"
+anyhow       = "1"
+tokio        = { version = "1", features=["process","macros"] }

@@ -1,0 +1,27 @@
+[workspace]
+
+resolver = "2"
+
+members = [
+    # core for UI Ratatui formatting, drawing
+    "core",
+    # steps standalones run commands and parse output and stdout/stderr
+    "steps/discover_nodes",
+    "steps/pull_repo_key",
+    "steps/madison_version",
+    "steps/cordon",
+    "steps/drain",
+    "steps/upgrade_plan",
+    "steps/upgrade_apply_ctl",
+    "steps/upgrade_node",
+    "steps/uncordon",
+    "steps/restart_services",
+    "steps/verify_coredns_proxy",
+    #"steps/discover",
+    #"steps/prepare",
+    #"steps/finish",
+    # run the big function doing the await on steps (upgrade())
+    "engine",
+    # the one bundling everything above and that will be entrypoint to run the app
+    "app",
+]

@@ -47,7 +47,7 @@ fn main() -> Result<(), AppError> {
    };                                                 // buffer lives as long as app
    */
 
-  // we put the `lines` in the `App`
+  // we put the `lines` in the `App` and `offset` starts at `0` by default in fn `new()` impl of struct `App`
   let mut app = App::new(lines);
 
   // 2. set up terminal
@@ -102,6 +102,8 @@ fn run(term: &mut Terminal<CrosstermBackend<Stdout>>, app: &mut App) -> Result<(
 }
 
 
+
+// DISPLAYS TEXT AND OUTPUT OF FILE LINE STORED IN `app`(struct App) (which have `state` `lines` and `offset`) TO TUI
 fn ui(f: &mut Frame, app: &App) {
     // chunks split buffer in header/body/footer so len(3) (0, 1, and 2)
     // each `chunks[n]` will be type `Rect (4 u16s)` so as it implements `Copy` no need to use `&chunk[0]` for example

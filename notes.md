@@ -24,7 +24,7 @@
 ```markdown
 rust‑k8s‑upgrade‑tui/
 │
-├── Cargo.toml                     # [workspace]
+├── Cargo.toml                     # [workspace] source: (doc workspace)[https://doc.rust-lang.org/book/ch14-03-cargo-workspaces.html]
 │
 ├── core/                          # cross‑cutting helpers
 │   ├── cmd_exec/                  # spawn + stream commands
@@ -165,7 +165,7 @@ CLI flags (optional) 		| clap
 
 
 ## 10. Learning checkpoints
-- [ ] Ratatui quick‑start — draw a static layout, then refactor to listen to a watch::Receiver<AppState>. (hep blog)[https://raysuliteanu.medium.com/creating-a-tui-in-rust-e284d31983b3?utm_source=chatgpt.com] 
+- [x] Ratatui quick‑start — draw a static layout, then refactor to listen to a watch::Receiver<AppState>. (hep blog)[https://raysuliteanu.medium.com/creating-a-tui-in-rust-e284d31983b3?utm_source=chatgpt.com] 
 - [ ] Tokio process streaming — stream child stdout/stderr without blocking UI. Rust Users thread has code for capturing println! output. (forum helper)[https://users.rust-lang.org/t/how-to-intercept-stdout-to-display-inside-tui-layout/78823?utm_source=chatgpt.com]
 - [ ] kube‑rs Controller — follow the “Application controller” guide to reconcile upgrades. (check `Kube.rs`)[https://kube.rs/controllers/application/?utm_source=chatgpt.com]
 - [ ] Spawn & stream: write cmd_exec so kubectl get nodes streams cleanly.
@@ -178,7 +178,32 @@ CLI flags (optional) 		| clap
 
 # Extra Notes
 
-## 6 columns and we need the 3rd column version number the biggest and 5th column v.1.<...> using regex and comparing to user input state 1.<...> just as safe validation
+## we have 6 columns and we need the 3rd column version number the biggest and 5th column v.1.<...> using regex and comparing to user input state 1.<...> just as safe validation
 We might need here to use: awk command and print $3 and $5 like: `cat test.txt | awk '{print $3,$5}'` with conditions and more bash stuff
 or even better so no need to have those written to a file and do it on the fly `sudo apt-cache madison kubeadm | awk '{print $3,$5}'` and then add conditions 
 kubeadm | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+
+## Tokio sequential steps function
+```rust
+async fn upgrade(mut state: State) -> Result<()> {
+    discover_nodes(&mut state).await?;
+    pull_repo_key(&mut state).await?;
+    // …next step
+    Ok(())
+}
+```
+
+## project decision `threads spawn` or `Tokio asyn/await`
+```bash
+Sequential steps + want live log → use Tokio |> .await each command
+CPU work only                    → std::thread::spawn
+```
+
+## Rust `VecDeque`
+source: (Rust queue bouble-ended VecDeque)[https://doc.rust-lang.org/alloc/collections/vec_deque/struct.VecDeque.html]
+VecDeque is a growable ring buffer, which can be used as a double-ended queue `[<>,<>]` efficiently.
+The "default" usage of this type as a queue is to use:
+  - push_back to add to the queue,
+  - pop_front to remove from the queue
+  - extend and append push onto the back in this manner
+  - iterating over VecDeque goes front to back
