@@ -9,14 +9,15 @@ pub struct Cordon;
 
 #[async_trait]
 impl Step for Cordon {
-    fn name(&self) -> &'static str { "Cordon" }
+  fn name(&self) -> &'static str { "Cordon" }
 
-    async fn run(&self, tx_log: Sender<String>, _tx_state: WatchTx<AppState>) -> Result<()> {
-        let mut child = Command::new("bash")
-            .arg("-c").arg("echo cordon nodes && sleep 1 && echo done")
-            .stdout(std::process::Stdio::piped())
-            .stderr(std::process::Stdio::piped())
-            .spawn()?;
-        stream_child(self.name(), child, tx_log).await
-    }
+  async fn run(&self, tx_log: Sender<String>, _tx_state: WatchTx<AppState>) -> Result<()> {
+    // so here the `child` building is from `tokio` library `Child` present in the `core_ui::stream_child()`
+    let mut child = Command::new("bash")
+      .arg("-c").arg("echo cordon nodes && sleep 1 && echo done")
+      .stdout(std::process::Stdio::piped())
+      .stderr(std::process::Stdio::piped())
+      .spawn()?;
+    stream_child(self.name(), child, tx_log).await
+  }
 }

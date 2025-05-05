@@ -13,6 +13,7 @@ pub struct StepInfo {
 // keep last N log lines, drop oldest automatically
 #[derive(Debug, Clone)]
 pub struct RingBuffer<T> {
+  // `VecDeque` is like `[now, next]`, eg. if only 2 inside: new push to replace `next` which become `now`
   buf: VecDeque<T>,
   cap: usize,
 }
@@ -31,13 +32,15 @@ pub struct AppState {
   pub log: RingBuffer<String>,
 }
 impl AppState {
-  pub fn new(step_names: &[&'static str]) -> (Self, watch::Sender<(AppState)>, watch::Receiver<(AppState)>) {
+  pub fn new(step_names: &[&'static str]) -> (Self, watch::Sender<AppState>, watch::Receiver<AppState>) {
     //let steps = step_names.iter().map(|&n| StepInfo { name: n, color: StepColor::Grey }).collect();
     let state = AppState {
-      steps: step_names.iter().map(|&name| StepInfo {
-        name: name,
+      // this will be the `Vec<StepInfo>`
+      steps: step_names.iter().map(|&step_name| StepInfo {
+        name: step_name,
         color: StepColor::Grey,
       }).collect(),
+      // this will be the `RingBuffer<String>` limits the buffer if the output is too long
       log: RingBuffer::new(5000),
     };
     let (tx, rx) = watch::channel(state.clone());
