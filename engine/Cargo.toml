@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-core                      = { path = "../core" }
+core-ui                      = { path = "../core_ui" }
 step-discover-nodes       = { path = "../steps/discover_nodes" }
 step-pull-repo-key        = { path = "../steps/pull_repo_key" }
 step-madison-version      = { path = "../steps/madison_version" }
@@ -16,6 +16,8 @@ step-upgrade-node         = { path = "../steps/upgrade_node" }
 step-uncordon             = { path = "../steps/uncordon" }
 step-restart-services     = { path = "../steps/restart_services" }
 step-verify-coredns-proxy = { path = "../steps/verify_coredns_proxy" }
+shared-traits             = { path = "../shared_traits" }
 async-trait     = "0.1"
 anyhow          = "1"
 tokio           = { version = "1", features=["full"] }
+ratatui     = "0.29"

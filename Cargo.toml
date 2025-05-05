@@ -4,7 +4,7 @@ resolver = "2"
 
 members = [
     # core for UI Ratatui formatting, drawing
-    "core",
+    "core_ui",
     # steps standalones run commands and parse output and stdout/stderr
     "steps/discover_nodes",
     "steps/pull_repo_key",
@@ -23,5 +23,5 @@ members = [
     # run the big function doing the await on steps (upgrade())
     "engine",
     # the one bundling everything above and that will be entrypoint to run the app
-    "app",
+    "app", "shared_traits",
 ]

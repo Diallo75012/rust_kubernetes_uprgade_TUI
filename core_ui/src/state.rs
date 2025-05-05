@@ -4,14 +4,14 @@ use tokio::sync::watch;
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum StepColor { Grey, Green, Blue }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct StepInfo {
   pub name: &'static str,
   pub color: StepColor,
 }
 
 // keep last N log lines, drop oldest automatically
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct RingBuffer<T> {
   buf: VecDeque<T>,
   cap: usize,
@@ -25,15 +25,23 @@ impl<T> RingBuffer<T> {
   pub fn iter(&self) -> impl Iterator<Item=&T> { self.buf.iter() }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct AppState {
   pub steps: Vec<StepInfo>,
   pub log: RingBuffer<String>,
 }
 impl AppState {
-  pub fn new(step_names: &[&'static str]) -> (Self, watch::Sender<()>, watch::Receiver<()>) {
-    let steps = step_names.iter().map(|&n| StepInfo { name: n, color: StepColor::Grey }).collect();
-    let (tx, rx) = watch::channel(());
-    (Self { steps, log: RingBuffer::new(5000) }, tx, rx)
+  pub fn new(step_names: &[&'static str]) -> (Self, watch::Sender<(AppState)>, watch::Receiver<(AppState)>) {
+    //let steps = step_names.iter().map(|&n| StepInfo { name: n, color: StepColor::Grey }).collect();
+    let state = AppState {
+      steps: step_names.iter().map(|&name| StepInfo {
+        name: name,
+        color: StepColor::Grey,
+      }).collect(),
+      log: RingBuffer::new(5000),
+    };
+    let (tx, rx) = watch::channel(state.clone());
+    //(Self { steps, log: RingBuffer::new(5000) }, tx, rx)
+    (state, tx, rx)
   }
 }

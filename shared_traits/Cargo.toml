@@ -1,11 +1,10 @@
 [package]
-name = "step-upgrade-node"
+name = "shared-traits"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-core-ui         = { path = "../../core_ui" }
-shared-traits   = { path = "../../shared_traits" }
+core-ui         = { path = "../core_ui" }
 async-trait  = "0.1"
 anyhow       = "1"
 tokio        = { version = "1", features=["process","macros"] }
