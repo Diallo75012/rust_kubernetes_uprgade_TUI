@@ -51,7 +51,14 @@ pub async fn run() -> Result<()> {
       let backend = CrosstermBackend::new(io::stdout());
       let mut term = Terminal::new(backend)?;
       term.clear()?;
+
       loop {
+        // if state was updated
+        if rx_state.has_changed().is_ok() {
+          // `rx_state` updates the view state
+          state_cloned = rx_state.borrow().clone();
+        }
+
         // apply incoming log lines
         while let Ok(line) = rx_log.try_recv() {
           state_cloned.log.push(line);
@@ -62,6 +69,7 @@ pub async fn run() -> Result<()> {
         if rx_state.has_changed().is_err() { break; }
         tokio::time::sleep(std::time::Duration::from_millis(50)).await;
       }
+
       Ok(())
     }
   );
