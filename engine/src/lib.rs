@@ -20,73 +20,87 @@ use step_restart_services::RestartServices;
 use step_verify_coredns_proxy::VerifyCoreDnsProxy;
 // the common helper `trait` shared between `steps`
 use shared_traits::step_traits::Step;
+use shared_fn::debug_to_file::print_debug_log_file;
+// sleep to simulate delay and see if receiver will fail or buffer be exploded
+use tokio::time::{sleep, Duration};
 
 
 pub async fn run() -> Result<()> {
-    let step_names = [
-        "Discover Nodes",
-        "Pull Repo Key",
-        "Madison Version",
-        "Cordon",
-        "Drain",
-        "Upgrade Plan",
-        "Uprgade Apply CTL",
-        "Uprgade Node",
-        "Uncordon",
-        "Restart Services",
-        "Verify Core DNS Proxy",
-    ];
 
-    let steps: Vec<Box<dyn Step + Send + Sync>> = vec![
-        Box::new(DiscoverNodes),
-        Box::new(PullRepoKey),
-        Box::new(MadisonVersion),
-        Box::new(Cordon),
-        Box::new(Drain),
-        Box::new(UpgradePlan),
-        Box::new(UpgradeApplyCtl),
-        Box::new(UpgradeNode),
-        Box::new(Uncordon),
-        Box::new(RestartServices),
-        Box::new(VerifyCoreDnsProxy),
-    ];
+  // 1. Static list of step names used to initialize UI state
+  let step_names = [
+    "Discover Nodes",
+    "Pull Repo Key",
+    "Madison Version",
+    "Cordon",
+    "Drain",
+    "Upgrade Plan",
+    "Uprgade Apply CTL",
+    "Uprgade Node",
+    "Uncordon",
+    "Restart Services",
+    "Verify Core DNS Proxy",
+  ];
 
-    let (mut state, tx_state, _rx_state) = AppState::new(&step_names);
-    let backend = CrosstermBackend::new(stdout());
-    let mut term = Terminal::new(backend)?;
-    term.clear()?;
+  // 2. Instantiate all step implementations, boxed as trait objects
+  // `Send`: This means the type can be safely sent between threads.
+  // `Sync`: This means it can be safely shared between threads.
+  let steps: Vec<Box<dyn Step + Send + Sync>> = vec![
+    Box::new(DiscoverNodes),
+    Box::new(PullRepoKey),
+    Box::new(MadisonVersion),
+    Box::new(Cordon),
+    Box::new(Drain),
+    Box::new(UpgradePlan),
+    Box::new(UpgradeApplyCtl),
+    Box::new(UpgradeNode),
+    Box::new(Uncordon),
+    Box::new(RestartServices),
+    Box::new(VerifyCoreDnsProxy),
+  ];
 
-    let (tx_log, mut rx_log) = mpsc::channel::<String>(1024);
+  /* 2. state, terminal, single log channel ------------------------------ */
+  let (mut state, _tx_state, _rx_state) = AppState::new(&step_names);
+  let backend = CrosstermBackend::new(stdout());
+  let mut term   = Terminal::new(backend)?;
+  term.clear()?;
 
-    // Main loop over steps
-    for (idx, step) in steps.into_iter().enumerate() {
-        // Mark current step as running
-        state.steps[idx].color = StepColor::Green;
-        redraw_ui(&mut term, &state)?;
+  let (tx_log, mut rx_log) = mpsc::channel::<String>(1024);
 
-        // Non-blocking: drain any accumulated log messages
-        while let Ok(line) = rx_log.try_recv() {
-            state.log.push(line);
-        }
+  /* 3. engine loop ------------------------------------------------------- */
+  for (idx, mut step) in steps.into_iter().enumerate() {
+    /* 3.1 mark running (green) */
+    state.steps[idx].color = StepColor::Green;
+    redraw_ui(&mut term, &state)?;
 
-        // Run the step, await completion
-        match step.run(tx_log.clone(), tx_state.clone()).await {
-            Ok(()) => state.steps[idx].color = StepColor::Blue,
-            Err(e) => {
-                eprintln!("step failed: {e}");
-                break;
-            }
-        }
-
-        // After step completes, drain remaining log lines
-        while let Ok(line) = rx_log.try_recv() {
-            state.log.push(line);
-        }
-
-        redraw_ui(&mut term, &state)?;
+    let _ = print_debug_log_file("/home/creditizens/kubernetes_upgrade_rust_tui/debugging/debugging_logs.txt", "WILL STARTooo" , step.name());
+    /* 3.2 run the step – this awaits until its child process ends */
+    match step.run(&tx_log).await {
+      Ok(()) => {
+        state.steps[idx].color = StepColor::Blue;
+        let _ = print_debug_log_file("/home/creditizens/kubernetes_upgrade_rust_tui/debugging/debugging_logs.txt", "SUCCESS" , step.name());
+      }
+      Err(e) => {
+        let _ = print_debug_log_file("/home/creditizens/kubernetes_upgrade_rust_tui/debugging/debugging_logs.txt", "FAILED" , step.name());
+        state.steps[idx].color = StepColor::Red;
+        let err_msg = format!("Step '{}' failed: {e}", step.name());
+        state.log.push(err_msg.clone());
+        eprintln!("step failed: {e}");
+        return Err(e.into()); // stop the process explicitly so that no other step runs
+      }
     }
 
-    // Final UI draw
-    term.draw(|f| draw_ui(f, &state))?;
-    Ok(())
+    /* 3.3 drain any log lines produced during the step */
+    while let Ok(line) = rx_log.try_recv() {
+      state.log.push(line);
+    }
+
+    /* 3.4 redraw with updated colours + new log */
+    redraw_ui(&mut term, &state)?;
+    sleep(Duration::from_secs(10)).await;
+  }
+
+  /* 4. final paint ------------------------------------------------------- */
+  term.draw(|f| draw_ui(f, &state))?;
+  Ok(())
 }

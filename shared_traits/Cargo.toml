@@ -8,3 +8,4 @@ core-ui         = { path = "../core_ui" }
 async-trait  = "0.1"
 anyhow       = "1"
 tokio        = { version = "1", features=["process","macros"] }
+thiserror = "2.0.12"

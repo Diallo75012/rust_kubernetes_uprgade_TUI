@@ -207,3 +207,111 @@ The "default" usage of this type as a queue is to use:
   - pop_front to remove from the queue
   - extend and append push onto the back in this manner
   - iterating over VecDeque goes front to back
+
+
+## Rust `tokio::watch::chanel`
+(doc tokio crate channel)[https://docs.rs/tokio/latest/tokio/sync/watch/fn.channel.html]
+`pub fn channel<T>(init: T) -> (Sender<T>, Receiver<T>)`
+eg.:
+```rust
+use tokio::sync::watch;
+use tokio::time::{Duration, sleep};
+
+let (tx, mut rx) = watch::channel("hello");
+
+tokio::spawn(async move {
+    // Use the equivalent of a "do-while" loop so the initial value is
+    // processed before awaiting the `changed()` future.
+    loop {
+        println!("{}! ", *rx.borrow_and_update());
+        if rx.changed().await.is_err() {
+            break;
+        }
+    }
+});
+
+sleep(Duration::from_millis(100)).await;
+tx.send("world")?;
+```
+
+## Rust `mpsc channel`
+`pub fn channel<T>() -> (Sender<T>, Receiver<T>)`
+{doc mspc channel}[https://doc.rust-lang.org/std/sync/mpsc/fn.channel.html]
+eg.:
+```rust
+use std::sync::mpsc::channel;
+use std::thread;
+
+let (sender, receiver) = channel();
+
+// Spawn off an expensive computation
+thread::spawn(move || {
+    sender.send(expensive_computation()).unwrap();
+});
+
+// Do some useful work for awhile
+
+// Let's see what that answer was
+println!("{:?}", receiver.recv().unwrap());
+```
+
+## Rust `CrosstermBackend`/`Layout`/`Constraint`...
+from original `tui` where `ratutui` is derived from
+(doc tui with `CrosstermBackend` included)[https://docs.rs/tui/latest/tui/]
+eg.:
+```rust
+use std::io;
+use tui::{backend::CrosstermBackend, Terminal};
+
+fn main() -> Result<(), io::Error> {
+    let stdout = io::stdout();
+    let backend = CrosstermBackend::new(stdout);
+    let mut terminal = Terminal::new(backend)?;
+    Ok(())
+}
+```
+bigegr eg.:
+```rust
+use std::{io, thread, time::Duration};
+use tui::{
+    backend::CrosstermBackend,
+    widgets::{Widget, Block, Borders},
+    layout::{Layout, Constraint, Direction},
+    Terminal
+};
+use crossterm::{
+    event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
+    execute,
+    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+};
+
+fn main() -> Result<(), io::Error> {
+    // setup terminal
+    enable_raw_mode()?;
+    let mut stdout = io::stdout();
+    execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
+    let backend = CrosstermBackend::new(stdout);
+    let mut terminal = Terminal::new(backend)?;
+
+    terminal.draw(|f| {
+        let size = f.size();
+        let block = Block::default()
+            .title("Block")
+            .borders(Borders::ALL);
+        f.render_widget(block, size);
+    })?;
+
+    thread::sleep(Duration::from_millis(5000));
+
+    // restore terminal
+    disable_raw_mode()?;
+    execute!(
+        terminal.backend_mut(),
+        LeaveAlternateScreen,
+        DisableMouseCapture
+    )?;
+    terminal.show_cursor()?;
+
+    Ok(())
+}
+```

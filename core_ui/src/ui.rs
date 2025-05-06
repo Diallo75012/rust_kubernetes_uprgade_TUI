@@ -3,7 +3,6 @@ use ratatui::style::{Color, Style};
 use ratatui::widgets::{Block, Borders, List, ListItem, Paragraph};
 use ratatui::backend::Backend;
 use ratatui::Terminal;
-use ratatui::backend::CrosstermBackend;
 use crate::state::{AppState, StepColor};
 
 
@@ -40,6 +39,7 @@ pub fn draw_ui(f: &mut Frame, state: &AppState) {
       StepColor::Grey  => Style::default().fg(Color::DarkGray),
       StepColor::Green => Style::default().fg(Color::Green),
       StepColor::Blue  => Style::default().fg(Color::Blue),
+      StepColor::Red  => Style::default().fg(Color::Red),
     };
     // after we are creating a new `ListItem` with the right colors for each
     ListItem::new(s.name).style(style)

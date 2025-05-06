@@ -23,5 +23,7 @@ members = [
     # run the big function doing the await on steps (upgrade())
     "engine",
     # the one bundling everything above and that will be entrypoint to run the app
-    "app", "shared_traits",
+    "app",
+    "shared_traits",
+    "shared_fn",
 ]

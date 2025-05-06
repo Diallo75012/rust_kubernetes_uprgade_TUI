@@ -17,6 +17,7 @@ step-uncordon             = { path = "../steps/uncordon" }
 step-restart-services     = { path = "../steps/restart_services" }
 step-verify-coredns-proxy = { path = "../steps/verify_coredns_proxy" }
 shared-traits             = { path = "../shared_traits" }
+shared-fn                 = { path = "../shared_fn" }
 async-trait     = "0.1"
 anyhow          = "1"
 tokio           = { version = "1", features=["full"] }

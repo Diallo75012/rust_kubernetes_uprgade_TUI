@@ -1,22 +1,32 @@
 use async_trait::async_trait;
-use core_ui::{cmd::stream_child, state::{AppState, StepColor}};
-use anyhow::Result;
-use tokio::{process::Command, sync::{mpsc::Sender, watch::Sender as WatchTx}};
-use shared_traits::step_traits::Step;
+use tokio::process::Command;
+use tokio::sync::mpsc::Sender;
 
+use core_ui::cmd::stream_child;
+use shared_traits::step_traits::{Step, StepError};
 
 pub struct PullRepoKey;
 
 #[async_trait]
 impl Step for PullRepoKey {
-    fn name(&self) -> &'static str { "Pull Repo Key" }
+    fn name(&self) -> &'static str {
+        "Pull Repo Key"
+    }
 
-    async fn run(&self, tx_log: Sender<String>, _tx_state: WatchTx<AppState>) -> Result<()> {
-        let mut child = Command::new("bash")
-            .arg("-c").arg("echo pull repo key nodes && sleep 1 && echo done")
+    async fn run(&mut self, output_tx: &Sender<String>) -> Result<(), StepError> {
+        // The shell command to run
+        let shell_cmd = "echo pulling repo key && sleep 1 && echo done";
+
+        // Prepare the child process (standard Rust async Command)
+        let child = Command::new("bash")
+            .arg("-c")
+            .arg(shell_cmd)
             .stdout(std::process::Stdio::piped())
             .stderr(std::process::Stdio::piped())
-            .spawn()?;
-        stream_child(self.name(), child, tx_log).await
+            .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
+
+        // Stream output + handle timeout via helper
+        stream_child(self.name(), child, output_tx.clone()).await
+            .map_err(|e| StepError::Other(e.to_string()))
     }
 }

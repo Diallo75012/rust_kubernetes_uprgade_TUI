@@ -2,7 +2,7 @@ use std::collections::VecDeque;
 use tokio::sync::watch;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum StepColor { Grey, Green, Blue }
+pub enum StepColor { Grey, Green, Blue, Red }
 
 #[derive(Debug, Clone)]
 pub struct StepInfo {
