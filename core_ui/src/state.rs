@@ -1,8 +1,15 @@
 use std::collections::VecDeque;
 use tokio::sync::watch;
+use std::collections::HashMap;
 
+
+/* Here to Color `TUI` */
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum StepColor { Grey, Green, Blue, Red }
+
+/* Here State of Upgrade */
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum UpgradeStatus { Upgraded, InProcess, Waiting, Error }
 
 #[derive(Debug, Clone)]
 pub struct StepInfo {
@@ -10,11 +17,13 @@ pub struct StepInfo {
   pub color: StepColor,
 }
 
+
+/* Here To Manage `App` State */
 // keep last N log lines, drop oldest automatically
 #[derive(Debug, Clone)]
 pub struct RingBuffer<T> {
   // `VecDeque` is like `[now, next]`, eg. if only 2 inside: new push to replace `next` which become `now`
-  buf: VecDeque<T>,
+  buf: VecDeque<T>, // defaulted to `5000`
   // we make sure it has fix size
   cap: usize,
 }
@@ -43,10 +52,61 @@ impl AppState {
         color: StepColor::Grey,
       }).collect(),
       // this will be the `RingBuffer<String>` limits the buffer if the output is too long
-      log: RingBuffer::new(5000),
+      log: RingBuffer::new(5000), // here is were we default it to `5000`
     };
     let (tx, rx) = watch::channel(state.clone());
     //(Self { steps, log: RingBuffer::new(5000) }, tx, rx)
     (state, tx, rx)
   }
+}
+
+/* Here To Manage Shared State Between Stream Steps */
+
+/// so here we add some shared fields
+// and in implementation there are the  functions for those specific shared fields
+#[derive(Debug, Clone)]
+pub struct PipelineState {
+  /* GENERAL ONES */
+  pub color: StepColor,
+  // we need this to store the state and be able to update `tui` from what is inside `This`
+  pub log: RingBuffer<String>,
+  // name and kind of the nodes
+  // {name:role} (controller/worker)
+  pub node_roles: HashMap<String, String>,
+  // Upgrade status state
+  pub upgrade_status: UpgradeStatus,
+  // versions
+  pub kubeadm_version: String,
+  pub kubelet_version: String,
+  pub kubectl_version: String,
+  pub containerd_version: String,
+}
+
+// here are the functions that will enable the fields of shared state
+// to be store in state and to be rendered to the 'tui'
+impl PipelineState {
+  pub fn new() -> (Self, watch::Sender<PipelineState>, watch::Receiver<PipelineState>) {
+    let state_pipeline = PipelineState {
+      color: StepColor::Grey,
+      log: RingBuffer::new(5000),
+      // rects[2].footer[2]
+      node_roles: HashMap::from([("waiting for Node name...".to_string(), "Role will be updated...".to_string())]),
+      // rects[0].header[1]
+      upgrade_status: UpgradeStatus::Waiting,
+      // rects[2].footer[1]
+      kubeadm_version: "Waiting For Update...".to_string(),
+      kubelet_version: "Waiting For Update...".to_string(),
+      kubectl_version: "Waiting For Update...".to_string(),
+      containerd_version: "Waiting For Update...".to_string(),
+    };
+    let (tx, rx) = watch::channel(state_pipeline.clone());
+    (state_pipeline, tx, rx)
+  }
+
+  // this will add to the hashmap so we will be able to have the `tui` updated with that when drawing/painting to it
+  pub fn add_node(&mut self, name: &str, role: &str) {
+    self.node_roles.insert(name.to_string(), role.to_string());
+  }
+
+  // ... more functions
 }

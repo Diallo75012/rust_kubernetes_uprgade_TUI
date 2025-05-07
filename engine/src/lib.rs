@@ -5,7 +5,7 @@ use tokio::time::{sleep, Duration};
 use std::io::stdout;
 use ratatui::{prelude::{CrosstermBackend, Terminal}};
 // the `TUI` manager drawer/painter
-use core_ui::state::{AppState, StepColor};
+use core_ui::state::{AppState, PipelineState, StepColor};
 use core_ui::ui::{draw_ui, redraw_ui};
 // all the `steps`
 use step_discover_nodes::DiscoverNodes;
@@ -66,6 +66,7 @@ pub async fn run() -> Result<()> {
 
   /* 2. state, terminal, single log channel ------------------------------ */
   let (mut state, _tx_state, _rx_state) = AppState::new(&step_names);
+  let (mut pipeline_state, _tx_pipeline_state, _rx_pipeline_state) = PipelineState::new(); // we initialize a Shared State
   // `stdout` imported from `std::io`
   let backend = CrosstermBackend::new(stdout());
   let mut term   = Terminal::new(backend)?;
@@ -75,24 +76,30 @@ pub async fn run() -> Result<()> {
   // will be following the order in which data is sent (`send`) to channel and received (`recv`) in order
   // transmitter `tx_log` and receiver `rx_log`
   let (tx_log, mut rx_log) = mpsc::channel::<String>(1024);
+  let (pipeline_tx_log, mut pipeline_rx_log) = mpsc::channel::<String>(1024);
 
+  /* Or Maybe here in the loop action specific function to specific step and update the `PipelineState` which will call `redraw( calling `draw_ui`) */
   /* 3. engine loop ------------------------------------------------------- */
   // `.enumerate()` like in Python to get `index` and `value`
   for (idx, mut step) in steps.into_iter().enumerate() {
+
     /* 3.1 mark running (green) (ratatui tui coloring stuff)*/
     state.steps[idx].color = StepColor::Green;
+    pipepline_state.color = StepColor::Blue;
     // we repaint the tui to get that green colored step out there
-    redraw_ui(&mut term, &state)?;
+    redraw_ui(&mut term, &state, &pipeline_state)?;
 
     // this is custom function made to get some logs as the `tui` doesn't permit to see `println/eprintln` so we write to a file.
     let _ = print_debug_log_file("/home/creditizens/kubernetes_upgrade_rust_tui/debugging/debugging_logs.txt", "WILL STARTooo" , step.name());
+
     /* 3.2 run the step – this awaits until its child process ends */
     // we borrow `tx_log` (transmitter buffer/output)
     match step.run(&tx_log).await {
       // step done without issue
       Ok(()) => {
         // we paint the sidebar step in blue
-        state.steps[idx].color = StepColor::Blue;
+        state.steps[idx].color = StepColor::Blue; 
+        
         // this only for logs writtten to file so we use `_`
         let _ = print_debug_log_file("/home/creditizens/kubernetes_upgrade_rust_tui/debugging/debugging_logs.txt", "SUCCESS" , step.name());
       }
@@ -114,16 +121,21 @@ pub async fn run() -> Result<()> {
 
     /* 3.3 drain any log lines produced during the step */
     while let Ok(line) = rx_log.try_recv() {
+      // if need can write `line` to a debug file
       state.log.push(line);
+
+      // maybe have here a `shred_ln` that will be called
+      // and will do the job of analyzing this line with conditional for each step and update therefore the Shared State `PipelineState`
+      
     }
 
     /* 3.4 redraw with updated colours + new log */
-    redraw_ui(&mut term, &state)?;
+    redraw_ui(&mut term, &state, &pipeline_state)?;
     // just simulating some processing waiting a bit... will be replaced by real command duration....
     sleep(Duration::from_secs(10)).await;
   }
 
   /* 4. final paint ------------------------------------------------------- */
-  term.draw(|f| draw_ui(f, &state))?;
+  term.draw(|f| draw_ui(f, &state, &pipeline_state))?;
   Ok(())
 }
