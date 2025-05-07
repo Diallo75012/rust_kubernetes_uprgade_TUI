@@ -29,9 +29,9 @@ pub async fn run() -> Result<()> {
   // 1. Static list of step names used to initialize UI state
   let step_names = [
     "Discover Nodes",
-    "Pull Repo Key",
   ];
   /*
+    "Pull Repo Key",
     "Madison Version",
     "Cordon",
     "Drain",
@@ -43,15 +43,14 @@ pub async fn run() -> Result<()> {
     "Verify Core DNS Proxy",
   ];
   */
-
   // 2. Instantiate all step implementations, boxed as trait objects
   // `Send`: This means the type can be safely sent between threads.
   // `Sync`: This means it can be safely shared between threads.
   let steps: Vec<Box<dyn Step + Send + Sync>> = vec![
     Box::new(DiscoverNodes),
-    Box::new(PullRepoKey),
   ];
   /*
+    Box::new(PullRepoKey),
     Box::new(MadisonVersion),
     Box::new(Cordon),
     Box::new(Drain),

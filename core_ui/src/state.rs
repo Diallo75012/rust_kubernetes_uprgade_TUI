@@ -15,11 +15,13 @@ pub struct StepInfo {
 pub struct RingBuffer<T> {
   // `VecDeque` is like `[now, next]`, eg. if only 2 inside: new push to replace `next` which become `now`
   buf: VecDeque<T>,
+  // we make sure it has fix size
   cap: usize,
 }
 impl<T> RingBuffer<T> {
   pub fn new(cap: usize) -> Self { Self { buf: VecDeque::with_capacity(cap), cap } }
   pub fn push(&mut self, v: T) {
+    // we make sure it keeps it length and just swap by getting rid of the front `.pop_front()` and pushing one new value at the back `.push_back()`
     if self.buf.len() == self.cap { self.buf.pop_front(); }
     self.buf.push_back(v);
   }

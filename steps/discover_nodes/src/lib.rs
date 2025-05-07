@@ -1,9 +1,9 @@
 use async_trait::async_trait;
 use tokio::process::Command;
 use tokio::sync::mpsc::Sender;
-
 use core_ui::cmd::stream_child;
 use shared_traits::step_traits::{Step, StepError};
+
 
 pub struct DiscoverNodes;
 
@@ -15,9 +15,20 @@ impl Step for DiscoverNodes {
 
     async fn run(&mut self, output_tx: &Sender<String>) -> Result<(), StepError> {
         // The shell command to run
-        let shell_cmd = "echo discoevr nodes && sleep 1 && echo done";
-
+        let shell_cmd = r#"export KUBECONFIG=$HOME/.kube/config; kubectl get nodes --no-headers | awk '{print $1}'"#;
+        /*
+        let shell_cmd = r#"
+          which kubectl && kubectl version --client &&
+          export KUBECONFIG=$HOME/.kube/config;
+          nodes=""; 
+          for elem in $(kubectl get nodes --no-headers | awk '{print $1}'); 
+          do nodes="$nodes $elem"; 
+          done; 
+          echo $nodes | xargs
+        "#;
+         */
         // Prepare the child process (standard Rust async Command)
+        // type of `child` is `tokio::process::Child`
         let child = Command::new("bash")
             .arg("-c")
             .arg(shell_cmd)

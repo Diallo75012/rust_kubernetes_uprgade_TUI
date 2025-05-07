@@ -1,0 +1,11 @@
+
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Pull Repo Key][OUT] pulling repo key
+[Pull Repo Key][OUT] done
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Pull Repo Key][OUT] pulling repo key
+[Pull Repo Key][OUT] done

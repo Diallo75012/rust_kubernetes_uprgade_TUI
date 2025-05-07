@@ -32,11 +32,12 @@ pub fn draw_ui(f: &mut Frame, state: &AppState) {
     .split(rects[1]);
 
   // sidebar – list steps with colour
+  // for each steps we map to a color
   let items: Vec<ListItem> = state.steps.iter().map(|s| {
     let style = match s.color {
       // using the `enum` `stepColor` from `state.rs` to style the items
-      // using match pattern in the closure iterable mapped to `s` representing each items to chech
-      StepColor::Grey  => Style::default().fg(Color::DarkGray),
+      // using match pattern in the closure iterable mapped to `s` representing each items to check
+      StepColor::Grey  => Style::default().fg(Color::DarkGray), // `ratatui` styling
       StepColor::Green => Style::default().fg(Color::Green),
       StepColor::Blue  => Style::default().fg(Color::Blue),
       StepColor::Red  => Style::default().fg(Color::Red),

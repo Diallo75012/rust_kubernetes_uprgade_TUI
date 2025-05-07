@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-core-ui                      = { path = "../core_ui" }
+core-ui                   = { path = "../core_ui" }
 step-discover-nodes       = { path = "../steps/discover_nodes" }
 step-pull-repo-key        = { path = "../steps/pull_repo_key" }
 step-madison-version      = { path = "../steps/madison_version" }
@@ -21,4 +21,4 @@ shared-fn                 = { path = "../shared_fn" }
 async-trait     = "0.1"
 anyhow          = "1"
 tokio           = { version = "1", features=["full"] }
-ratatui     = "0.29"
+ratatui         = "0.29"

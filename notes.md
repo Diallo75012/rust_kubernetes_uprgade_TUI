@@ -166,7 +166,7 @@ CLI flags (optional) 		| clap
 
 ## 10. Learning checkpoints
 - [x] Ratatui quick‑start — draw a static layout, then refactor to listen to a watch::Receiver<AppState>. (hep blog)[https://raysuliteanu.medium.com/creating-a-tui-in-rust-e284d31983b3?utm_source=chatgpt.com] 
-- [ ] Tokio process streaming — stream child stdout/stderr without blocking UI. Rust Users thread has code for capturing println! output. (forum helper)[https://users.rust-lang.org/t/how-to-intercept-stdout-to-display-inside-tui-layout/78823?utm_source=chatgpt.com]
+- [x] Tokio process streaming — stream child stdout/stderr without blocking UI. Rust Users thread has code for capturing println! output. (forum helper)[https://users.rust-lang.org/t/how-to-intercept-stdout-to-display-inside-tui-layout/78823?utm_source=chatgpt.com]
 - [ ] kube‑rs Controller — follow the “Application controller” guide to reconcile upgrades. (check `Kube.rs`)[https://kube.rs/controllers/application/?utm_source=chatgpt.com]
 - [ ] Spawn & stream: write cmd_exec so kubectl get nodes streams cleanly.
 - [ ] Parser TDD: write #[test] cases for the madison parser using captured sample output.
@@ -315,3 +315,187 @@ fn main() -> Result<(), io::Error> {
     Ok(())
 }
 ```
+
+## Rust `Display` implementation
+(display documentation by example)[https://doc.rust-lang.org/rust-by-example/hello/print/print_display.html]
+Eg. from the doc:
+```rust
+// Import (via `use`) the `fmt` module to make it available.
+use std::fmt;
+
+// Define a structure for which `fmt::Display` will be implemented. This is
+// a tuple struct named `Structure` that contains an `i32`.
+struct Structure(i32);
+
+// To use the `{}` marker, the trait `fmt::Display` must be implemented
+// manually for the type.
+impl fmt::Display for Structure {
+    // This trait requires `fmt` with this exact signature.
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // Write strictly the first element into the supplied output
+        // stream: `f`. Returns `fmt::Result` which indicates whether the
+        // operation succeeded or failed. Note that `write!` uses syntax which
+        // is very similar to `println!`.
+        write!(f, "{}", self.0)
+    }
+}
+```
+Eg.: we are not gonna use it but for documentation we can see an example closer to our project needs with our own step types
+```rust
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+//pub enum StepKind { // this is to make it public if want to transport it to a `shared_...` folder
+enum StepKind {
+  DiscoverNodes,
+  PullRepoKey,
+  MadisonVersion,
+  Cordon,
+  Drain,
+  UpgradePlan,
+  UpgradeApplyCtl,
+  UpgradeNode,
+  Uncordon,
+  RestartServices,
+  VerifyCoreDnsProxy,
+}
+// implementing `Display` for the `enum` `StepKind` and need to import `use std::fmt;`
+impl fmt::Display for StepKind {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    let name = match self {
+      StepKind::DiscoverNodes => "Discover Nodes",
+      StepKind::PullRepoKey => "Pull Repo Key",
+      StepKind::MadisonVersion => "Madison Version",
+      StepKind::Cordon => "Cordon",
+      StepKind::Drain => "Drain",
+      StepKind::UpgradePlan => "Upgrade Plan",
+      StepKind::UpgradeApplyCtl => "Upgrade Apply CTL",
+      StepKind::UpgradeNode => "Upgrade Node",
+      StepKind::Uncordon => "Uncordon",
+      StepKind::RestartServices => "Restart Services",
+      StepKind::VerifyCoreDnsProxy => "Verify Core DNS Proxy",
+    };
+    write!(f, "{}", name)
+  }
+}
+```
+
+## Rust `VecDeque` method
+(documentation VecDeque (use sidebar to see doc of each method, trait..etc..))[https://doc.rust-lang.org/std/collections/struct.VecDeque.html#method.push_back]
+
+Eg.: push an element at the back of the `Deque` [1,2,3,...,n] <- `new_value`
+```rust
+use std::collections::VecDeque;
+
+let mut buf = VecDeque::new();
+buf.push_back(1);
+buf.push_back(3);
+assert_eq!(3, *buf.back().unwrap());
+```
+
+## Shell Command Parsing using `Awk`
+I put here some examples so that we can put those in the code and adapt those for our desired output parsing
+```bash
+# from normal output
+k get nodes
+NAME                         STATUS     ROLES           AGE    VERSION
+controller.creditizens.net   Ready      control-plane   669d   v1.29.15
+node1.creditizens.net        NotReady   <none>          669d   v1.29.15
+node2.creditizens.net        NotReady   <none>          669d   v1.29.15
+
+# initalizing `v` and `NR` (Record Number)
+# printing first column {print $1}
+# adding if statement `/^N/`(meaning if starts with `N` to target `NAME` header)
+# we get the Record Number +2
+k get nodes | awk 'v && NR==n{ print $1 }/^N/{ v=$1;  n=NR+2; print v }  '
+NAME
+node1.creditizens.net
+# but this was just playing from what i found online here is a shorter version that I doung to to the job
+# coming fromt he `man awk | grep "N"
+NR        current record number in the total input stream.
+# get Record Number `2` from the output, so here `print $1` gets the first column and then we go through the rows using `NR`
+k get nodes | awk 'NR==2{ print $1 }'
+controller.creditizens.net
+# print the first row
+k get nodes | awk 'NR==1{ print $1 }'
+NAME
+# print the third row
+k get nodes | awk 'NR==3{ print $1 }'
+node1.creditizens.net
+# and here the fourth row
+k get nodes | awk 'NR==4{ print $1 }'
+node2.creditizens.net
+```
+Therefore we might need to loop over to get all nodes names or to get the full output and then split on `/n` and collect in a `Vec`
+
+- OR like this we get a string space separated easier maybe in rust to `Vectorize`:
+```bash
+nodes=""; for elem in $(kubectl get nodes --no-headers | awk '{print $1}'); do nodes+="$elem "; done; echo "$nodes" | xargs
+Outputs:
+controller.creditizens.net node1.creditizens.net node2.creditizens.net
+```
+
+## Rust Splitting on any whitespace and at the same time any return line to parse `.split_whitepsace`
+Eg: my test from (rust playground)[https://play.rust-lang.org/?version=stable&mode=debug&edition=2024]
+```rust
+#![allow(unused)]
+
+#[derive(Debug)]
+enum NodeTypes {
+    Controller,
+    Worker
+}
+
+#[derive(Debug)]
+struct Node {
+    name: String,
+    node_type: NodeTypes,
+}
+
+fn check_type(a: &str) -> Result<(), std::io::Error> {
+    println!("Original A: {:?}", a);
+    let splitted_a_vec: Vec<&str> = a.split_whitespace().collect();
+    println!("splitted vec of A: {:?}", splitted_a_vec);
+    for elem in splitted_a_vec.iter() {
+       println!("Inside Loop elem checked: {:?}", elem);
+        if *elem == "controller" {
+            let node: Node = Node {
+                name: elem.to_string(),
+                node_type: NodeTypes::Controller,
+            };
+            println!("{:?}", node)
+        } else if *elem == "worker" {
+             let node: Node = Node {
+                name: elem.to_string(),
+                node_type: NodeTypes::Worker,
+            };
+            println!("{:?}", node)
+        } else {
+            println!("Elem: {:?} - Is Not Controller Nor Worker", elem);
+        }
+    }
+    Ok(())
+}
+
+
+fn main() {
+  let a: &str = "junko controller\nand worker 109";
+  //let v = 
+  check_type(a); 
+  //println!("{:?}", v)
+}
+Outputs:
+Original A: "junko controller\nand worker 109"
+splitted vec of A: ["junko", "controller", "and", "worker", "109"]
+Inside Loop elem checked: "junko"
+Elem: "junko" - Is Not Controller Nor Worker
+Inside Loop elem checked: "controller"
+Node { name: "controller", node_type: Controller }
+Inside Loop elem checked: "and"
+Elem: "and" - Is Not Controller Nor Worker
+Inside Loop elem checked: "worker"
+Node { name: "worker", node_type: Worker }
+Inside Loop elem checked: "109"
+Elem: "109" - Is Not Controller Nor Worker
+```
+
+**so we can use this kind of logic to parse what we need keep along the way to change some part of the display information
+or to have some steps being able to get information from a common state where all informations are shared between steps**

@@ -125,6 +125,7 @@ dependencies = [
  "async-trait",
  "crossterm",
  "ratatui",
+ "shared-fn",
  "thiserror 1.0.69",
  "tokio",
 ]
