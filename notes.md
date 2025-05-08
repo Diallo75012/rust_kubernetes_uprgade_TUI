@@ -572,3 +572,67 @@ fn main() {
 Outputs:
 NodeDiscoveryInfo { buf: {"junko": Worker, "controller": Undefined} }
 ```
+
+## Rust Ratatui Styling & Key bindings
+Source: (Doc `Ratatui` Paragraph Used As Example)[https://docs.rs/ratatui/latest/ratatui/widgets/struct.Paragraph.html]
+Source: (Doc `Ratatui` where we find some key bindings)[https://ratatui.rs/examples/widgets/list/#_top]
+We will reuse code that we have used when running our `test/learning` of `ratatui` and bind some `keys` to some actions `events`
+```rust
+fn run(term: &mut Terminal<CrosstermBackend<Stdout>>, app: &mut App) -> Result<(), AppError> {
+  loop {
+    // UI interactions and render every frame `f` `mut Frame`
+    term.draw(|f| ui(f, app))?;
+
+    match event::read()? {
+      // matching on the event of pressing `up` (`k`)
+      Event::Key(k) => match k.code {
+        // here using `vim-alike` command for nomal directions and quit
+        KeyCode::Char('q')                 => return Err(AppError::Exit),
+        KeyCode::Up | KeyCode::Char('k')   => app.scroll_up(1),
+        KeyCode::Down | KeyCode::Char('j') => app.scroll_down(1),
+        KeyCode::PageUp                    => app.scroll_up(10),
+        KeyCode::PageDown                  => app.scroll_down(10),
+        _ => {}
+      },
+      _ => {}
+    }
+  }
+}
+
+let res = run(&mut terminal, &mut app);
+
+// Very close to what we have to draw in the UI, but we have one more `App` State as argument called `PipelineState`
+// so here i out `redraw_ui` which is using `draw_ui` main `ui.rs` function which is the same
+pub fn redraw_ui<B: Backend>(term: &mut Terminal<B>, s: &AppState, s_s: &PipelineState) -> anyhow::Result<()> {
+    term.draw(|f| draw_ui(f, s, s_s))?;
+    Ok(())
+}
+```
+
+
+```rust
+PipelineState:
+ 
+  color (StepColor:
+    Grey, Green, Blue, Red
+  ),
+
+  log (SharedState: 
+    buff(Hashmap(keys:
+      kubeadm_v,
+      kubelet_v,
+      kubectl_v,
+      containterd_v,
+      node_name,
+      node_role(ClusterNodeType:
+        Controller, Worker, Undefined
+      ),
+      upgrade_status(UpgradeStatus:
+        Upgraded, InProcess, Waiting, Error
+      ),
+    )
+  ),
+let log_kubeadm_v = shared_state.log.buff.kubeadm_v; // type should be already `String` as it is stored like that
+let log = Paragraph::new(log_kubeadm_v).block(Block::default().title("Log").borders(Borders::ALL));
+f.render_widget(log, <area>[area_index]);
+```

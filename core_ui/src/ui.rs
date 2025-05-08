@@ -10,9 +10,9 @@ pub fn draw_ui(f: &mut Frame, state: &AppState, shared_state: &PipelineState) {
   let rects = Layout::default()
     .direction(Direction::Vertical)
     .constraints([
-      Constraint::Length(6),     // header
-      Constraint::Min(1),        // body (will be split later on to -> sidebar + log)
-      Constraint::Length(6),     // footer
+      Constraint::Length(1),     // header 1 line
+      Constraint::Min(1),        // body (will be split later on to -> sidebar + log) the rest of space
+      Constraint::Length(2),     // footer 2 lines
     ])
     // instead of `.size()` which is deprecated in `ratatui` use `.area()`
     .split(f.area());
@@ -21,13 +21,15 @@ pub fn draw_ui(f: &mut Frame, state: &AppState, shared_state: &PipelineState) {
   let header = Layout::default()
     .direction(Direction::Horizontal)
     .constraints([
+      Constraint::Length(3),
+      Constraint::Length(17),
       Constraint::Min(1),
-      Constraint::Min(10),
+      Constraint::Length(30),
     ])
     .split(rects[0]);
-  f.render_widget(Paragraph::new("Rust K8s Upgrade – Creditizens - v0.1.0"), header[0]);
+  f.render_widget(Paragraph::new("Rust K8s Upgrade – Creditizens - v0.1.0"), header[1]);
   // so here will probably need to get the value from the `PipelineState` and inject to &str
-  f.render_widget(Paragraph::new("Upgrade State<...>"), header[1]);
+  f.render_widget(Paragraph::new("Upgrade State<...>"), header[3]);
 
   // Here we splite the `body` in `horizontal direction` body -> split
   let body = Layout::default()
@@ -74,15 +76,29 @@ pub fn draw_ui(f: &mut Frame, state: &AppState, shared_state: &PipelineState) {
   let footer = Layout::default()
     .direction(Direction::Horizontal)
     .constraints([
-      Constraint::Length(10), // footer[0]
-      Constraint::Min(1),  // footer[1]
-      Constraint::Min(20) // footer[2]
+      Constraint::Length(3), // footer[0] space margin from left eadge
+      Constraint::Length(18), // footer[1]
+      Constraint::Length(30),  // footer[2] to be cut for each version to fit on their own space
+      Constraint::Length(30),
+      Constraint::Length(30),
+      Constraint::Min(1),
+      Constraint::Length(20) // footer[6]
     ])
     .split(rects[2]);
-  f.render_widget(Paragraph::new("q: quit"), footer[0]);
-  // so here will probably need to get the value from the `PipelineState` and inject to &str
-  f.render_widget(Paragraph::new("Kubeadm<...>; Kubectl<...>; <Kubelet<...>\nContainerd<..>"), footer[1]);
-  f.render_widget(Paragraph::new("Node name:<...>\nNode role:<...>"), footer[2]);
+  f.render_widget(Paragraph::new("q: quit"), footer[1]);
+  let log_kubeadm_v = shared_state.log.clone().shared_state_iter("kubeadm_v")[0].clone();
+  let log_kubeadm = Paragraph::new(log_kubeadm_v);
+  let log_kubelet_v = shared_state.log.clone().shared_state_iter("kubelet_v")[0].clone();
+  let log_kubelet = Paragraph::new(log_kubelet_v);
+  let log_kubectl_v = shared_state.log.clone().shared_state_iter("kubectl_v")[0].clone();
+  let log_kubectl = Paragraph::new(log_kubectl_v);
+  let log_containerd_v = shared_state.log.clone().shared_state_iter("containerd_v")[0].clone();
+  let log_containerd = Paragraph::new(log_containerd_v);
+  f.render_widget(log_kubeadm, footer[2]);
+  f.render_widget(log_kubelet, footer[3]);
+  f.render_widget(log_kubectl, footer[4]);
+  f.render_widget(log_containerd, footer[5]);
+  f.render_widget(Paragraph::new("Node name:<...>\nNode role:<...>"), footer[6]);
 }
 
 // function to redraw the UI : This is a more reusable version using `generics`
@@ -91,6 +107,27 @@ pub fn redraw_ui<B: Backend>(term: &mut Terminal<B>, s: &AppState, s_s: &Pipelin
     term.draw(|f| draw_ui(f, s, s_s))?;
     Ok(())
 }
+
+//PipelineState: 
+//  color (StepColor:
+//    Grey, Green, Blue, Red
+//  ),
+//  log (SharedState: 
+//    buff(Hashmap(keys:
+//      kubeadm_v,
+//      kubelet_v,
+//      kubectl_v,
+//      containterd_v,
+//      node_name,
+//      node_role(ClusterNodeType:
+//        Controller, Worker, Undefined
+//      ),
+//      upgrade_status(UpgradeStatus:
+//        Upgraded, InProcess, Waiting, Error
+//      ),
+//    )
+//  ),
+
 
 /*
   let items: Vec<ListItem> = state.steps.iter().map(|s| {

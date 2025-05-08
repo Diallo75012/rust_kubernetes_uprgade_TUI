@@ -175,6 +175,16 @@ impl SharedState {
     }
   }
 
+  pub fn shared_state_iter(self, key: &str) -> Vec<String> {
+    let mut values = Vec::new();
+    for (k , v) in self.buf.iter() {
+      if *k == key {
+         values.push(v.to_string());
+      }
+    }
+    values
+  }
+ 
 }
 
 /// so here we add some shared fields
