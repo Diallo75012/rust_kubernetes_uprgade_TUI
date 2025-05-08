@@ -181,6 +181,41 @@ CLI flags (optional) 		| clap
 - [ ] do a `shared_fn` that will do conditional on each steps to analyze line from `while` loop in `engine/src/lib.rs` and update the share state `PipelineState`
 - [ ] in `core_ui/src/ui.rs` make the Shared State field derived from `PipelineState` field update
 
+
+/*
+// functions available PipelineState
+new(mut self)
+update_shared_state_info(&mut self, k: &str, v: &str)
+update_shared_state_status(&mut self, status: UpgradeStatus)
+update_shared_state_node_type(&mut self, node_role: ClusterNodeType)
+
+// PiplelineState field `buf` available functions
+fn new(
+    kubeadm_v: String,
+    kubelet_v: String,
+    kubectl_v: String,
+    containerd_v: String,
+    node_name: String,
+    _node_role: ClusterNodeType,
+    upgrade_status: UpgradeStatus
+  )
+
+// for NodeDiscoveryInfo available functions
+new(node_name: &str)
+fn add_node_info(&mut self, node_name: &str, node_type: ClusterNodeType)
+*/
+/*
+// TO PLAN THOSE AT EACH STEP
+  "Discover Nodes" (here we put all nodes in state so we can update PipelineState with the right node name (stored in state NodeDiscoveryInfo)),
+  "Pull Repo Key" (here we can get the versions of the different components and start displaying the PipelineState fields to the `tui`),
+  "Madison Version" (here we might create another state of add it to existing NodeDiscovery to save the future version number that will be used for upgrade)
+  "Upgrade Plan" (Here we will upgrade Kubeadm, Kubelet, Kubectl and can display Versions On Worker/OR/Controller node .. maybe some ssh commands if worker...)
+  "Upgrade Apply" (here we can update PipelineState (kubeadm) version if Controller),
+  "Upgrade Node" (Here we can update PipelineState (kubeadm) version if  Worker),
+  "Veryfy Core DNS Proxy" (Here after this is confirmed matching the state targeted version from `Madison Version` step 
+                           where we stored in state the upgrade target version, we will update the PipelineSatte status for 'tui to show `Upgraded`')
+*/
+
 # Extra Notes
 
 ## we have 6 columns and we need the 3rd column version number the biggest and 5th column v.1.<...> using regex and comparing to user input state 1.<...> just as safe validation
