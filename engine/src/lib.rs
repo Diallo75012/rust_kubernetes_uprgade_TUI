@@ -5,7 +5,14 @@ use tokio::time::{sleep, Duration};
 use std::io::stdout;
 use ratatui::{prelude::{CrosstermBackend, Terminal}};
 // the `TUI` manager drawer/painter
-use core_ui::state::{AppState, PipelineState, StepColor};
+use core_ui::state::{
+  AppState,
+  PipelineState,
+  NodeDiscoveryInfo,
+  StepColor,
+  ClusterNodeType,
+  UpgradeStatus
+};
 use core_ui::ui::{draw_ui, redraw_ui};
 // all the `steps`
 use step_discover_nodes::DiscoverNodes;
@@ -124,7 +131,7 @@ pub async fn run() -> Result<()> {
       // if need can write `line` to a debug file
       state.log.push(line);
 
-      // maybe have here a `shred_ln` that will be called
+      // maybe have here a `shared_ln` that will be called
       // and will do the job of analyzing this line with conditional for each step and update therefore the Shared State `PipelineState`
       
     }

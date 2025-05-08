@@ -11,6 +11,10 @@ pub enum StepColor { Grey, Green, Blue, Red }
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum UpgradeStatus { Upgraded, InProcess, Waiting, Error }
 
+/* Here type of Cluster Node */
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum ClusterNodeType { Controller, Worker, Undefined }
+
 #[derive(Debug, Clone)]
 pub struct StepInfo {
   pub name: &'static str,
@@ -60,7 +64,118 @@ impl AppState {
   }
 }
 
+
+
 /* Here To Manage Shared State Between Stream Steps */
+#[derive(Debug, Clone)]
+pub struct NodeDiscoveryInfo {
+  // k: name, v: ClusterNodeType
+  buf: HashMap<String, ClusterNodeType>,
+}
+impl NodeDiscoveryInfo {
+  pub fn new(node_name: &str) -> Self {
+    NodeDiscoveryInfo {
+  	  buf: HashMap::from(
+  	    [
+  	      (node_name.to_string(), ClusterNodeType::Undefined),
+  	    ]
+  	  ),
+  	}
+  }
+
+  pub fn add_node_info(&mut self, node_name: &str, node_type: ClusterNodeType) {
+  	self.buf.insert(node_name.to_string(), node_type);
+  }
+}
+
+#[derive(Debug, Clone)]
+pub struct SharedState {
+  // just a normal `HashMapuuuuu`
+  buf: HashMap<String, String>,
+}
+impl SharedState {
+  pub fn new(
+    kubeadm_v: String,
+    kubelet_v: String,
+    kubectl_v: String,
+    containerd_v: String,
+    node_name: String,
+    _node_role: ClusterNodeType,
+    upgrade_status: UpgradeStatus
+  ) -> Self { 
+    match upgrade_status {
+      UpgradeStatus::Waiting => {
+        let status = "Waiting for update...".to_string();
+        let node_t = "waiting for update...".to_string();
+        SharedState {
+          buf: HashMap::from(
+            [
+    	      ("kubeadm_v".to_string(), kubeadm_v),
+    	      ("kubelet_v".to_string(), kubelet_v),
+    	      ("kubectl_v".to_string(), kubectl_v),
+    	      ("containerd_v".to_string(), containerd_v),
+    	      ("node_name".to_string(), node_name),
+    	      ("node_role".to_string(), node_t),
+    	      ("upgrade_status".to_string(), status),
+    	    ]
+          )
+        }
+      },
+      UpgradeStatus::Upgraded => {
+        let status = "Upgraded!".to_string();
+        let node_t = "waiting for update...".to_string();
+        SharedState {
+          buf: HashMap::from(
+            [
+    	      ("kubeadm_v".to_string(), kubeadm_v),
+    	      ("kubelet_v".to_string(), kubelet_v),
+    	      ("kubectl_v".to_string(), kubectl_v),
+    	      ("containerd_v".to_string(), containerd_v),
+    	      ("node_name".to_string(), node_name),
+    	      ("node_role".to_string(), node_t),
+    	      ("upgrade_status".to_string(), status),
+    	    ]
+          )
+        }
+      },
+      UpgradeStatus::InProcess => {
+        let status = "In Process...".to_string();
+        let node_t = "waiting for update...".to_string();
+        SharedState {
+          buf: HashMap::from(
+            [
+    	      ("kubeadm_v".to_string(), kubeadm_v),
+    	      ("kubelet_v".to_string(), kubelet_v),
+    	      ("kubectl_v".to_string(), kubectl_v),
+    	      ("containerd_v".to_string(), containerd_v),
+    	      ("node_name".to_string(), node_name),
+    	      ("node_role".to_string(), node_t),
+    	      ("upgrade_status".to_string(), status),
+    	    ]
+          )
+        }
+      },
+      UpgradeStatus::Error => {
+        let status = "Error Call J...".to_string();
+        let node_t = "waiting for update...".to_string();
+        SharedState {
+          buf: HashMap::from(
+            [
+    	      ("kubeadm_v".to_string(), kubeadm_v),
+    	      ("kubelet_v".to_string(), kubelet_v),
+    	      ("kubectl_v".to_string(), kubectl_v),
+    	      ("containerd_v".to_string(), containerd_v),
+    	      ("node_name".to_string(), node_name),
+    	      ("node_role".to_string(), node_t),
+    	      ("upgrade_status".to_string(), status),
+    	    ]
+          )
+        }
+      },
+    }
+  }
+
+}
 
 /// so here we add some shared fields
 // and in implementation there are the  functions for those specific shared fields
@@ -69,44 +184,66 @@ pub struct PipelineState {
   /* GENERAL ONES */
   pub color: StepColor,
   // we need this to store the state and be able to update `tui` from what is inside `This`
-  pub log: RingBuffer<String>,
-  // name and kind of the nodes
-  // {name:role} (controller/worker)
-  pub node_roles: HashMap<String, String>,
-  // Upgrade status state
-  pub upgrade_status: UpgradeStatus,
-  // versions
-  pub kubeadm_version: String,
-  pub kubelet_version: String,
-  pub kubectl_version: String,
-  pub containerd_version: String,
+  pub log: SharedState,
 }
 
 // here are the functions that will enable the fields of shared state
 // to be store in state and to be rendered to the 'tui'
 impl PipelineState {
-  pub fn new() -> (Self, watch::Sender<PipelineState>, watch::Receiver<PipelineState>) {
-    let state_pipeline = PipelineState {
-      color: StepColor::Grey,
-      log: RingBuffer::new(5000),
-      // rects[2].footer[2]
-      node_roles: HashMap::from([("waiting for Node name...".to_string(), "Role will be updated...".to_string())]),
-      // rects[0].header[1]
-      upgrade_status: UpgradeStatus::Waiting,
-      // rects[2].footer[1]
-      kubeadm_version: "Waiting For Update...".to_string(),
-      kubelet_version: "Waiting For Update...".to_string(),
-      kubectl_version: "Waiting For Update...".to_string(),
-      containerd_version: "Waiting For Update...".to_string(),
-    };
-    let (tx, rx) = watch::channel(state_pipeline.clone());
-    (state_pipeline, tx, rx)
+  pub fn new(mut self) -> (Self, watch::Sender<PipelineState>, watch::Receiver<PipelineState>) {
+      self.color = StepColor::Grey;
+      // "Wait for Update...".to_string()
+      self.log = SharedState::new(
+        "Wait for Update...".to_string(),
+        "Wait for Update...".to_string(),
+        "Wait for Update...".to_string(),
+        "Wait for Update...".to_string(),
+        "Wait for Update...".to_string(),
+        ClusterNodeType::Undefined,
+        UpgradeStatus::Waiting,
+      );
+ 
+    let (tx, rx) = watch::channel(self.clone());
+    (self, tx, rx)
   }
 
   // this will add to the hashmap so we will be able to have the `tui` updated with that when drawing/painting to it
-  pub fn add_node(&mut self, name: &str, role: &str) {
-    self.node_roles.insert(name.to_string(), role.to_string());
+  // this is only for the `String` values updates
+  pub fn update_shared_state_info(&mut self, k: &str, v: &str) {
+    self.log.buf.insert(k.to_string(), v.to_string());
   }
 
+  // this is only for the `UpgradeStatus` field update
+  pub fn update_shared_state_status(&mut self, status: UpgradeStatus) {
+    match status {
+      UpgradeStatus::Waiting => {
+        self.log.buf.insert("upgrade_status".to_string(), "Waiting for update...".to_string()); 	
+      },
+      UpgradeStatus::Upgraded => {
+        self.log.buf.insert("upgrade_status".to_string(), "Upgraded!".to_string()); 
+      },
+      UpgradeStatus::InProcess => {
+        self.log.buf.insert("upgrade_status".to_string(), "Step In Process...".to_string()); 
+      },
+      UpgradeStatus::Error => {
+        self.log.buf.insert("upgrade_status".to_string(), "Error MangaKissa Emergency!...".to_string());       	
+      },
+    }
+  }
+
+  // this is only for the `UpgradeStatus` field update
+  pub fn update_shared_state_node_type(&mut self, node_role: ClusterNodeType) {
+    match node_role {
+      ClusterNodeType::Undefined => {
+        self.log.buf.insert("node_role".to_string(), "Undefined...".to_string()); 	
+      },
+      ClusterNodeType::Controller => {
+        self.log.buf.insert("node_role".to_string(), "Controller".to_string()); 
+      },
+      ClusterNodeType::Worker => {
+        self.log.buf.insert("node_role".to_string(), "Worker".to_string()); 
+      },
+    }
+  }
   // ... more functions
 }

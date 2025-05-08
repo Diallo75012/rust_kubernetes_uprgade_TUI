@@ -175,7 +175,8 @@ CLI flags (optional) 		| clap
 - [ ] Error bubbles: simulate a failed kubectl drain; show step → red, log detail, and exit gracefully.
 
 # 11. Nexts
-- [ ] do the UI layout and break parts until getting what needed with boilerplate sentences, that will later be feeded with dynamic data (`core_ui/src/ui.rs`)
+- [x] make `enum` for node role `worker` or `controller`
+- [x] do the UI layout and break parts until getting what needed with boilerplate sentences, that will later be feeded with dynamic data (`core_ui/src/ui.rs`)
 - [ ] put in the boilerplate rendered `core_ui/src/lib/rs` fields not only plain text but try to populate with initialized `shared_state` `Pipeline` values
 - [ ] do a `shared_fn` that will do conditional on each steps to analyze line from `while` loop in `engine/src/lib.rs` and update the share state `PipelineState`
 - [ ] in `core_ui/src/ui.rs` make the Shared State field derived from `PipelineState` field update
@@ -503,3 +504,36 @@ Elem: "109" - Is Not Controller Nor Worker
 
 **so we can use this kind of logic to parse what we need keep along the way to change some part of the display information
 or to have some steps being able to get information from a common state where all informations are shared between steps**
+
+## Rust `Format` output from `HashMap` (for `Shared_state` to `tui`)
+we might need to have a function to format some of those output to be painted in two lines, see eg.:
+```rust
+use std::collections::HashMap;
+
+fn main() {
+    let a = HashMap::from([("location", "Harajuku"),("Building", "109")]);
+    let b = a.into_iter().map(|(k, v)| {
+        let d = format!("{}-{}\n", k.to_string(), v.to_string());
+        d
+    }).collect::<String>();
+    println!("{b}");
+}
+Outputs;
+location-Harajuku
+Building-109
+```
+
+## Rust Test Our State Update:
+```rust
+fn main() {
+  let a = "controller";
+  let mut b = NodeDiscoveryInfo::new(a);
+  NodeDiscoveryInfo::add_node_info(&mut b, "junko", ClusterNodeType::Worker);
+
+  println!("{:?}", b);
+  
+  ()
+}
+Outputs:
+NodeDiscoveryInfo { buf: {"junko": Worker, "controller": Undefined} }
+```
