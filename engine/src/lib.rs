@@ -73,7 +73,7 @@ pub async fn run() -> Result<()> {
 
   /* 2. state, terminal, single log channel ------------------------------ */
   let (mut state, _tx_state, _rx_state) = AppState::new(&step_names);
-  let (mut pipeline_state, _tx_pipeline_state, _rx_pipeline_state) = PipelineState::new(); // we initialize a Shared State
+  let (mut pipeline_state, _tx_pipeline_state, _rx_pipeline_state) = PipelineState::new(/* PipelineState */); // we initialize a Shared State
   // `stdout` imported from `std::io`
   let backend = CrosstermBackend::new(stdout());
   let mut term   = Terminal::new(backend)?;
@@ -92,7 +92,7 @@ pub async fn run() -> Result<()> {
 
     /* 3.1 mark running (green) (ratatui tui coloring stuff)*/
     state.steps[idx].color = StepColor::Green;
-    pipepline_state.color = StepColor::Blue;
+    pipeline_state.color = StepColor::Blue;
     // we repaint the tui to get that green colored step out there
     redraw_ui(&mut term, &state, &pipeline_state)?;
 

@@ -1,6 +1,6 @@
-use std::collections::VecDeque;
 use tokio::sync::watch;
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
+
 
 
 /* Here to Color `TUI` */
@@ -56,7 +56,7 @@ impl AppState {
         color: StepColor::Grey,
       }).collect(),
       // this will be the `RingBuffer<String>` limits the buffer if the output is too long
-      log: RingBuffer::new(5000), // here is were we default it to `5000`
+      log: RingBuffer::<String>::new(5000), // here is were we default it to `5000`
     };
     let (tx, rx) = watch::channel(state.clone());
     //(Self { steps, log: RingBuffer::new(5000) }, tx, rx)
@@ -190,10 +190,10 @@ pub struct PipelineState {
 // here are the functions that will enable the fields of shared state
 // to be store in state and to be rendered to the 'tui'
 impl PipelineState {
-  pub fn new(mut self) -> (Self, watch::Sender<PipelineState>, watch::Receiver<PipelineState>) {
-      self.color = StepColor::Grey;
+  pub fn new() -> (Self, watch::Sender<PipelineState>, watch::Receiver<PipelineState>) {
+    let pipeline_state = Self { color : StepColor::Grey,
       // "Wait for Update...".to_string()
-      self.log = SharedState::new(
+      log : SharedState::new(
         "Wait for Update...".to_string(),
         "Wait for Update...".to_string(),
         "Wait for Update...".to_string(),
@@ -201,10 +201,10 @@ impl PipelineState {
         "Wait for Update...".to_string(),
         ClusterNodeType::Undefined,
         UpgradeStatus::Waiting,
-      );
- 
-    let (tx, rx) = watch::channel(self.clone());
-    (self, tx, rx)
+      ),
+    };
+    let (tx, rx) = watch::channel(pipeline_state.clone());
+    (pipeline_state, tx, rx)
   }
 
   // this will add to the hashmap so we will be able to have the `tui` updated with that when drawing/painting to it
