@@ -3,7 +3,10 @@ use tokio::process::Command;
 use tokio::sync::mpsc::Sender;
 use core_ui::{
   cmd::stream_child,
-  state::PipelineState,
+  state::{
+    PipelineState,
+    NodeUpdateTrackerState,
+  }
 };
 use shared_traits::step_traits::{Step, StepError};
 
@@ -16,7 +19,12 @@ impl Step for DiscoverNodes {
         "Discover Nodes"
     }
 
-    async fn run(&mut self, output_tx: &Sender<String>, shared_state_tx: &PipelineState) -> Result<(), StepError> {
+    async fn run(
+      &mut self,
+      output_tx: &Sender<String>,
+      shared_state_tx: &PipelineState,
+      node_update_tracker_state_tx: &NodeUpdateTrackerState
+      ) -> Result<(), StepError> {
         // The shell command to run
         let shell_cmd = r#"export KUBECONFIG=$HOME/.kube/config; kubectl get nodes --no-headers | awk '{print $1}'"#;
         /*
@@ -40,7 +48,7 @@ impl Step for DiscoverNodes {
             .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
 
         // Stream output + handle timeout via helper
-        stream_child(self.name(), child, output_tx.clone(), shared_state_tx.clone()).await
+        stream_child(self.name(), child, output_tx.clone(), mut shared_state_tx.clone(), mut node_update_tracker_state.clone()).await
             .map_err(|e| StepError::Other(e.to_string()))
     }
 }

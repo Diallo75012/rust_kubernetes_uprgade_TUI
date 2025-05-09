@@ -3,7 +3,14 @@ use ratatui::style::{Color, Style};
 use ratatui::widgets::{Block, Borders, List, ListItem, Paragraph};
 use ratatui::backend::Backend;
 use ratatui::Terminal;
-use crate::state::{AppState, PipelineState, StepColor, ClusterNodeType, UpgradeStatus};
+use crate::state::{
+  AppState,
+  PipelineState,
+  StepColor,
+  ClusterNodeType,
+  UpgradeStatus,
+  NodeUpdateTrackerState
+};
 
 pub fn draw_ui(f: &mut Frame, state: &AppState, shared_state: &PipelineState) {
   // using `ratutui` `Layout` grid helper
@@ -27,9 +34,14 @@ pub fn draw_ui(f: &mut Frame, state: &AppState, shared_state: &PipelineState) {
       Constraint::Length(30),
     ])
     .split(rects[0]);
+
+  let log_upgrade_status = shared_state.log.clone().shared_state_iter("upgrade_status")[0].clone();
+  let log_upgrade_status = Paragraph::new(log_upgrade_status);
+
   f.render_widget(Paragraph::new("Rust K8s Upgrade – Creditizens - v0.1.0"), header[1]);
   // so here will probably need to get the value from the `PipelineState` and inject to &str
   f.render_widget(Paragraph::new("Upgrade State<...>"), header[3]);
+  f.render_widget(Paragraph::new(log_upgrade_status).style(Style::default().fg(Color::Green)), header[3]);
 
   // Here we splite the `body` in `horizontal direction` body -> split
   let body = Layout::default()
@@ -98,7 +110,23 @@ pub fn draw_ui(f: &mut Frame, state: &AppState, shared_state: &PipelineState) {
   f.render_widget(log_kubelet, footer[3]);
   f.render_widget(log_kubectl, footer[4]);
   f.render_widget(log_containerd, footer[5]);
-  f.render_widget(Paragraph::new("Node name:<...>\nNode role:<...>"), footer[6]);
+  // we are not gonna do here the logic of tracking `nodeupdatetrackerstate` but just use the field of `shared_state` and pull those info
+  // in the `shared_fn` specifc to tracker `node update tracker state` we will there update `PipelineState` (shared_state).
+  // so logic stays in its module, here we just paint to the `tui`
+  let log_node_name = shared_state.log.clone().shared_state_iter("node_name")[0].clone();
+  let log_node_name = Paragraph::new(log_node_name);
+  let log_node_role = shared_state.log.clone().shared_state_iter("node_role")[0].clone();
+  let log_node_role = Paragraph::new(log_node_role);
+  let node_processed_info = List::new(
+    Vec::from(
+      [
+        ListItem::new(log_node_name).style(Style::default().fg(Color::Green)),
+        ListItem::new(log_node_role).style(Style::default().fg(Color::Green)),
+      ]
+    )
+  ).block(Block::default();
+  // f.render_widget(Paragraph::new("Node name:<...>\nNode role:<...>"), footer[6]);
+  f.render_widget(Paragraph::new(node_processed_info), footer[6]);
 }
 
 // function to redraw the UI : This is a more reusable version using `generics`

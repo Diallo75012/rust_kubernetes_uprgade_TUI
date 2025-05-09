@@ -4,16 +4,26 @@ use tokio::io::{AsyncBufReadExt,BufReader};
 use tokio::sync::mpsc::Sender;
 use std::time::Duration;
 use tokio::time::timeout;
-use crate::state::PipelineState;
-use shared_fn::{
-  write_debug_steps::write_step_cmd_debug,
+use crate:: {
+  state::{
+    PipelineState,
+    NodeUpdateTrackerState,
+  },
   update_shared_state_info::state_updater_for_ui_good_display,
 };
+
+use shared_fn::write_debug_steps::write_step_cmd_debug;
 
 
 /// Streams stdout and stderr of a spawned command, line-by-line, and sends to TUI log channel
 /// Also returns early if the command exceeds the timeout limit
-pub async fn stream_child(step: &'static str, mut child: tokio::process::Child, tx: Sender<String>, shared_state_tx: PipelineState) -> Result<()> {
+pub async fn stream_child(
+    step: &'static str,
+    mut child: tokio::process::Child,
+    tx: Sender<String>,
+    mut shared_state_tx: PipelineState,
+    mut node_update_tracker_state_tx: NodeUpdateTrackerState,
+  ) -> Result<()> {
   // Take the child's stdout and stderr handles
   let stdout = child.stdout.take().context("Missing stdout")?;
   let stderr = child.stderr.take().context("Missing stderr")?;
@@ -45,7 +55,7 @@ pub async fn stream_child(step: &'static str, mut child: tokio::process::Child, 
                 "Upgrade Node" |
                 "Veryfy Core DNS Proxy" = step
                 ) {
-                let _ = state_updater_for_ui_good_display(step, &line, &shared_state_tx);
+                let _ = state_updater_for_ui_good_display(step, &l, &mut shared_state_tx, &mut node_update_tracker_state_tx);
               }
               // so here even if inside `tokio:;select!` globally, it is not consider as so but inside `match`
               // so `.send()` returns a `Future` therefore need an `await` (tricky). inner nested scope will have their own rules

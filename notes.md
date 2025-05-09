@@ -640,3 +640,52 @@ f.render_widget(log, <area>[area_index]);
 ## Rust `Ratatui` widgets
 We might need some more visual effects like a `spinner` for example so that user waits, see doc:
 source: (Spinner widget `ratatui`)[https://ratatui.rs/showcase/third-party-widgets/]
+
+
+## Rust Iter over `&mut Vec<String>` and match values to get rid of those (`No pop()`)
+So here there is two ways of doing that:
+- using `retain` that keeps all excepts the value
+- using `position` to get index and `remove` that takes the index to remove value.
+
+```rust
+#[derive(Debug, Clone)]
+struct Test {
+  d: Vec<String>,
+  e: Vec<String>,
+}
+
+
+fn main() {
+  let b = &mut Test { 
+    d: Vec::from(["naha".to_string(), "kobe".to_string(), "Tokyo".to_string()]), 
+    e: Vec::from(["Tokyo".to_string()]),
+  };
+  for elem in b.e.iter() {
+      if b.d.contains(elem) {
+          // first way using `.retain(||)` closure
+          //b.d.retain(|x| x != elem);
+          // second way using `Option` `if let` and `position(||)` closure
+          //if let Some(pos) = b.d.iter().position(|x| x == elem) {
+              //b.d.remove(pos);
+          //}
+      }
+  }
+  println!("{:?}", b);
+  ()
+}
+Outputs:
+Test { d: ["naha", "kobe"], e: ["Tokyo"] }
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

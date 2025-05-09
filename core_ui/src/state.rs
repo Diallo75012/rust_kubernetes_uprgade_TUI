@@ -67,6 +67,7 @@ impl AppState {
 
 
 /* Here To Manage Shared State Between Stream Steps */
+/*
 #[derive(Debug, Clone)]
 pub struct NodeDiscoveryInfo {
   // k: name, v: ClusterNodeType
@@ -87,6 +88,7 @@ impl NodeDiscoveryInfo {
   	self.buf.insert(node_name.to_string(), node_type);
   }
 }
+*/
 
 #[derive(Debug, Clone)]
 pub struct SharedState {
@@ -256,4 +258,21 @@ impl PipelineState {
     }
   }
   // ... more functions
+}
+
+/* Here will be the state managing the tracking of which nodes discovered have been updated or not to tell which will be next */
+#[derive(Debug, Clone)]
+struct NodeUpdateTrackerState {
+  discovered_node: Vec<String>,
+  node_already_updated: Vec<String>,
+}
+impl NodeUpdateTrackerState {
+  pub fn new() -> (Self, watch::Sender<NodeUpdateTrackerState>, watch::Receiver<NodeUpdateTrackerState>) {
+    let node_update_state = Self {
+      discovered_node: Vec::new(),
+      node_already_updated: Vec::new() ,
+    };
+    let (tx, rx) = watch::channel(node_update_tracker_state.clone());
+    (node_update_tracker_state, tx, rx)
+  }
 }
