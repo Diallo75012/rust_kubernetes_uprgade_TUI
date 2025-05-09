@@ -93,7 +93,7 @@ impl NodeDiscoveryInfo {
 #[derive(Debug, Clone)]
 pub struct SharedState {
   // just a normal `HashMapuuuuu`
-  buf: HashMap<String, String>,
+  pub buf: HashMap<String, String>,
 }
 impl SharedState {
   pub fn new(
@@ -262,13 +262,13 @@ impl PipelineState {
 
 /* Here will be the state managing the tracking of which nodes discovered have been updated or not to tell which will be next */
 #[derive(Debug, Clone)]
-struct NodeUpdateTrackerState {
-  discovered_node: Vec<String>,
-  node_already_updated: Vec<String>,
+pub struct NodeUpdateTrackerState {
+  pub discovered_node: Vec<String>,
+  pub node_already_updated: Vec<String>,
 }
 impl NodeUpdateTrackerState {
   pub fn new() -> (Self, watch::Sender<NodeUpdateTrackerState>, watch::Receiver<NodeUpdateTrackerState>) {
-    let node_update_state = Self {
+    let node_update_tracker_state = Self {
       discovered_node: Vec::new(),
       node_already_updated: Vec::new() ,
     };

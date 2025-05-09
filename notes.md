@@ -677,9 +677,20 @@ Outputs:
 Test { d: ["naha", "kobe"], e: ["Tokyo"] }
 ```
 
+# Rust `|` is for boolean not for `OR`, and what to use for `OR`
+so do not use `|` or `||` for comparison to check if something is matching, like `"a" | "b" | "c" == var`
+use it only for `bool` `true/false`
 
-
-
+How to check in `Rust` comparing and having this `OR`:
+- use `matched!()` macro
+- use `.contains()`
+```rust
+// `.matches!()`
+if matches!(var, "a" | "b" | "c") { do something }
+// `.contains()`
+let my_selection = ["a", "b", "c"];
+if var.contains(&my_selection) { do something }
+```
 
 
 

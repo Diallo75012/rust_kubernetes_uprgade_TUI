@@ -8,7 +8,7 @@ use ratatui::{prelude::{CrosstermBackend, Terminal}};
 use core_ui::state::{
   AppState,
   PipelineState,
-  NodeDiscoveryInfo,
+  //NodeDiscoveryInfo,
   StepColor,
   ClusterNodeType,
   UpgradeStatus,
@@ -17,6 +17,7 @@ use core_ui::state::{
 use core_ui::ui::{draw_ui, redraw_ui};
 // all the `steps`
 use step_discover_nodes::DiscoverNodes;
+/*
 use step_pull_repo_key::PullRepoKey;
 use step_madison_version::MadisonVersion;
 use step_cordon::Cordon;
@@ -27,6 +28,7 @@ use step_upgrade_node::UpgradeNode;
 use step_uncordon::Uncordon;
 use step_restart_services::RestartServices;
 use step_verify_coredns_proxy::VerifyCoreDnsProxy;
+*/
 // the common helper `trait` shared between `steps`
 use shared_traits::step_traits::Step;
 use shared_fn::debug_to_file::print_debug_log_file;
@@ -74,8 +76,9 @@ pub async fn run() -> Result<()> {
 
   /* 2. state, terminal, single log channel ------------------------------ */
   let (mut state, _tx_state, _rx_state) = AppState::new(&step_names);
+  // `mut` for `pipeline_state` as we want to mutate the `color` field in this function
   let (mut pipeline_state, _tx_pipeline_state, _rx_pipeline_state) = PipelineState::new(/* PipelineState */); // we initialize a Shared State
-  let (mut node_update_tracker_state, tx_node_update_state, _rx_node_update_state) = NodeUpdateTrackerState::new(/* NodeUpdateState */); // we initialize a
+  let (mut node_update_tracker_state, _tx_node_update_state, _rx_node_update_state) = NodeUpdateTrackerState::new(/* NodeUpdateState */); // we initialize a
   // `stdout` imported from `std::io`
   let backend = CrosstermBackend::new(stdout());
   let mut term   = Terminal::new(backend)?;
@@ -85,8 +88,8 @@ pub async fn run() -> Result<()> {
   // will be following the order in which data is sent (`send`) to channel and received (`recv`) in order
   // transmitter `tx_log` and receiver `rx_log`
   let (tx_log, mut rx_log) = mpsc::channel::<String>(1024);
-  let (pipeline_tx_log, mut pipeline_rx_log) = mpsc::channel::<String>(1024);
-  let (node_update_tracker_tx_log, mut node_update_tracker_rx_log) = mpsc::channel::<String>(1024);
+  //let (pipeline_tx_log, mut pipeline_rx_log) = mpsc::channel::<String>(1024);
+  //let (node_update_tracker_tx_log, mut node_update_tracker_rx_log) = mpsc::channel::<String>(1024);
   
   /* Or Maybe here in the loop action specific function to specific step and update the `PipelineState` which will call `redraw( calling `draw_ui`) */
   /* 3. engine loop ------------------------------------------------------- */
@@ -99,14 +102,14 @@ pub async fn run() -> Result<()> {
     // no color for `node update tracker`: we will do it on render if needed
 
     // we repaint the tui to get that green colored step out there
-    redraw_ui(&mut term, &state, &pipeline_state, &node_update_tracker_state)?;
+    redraw_ui(&mut term, &mut state, &mut pipeline_state)?;
 
     // this is custom function made to get some logs as the `tui` doesn't permit to see `println/eprintln` so we write to a file.
     let _ = print_debug_log_file("/home/creditizens/kubernetes_upgrade_rust_tui/debugging/debugging_logs.txt", "WILL STARTooo" , step.name());
 
     /* 3.2 run the step – this awaits until its child process ends */
     // we borrow `tx_log` (transmitter buffer/output)
-    match step.run(&tx_log, &pipeline_tx_log, &node_update_tracker_tx_log).await {
+    match step.run(&tx_log, &mut pipeline_state, &mut node_update_tracker_state).await {
       // step done without issue
       Ok(()) => {
         // we paint the sidebar step in blue
@@ -137,13 +140,15 @@ pub async fn run() -> Result<()> {
       state.log.push(line);
     }
 
+    // check if we need to `recv` also the other states... for the stream to not be phantomaticly having something stored in it...
+
     /* 3.4 redraw with updated colours + new log */
-    redraw_ui(&mut term, &state, &pipeline_state, &node_update_tracker_state)?;
+    redraw_ui(&mut term, &mut state, &mut pipeline_state)?;
     // just simulating some processing waiting a bit... will be replaced by real command duration....
     sleep(Duration::from_secs(10)).await;
   }
 
   /* 4. final paint ------------------------------------------------------- */
-  term.draw(|f| draw_ui(f, &state, &pipeline_state, &node_update_tracker_state))?;
+  term.draw(|f| draw_ui(f, &mut state, &mut pipeline_state))?;
   Ok(())
 }

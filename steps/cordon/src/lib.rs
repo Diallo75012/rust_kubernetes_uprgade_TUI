@@ -13,7 +13,7 @@ impl Step for Cordon {
         "Cordon"
     }
 
-    async fn run(&mut self, output_tx: &Sender<String>) -> Result<(), StepError> {
+    async fn run(&mut self, output_tx: &Sender<String>, /* PipelineState */, /* NodeUpdateTrackerState */) -> Result<(), StepError> {
         // The shell command to run
         let shell_cmd = "echo Cordon && sleep 1 && echo done";
 

@@ -39,7 +39,7 @@ pub async fn stream_child(
     loop {
       // `tokio::select!` handles the `await` so no need `line = rdr_out.next_line().await` but just `line = rdr_out.next_line()`
       tokio::select! {
-       // `.next_lines()` extension need the import `AsyncBufReadExt` from `tokio::io`
+        // `.next_lines()` extension need the import `AsyncBufReadExt` from `tokio::io`
         line = rdr_out.next_line() => {
           match line {
             Ok(Some(l)) => {
@@ -47,21 +47,15 @@ pub async fn stream_child(
               // create the function not here in the `shared_fn` and then import it here to do the filtering and update of that state on the fly
               // so i can capture the `step` and `l` (line) in a function that will have the full logic of updating the shared state `PipelineState`
               **********************************************************************************************************************************/
-              if "Discover Nodes" |
-                "Pull Repo Key" |
-                "Madison Version" |
-                "Upgrade Plan" |
-                "Upgrade Apply" |
-                "Upgrade Node" |
-                "Veryfy Core DNS Proxy" = step
-                ) {
-                let _ = state_updater_for_ui_good_display(step, &l, &mut shared_state_tx, &mut node_update_tracker_state_tx);
+              if matches!(step, "Discover Nodes" | "Pull Repo Key" | "Madison Version" | "Upgrade Plan" | "Upgrade Apply" | "Upgrade Node" | "Veryfy Core DNS Proxy")
+                {
+                  state_updater_for_ui_good_display(step, &l, &mut shared_state_tx, &mut node_update_tracker_state_tx);
               }
               // so here even if inside `tokio:;select!` globally, it is not consider as so but inside `match`
               // so `.send()` returns a `Future` therefore need an `await` (tricky). inner nested scope will have their own rules
               let _ = tx_clone.send(format!("[{}][OUT] {}\n", step, l)).await;
               write_step_cmd_debug(&format!("[{}][OUT] {}", step, l));
-            }
+            },
             Ok(None) => break, // end of stream
             Err(e) => {
               let _ = tx_clone.send(format!("[{}][ERR] error reading stdout: {}", step, e)).await;

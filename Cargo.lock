@@ -206,17 +206,7 @@ dependencies = [
  "ratatui",
  "shared-fn",
  "shared-traits",
- "step-cordon",
  "step-discover-nodes",
- "step-drain",
- "step-madison-version",
- "step-pull-repo-key",
- "step-restart-services",
- "step-uncordon",
- "step-upgrade-apply-ctl",
- "step-upgrade-node",
- "step-upgrade-plan",
- "step-verify-coredns-proxy",
  "tokio",
 ]
 
