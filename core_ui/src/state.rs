@@ -82,7 +82,7 @@ impl NodeDiscoveryInfo {
   	  ),
   	}
   }
-
+  // check here if we return a `Result` and put `Ok()` at the end of function
   pub fn add_node_info(&mut self, node_name: &str, node_type: ClusterNodeType) {
   	self.buf.insert(node_name.to_string(), node_type);
   }

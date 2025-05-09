@@ -4,12 +4,16 @@ use tokio::io::{AsyncBufReadExt,BufReader};
 use tokio::sync::mpsc::Sender;
 use std::time::Duration;
 use tokio::time::timeout;
-use shared_fn::write_debug_steps::write_step_cmd_debug;
+use crate::state::PipelineState;
+use shared_fn::{
+  write_debug_steps::write_step_cmd_debug,
+  update_shared_state_info::state_updater_for_ui_good_display,
+};
 
 
 /// Streams stdout and stderr of a spawned command, line-by-line, and sends to TUI log channel
 /// Also returns early if the command exceeds the timeout limit
-pub async fn stream_child(step: &'static str, mut child: tokio::process::Child, tx: Sender<String>) -> Result<()> {
+pub async fn stream_child(step: &'static str, mut child: tokio::process::Child, tx: Sender<String>, shared_state_tx: PipelineState) -> Result<()> {
   // Take the child's stdout and stderr handles
   let stdout = child.stdout.take().context("Missing stdout")?;
   let stderr = child.stderr.take().context("Missing stderr")?;
@@ -29,10 +33,24 @@ pub async fn stream_child(step: &'static str, mut child: tokio::process::Child, 
         line = rdr_out.next_line() => {
           match line {
             Ok(Some(l)) => {
+              /******************************************************************************************************************************
+              // create the function not here in the `shared_fn` and then import it here to do the filtering and update of that state on the fly
+              // so i can capture the `step` and `l` (line) in a function that will have the full logic of updating the shared state `PipelineState`
+              **********************************************************************************************************************************/
+              if "Discover Nodes" |
+                "Pull Repo Key" |
+                "Madison Version" |
+                "Upgrade Plan" |
+                "Upgrade Apply" |
+                "Upgrade Node" |
+                "Veryfy Core DNS Proxy" = step
+                ) {
+                let _ = state_updater_for_ui_good_display(step, &line, &shared_state_tx);
+              }
               // so here even if inside `tokio:;select!` globally, it is not consider as so but inside `match`
               // so `.send()` returns a `Future` therefore need an `await` (tricky). inner nested scope will have their own rules
               let _ = tx_clone.send(format!("[{}][OUT] {}\n", step, l)).await;
-              write_step_cmd_debug(&format!("[{}][OUT] {}", step, l)); 
+              write_step_cmd_debug(&format!("[{}][OUT] {}", step, l));
             }
             Ok(None) => break, // end of stream
             Err(e) => {

@@ -101,7 +101,7 @@ pub async fn run() -> Result<()> {
 
     /* 3.2 run the step – this awaits until its child process ends */
     // we borrow `tx_log` (transmitter buffer/output)
-    match step.run(&tx_log).await {
+    match step.run(&tx_log, &pipeline_tx_log).await {
       // step done without issue
       Ok(()) => {
         // we paint the sidebar step in blue
@@ -130,10 +130,6 @@ pub async fn run() -> Result<()> {
     while let Ok(line) = rx_log.try_recv() {
       // if need can write `line` to a debug file
       state.log.push(line);
-
-      // maybe have here a `shared_ln` that will be called
-      // and will do the job of analyzing this line with conditional for each step and update therefore the Shared State `PipelineState`
-      
     }
 
     /* 3.4 redraw with updated colours + new log */
