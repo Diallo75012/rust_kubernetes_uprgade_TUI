@@ -276,3 +276,36 @@ impl NodeUpdateTrackerState {
     (node_update_tracker_state, tx, rx)
   }
 }
+
+
+/* Here we will be managing Versions `Get Versions` Step */
+
+// we will store in a vec the versions of `kubeadm/kubelet/kubectl` at index `0` (as all same so just store once and only one) and `containerd` at index `1`
+#[derive(Debug, Clone)]
+pub struct ComponentsVersions {
+  pub kube_versions: String,
+  pub containerd_version: String,
+}
+impl ComponentsVersions {
+  pub fn new() -> (Self, watch::Sender<ComponentsVersions>, watch::Receiver<ComponentsVersions>) {
+    let versions_state = Self {
+      kube_versions: String::from(""),
+      containerd_version: String::from(""),
+    };
+    let (tx, rx) = watch::channel(versions_state.clone());
+      (versions_state, tx, rx)
+  }
+  pub fn add(&mut self , component: &str, version: &str) {
+  	if "kube_versions" == component {
+      self.kube_versions.push_str(version)
+  	}
+  }
+}
+
+
+
+
+
+
+
+

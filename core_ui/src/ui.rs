@@ -9,7 +9,7 @@ use crate::state::{
   StepColor,
   //ClusterNodeType,
   //UpgradeStatus,
-  //NodeUpdateTrackerState
+  //NodeUpdateTrackerState,
 };
 
 pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineState) {

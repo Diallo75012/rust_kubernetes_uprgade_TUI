@@ -697,11 +697,63 @@ let my_selection = ["a", "b", "c"];
 if var.contains(&my_selection) { do something }
 ```
 
+# Get Version `bash`
+We will use those in the step `Pull Repository Key` or even from the beginning when `tui` starts so that we can see the version of the different components.
+and update in `engine/src/lib.rs` when receiving lines in the correst step using a special function or `crate` for that
+Eg: cheching output for each so that we can plan how to parse what we need to show in `TUI`, we will try to parse from the `cmd` passed in the stream directly
+to get an easy line reception when the `stream` `thread` `spawned` message is received.
+```bash
+# kubeadm
+kubeadm version
+Outputs:
+kubeadm version: &version.Info{Major:"1", Minor:"29", GitVersion:"v1.29.15", GitCommit:"0d0f172cdf9fd42d6feee3467374b58d3e168df0", GitTreeState:"clean", BuildDate:"2025-03-11T17:46:36Z", GoVersion:"go1.23.6", Compiler:"gc", Platform:"linux/amd64"}
+# kubectl
+kubectl version
+Outputs:
+Client Version: v1.29.15
+Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
+Server Version: v1.29.15
+# kubelet
+kubelet --version
+Outputs:
+Kubernetes v1.29.15
+# containerd
+containerd --version
+Outputs:
+containerd containerd.io 1.7.25 bcc810d6b9066471b0b6fa75f557a15a1cbf31bb
+```
+- therefore, here to get the versions of different kubernetes components we have the commands:
+**Kubeadm**
+```bash
+# kubeadm: macth on `line.contains("kubeadm")`
+kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print $1 $NF}'
+outputs:
+1.29.15
+```
 
+**Kubectl**
+```bash
+# kubectl: macth on `line.contains("Client")`
+kubectl version | awk 'NR==1{ print $3}' | awk -F "[v]" '{ print $1 $NF}'
+Outputs:
+1.29.15
+```
 
+**Kubelet**
+```bash
+# kubelet: macth on `line.contains("Kubernetes")`
+kubelet --version | awk '{ print $2}' | awk -F "[v]" '{ print $1 $NF}'
+Outputs:
+1.29.15
+```
 
-
-
+**Containerd**
+```bash
+# containerd: macth on `line.contains("containerd")`
+containerd --version | awk '{ print $3 }'
+Outputs:
+1.7.25
+```
 
 
 

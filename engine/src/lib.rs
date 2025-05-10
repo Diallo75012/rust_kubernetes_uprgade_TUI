@@ -14,6 +14,7 @@ use core_ui::{
     //ClusterNodeType,
     //UpgradeStatus,
     NodeUpdateTrackerState,
+    ComponentsVersions,
   },
   update_shared_state_info::state_updater_for_ui_good_display,  
 };
@@ -81,7 +82,8 @@ pub async fn run() -> Result<()> {
   let (mut state, _tx_state, _rx_state) = AppState::new(&step_names);
   // `mut` for `pipeline_state` as we want to mutate the `color` field in this function
   let (mut pipeline_state, _tx_pipeline_state, _rx_pipeline_state) = PipelineState::new(/* PipelineState */); // we initialize a Shared State
-  let (mut node_update_tracker_state, _tx_node_update_state, _rx_node_update_state) = NodeUpdateTrackerState::new(/* NodeUpdateState */); // we initialize a
+  let (mut node_update_tracker_state, _tx_node_update_state, _rx_node_update_state) = NodeUpdateTrackerState::new(/* NodeUpdateState */); // we initialize Node update Tracker State
+  let (mut components_versions, _tx_components_versions, _rx_components_versions) = ComponentsVersions::new(/* ComponentsVersions */); // we initalize Components Versions State
   // `stdout` imported from `std::io`
   let backend = CrosstermBackend::new(stdout());
   let mut term  = Terminal::new(backend)?;
@@ -143,16 +145,20 @@ pub async fn run() -> Result<()> {
       // create the function not here in the `shared_fn` and then import it here to do the filtering and update of that state on the fly
       // so i can capture the `step` and `l` (line) in a function that will have the full logic of updating the shared state `PipelineState`
       **********************************************************************************************************************************/
-      if matches!(
-        step.name(), "Discover Nodes"
-        | "Pull Repo Key" 
-        | "Madison Version" 
-        | "Upgrade Plan" 
-        | "Upgrade Apply" 
-        | "Upgrade Node" 
-        | "Veryfy Core DNS Proxy"
-        ) {
-        state_updater_for_ui_good_display(step.name(), &line, &mut pipeline_state, &mut node_update_tracker_state);
+
+      match step.name() {
+      	"Discover Nodes" => {
+      		state_updater_for_ui_good_display(step.name(), &line, &mut pipeline_state, &mut node_update_tracker_state, &mut components_versions);
+      	},
+      	/*
+        "Pull Repo Key"  => {},
+      	"Madison Version"=> {},
+      	"Upgrade Plan"   => {},
+        "Upgrade Apply"  => {}, 
+ 	    "Upgrade Node"   => {}, 
+      	"Veryfy Core DNS Proxy" => {},
+      	*/
+      	_ => {},
       }
       
       // if need can write `line` to a debug file. Line is borrowed above and here moved so bye bye `line`!
