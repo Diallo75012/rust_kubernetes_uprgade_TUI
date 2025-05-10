@@ -4,14 +4,6 @@ use tokio::io::{AsyncBufReadExt,BufReader};
 use tokio::sync::mpsc::Sender;
 use std::time::Duration;
 use tokio::time::timeout;
-use crate:: {
-  state::{
-    PipelineState,
-    NodeUpdateTrackerState,
-  },
-  update_shared_state_info::state_updater_for_ui_good_display,
-};
-
 use shared_fn::write_debug_steps::write_step_cmd_debug;
 
 
@@ -21,8 +13,6 @@ pub async fn stream_child(
     step: &'static str,
     mut child: tokio::process::Child,
     tx: Sender<String>,
-    mut shared_state_tx: PipelineState,
-    mut node_update_tracker_state_tx: NodeUpdateTrackerState,
   ) -> Result<()> {
   // Take the child's stdout and stderr handles
   let stdout = child.stdout.take().context("Missing stdout")?;
@@ -43,14 +33,6 @@ pub async fn stream_child(
         line = rdr_out.next_line() => {
           match line {
             Ok(Some(l)) => {
-              /******************************************************************************************************************************
-              // create the function not here in the `shared_fn` and then import it here to do the filtering and update of that state on the fly
-              // so i can capture the `step` and `l` (line) in a function that will have the full logic of updating the shared state `PipelineState`
-              **********************************************************************************************************************************/
-              if matches!(step, "Discover Nodes" | "Pull Repo Key" | "Madison Version" | "Upgrade Plan" | "Upgrade Apply" | "Upgrade Node" | "Veryfy Core DNS Proxy")
-                {
-                  state_updater_for_ui_good_display(step, &l, &mut shared_state_tx, &mut node_update_tracker_state_tx);
-              }
               // so here even if inside `tokio:;select!` globally, it is not consider as so but inside `match`
               // so `.send()` returns a `Future` therefore need an `await` (tricky). inner nested scope will have their own rules
               let _ = tx_clone.send(format!("[{}][OUT] {}\n", step, l)).await;
@@ -89,7 +71,7 @@ pub async fn stream_child(
   }
 
   // Wait for the log task to complete
-  let _ = log_task.await?;
+  log_task.await?;
 
   Ok(())
 }

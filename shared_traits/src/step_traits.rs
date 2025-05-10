@@ -2,10 +2,7 @@
 use async_trait::async_trait;
 use std::io;
 use thiserror::Error;
-use core_ui::state::{
-  PipelineState,
-  NodeUpdateTrackerState,
-};
+
 
 #[async_trait]
 pub trait Step: Send + Sync {
@@ -15,8 +12,6 @@ pub trait Step: Send + Sync {
     async fn run(
       &mut self,
       output_tx: &tokio::sync::mpsc::Sender<String>,
-      shared_state_tx: &mut PipelineState,
-      node_update_tracker_state_tx: &mut NodeUpdateTrackerState
     ) -> Result<(), StepError>;
 }
 

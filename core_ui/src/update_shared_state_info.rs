@@ -4,7 +4,7 @@ use crate::state::{
   UpgradeStatus,
   NodeUpdateTrackerState,
 };
-
+use shared_fn::debug_to_file::print_debug_log_file;
 
 pub fn state_updater_for_ui_good_display(
   step: &'static str,
@@ -18,8 +18,6 @@ pub fn state_updater_for_ui_good_display(
     // using implemented functions `fn update_shared_state_node_type(&mut self, node_role: ClusterNodeType)`
     // and `fn update_shared_state_info(&mut self, k: &str, v: &str)`
 
-    // we delete all previous entry by replacing the previous `vec` by a mew one 
-    node_update_tracker_state.discovered_node = Vec::new();
     // push those lines in the vector
     node_update_tracker_state.discovered_node.push(line.to_string());
     // check to get rid from the vector what has already been updated
@@ -30,17 +28,38 @@ pub fn state_updater_for_ui_good_display(
       }
     }
     // now we update the field `node_name` in `shared_state` `PipelineState` taking the first index from `node_update_tracker_state`
-    let _ = shared_state.update_shared_state_info("node_name", &node_update_tracker_state.discovered_node[0]);
-     
+    let name = &node_update_tracker_state.discovered_node[0].to_string();
+    let list_part_name_to_parse = name.split(" ").collect::<Vec<&str>>();
+    let mut parsed_name = String::new();
+    for i in 0..list_part_name_to_parse.len() {
+      if i == list_part_name_to_parse.len()-1 {
+        parsed_name += list_part_name_to_parse[i]
+      }
+    }
+    let debug_var = node_update_tracker_state.discovered_node.iter().map(|x| x.to_string()).collect::<String>();
+    shared_state.update_shared_state_info("node_name", &parsed_name);
+    
+    // debug to see node name
+    let _ =  print_debug_log_file(
+      "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+      "discover node [0]",
+      &parsed_name
+    );
+    let _ =  print_debug_log_file(
+      "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+      "check what inside vec discover nodde:",
+      &debug_var
+    );    
+      
     // then we update the `node_type` field of `shared_state` PipelineState`
     if node_update_tracker_state.discovered_node[0].contains("controller") {
       // update the `node_type` and the `status`
-      let _ = shared_state.update_shared_state_node_type(ClusterNodeType::Controller);
-      let _ = shared_state.update_shared_state_status(UpgradeStatus::InProcess);
+      shared_state.update_shared_state_node_type(ClusterNodeType::Controller);
+      shared_state.update_shared_state_status(UpgradeStatus::InProcess);
     } else {
       // update the `node_type` and the `status`
-      let _ = shared_state.update_shared_state_node_type(ClusterNodeType::Worker);
-      let _ = shared_state.update_shared_state_status(UpgradeStatus::InProcess);	
+      shared_state.update_shared_state_node_type(ClusterNodeType::Worker);
+      shared_state.update_shared_state_status(UpgradeStatus::InProcess);	
     }
   } else if "Pull Repo Key" == step {
  

@@ -5,14 +5,17 @@ use tokio::time::{sleep, Duration};
 use std::io::stdout;
 use ratatui::{prelude::{CrosstermBackend, Terminal}};
 // the `TUI` manager drawer/painter
-use core_ui::state::{
-  AppState,
-  PipelineState,
-  //NodeDiscoveryInfo,
-  StepColor,
-  ClusterNodeType,
-  UpgradeStatus,
-  NodeUpdateTrackerState,
+use core_ui::{
+  state::{
+    AppState,
+    PipelineState,
+    //NodeDiscoveryInfo,
+    StepColor,
+    //ClusterNodeType,
+    //UpgradeStatus,
+    NodeUpdateTrackerState,
+  },
+  update_shared_state_info::state_updater_for_ui_good_display,  
 };
 use core_ui::ui::{draw_ui, redraw_ui};
 // all the `steps`
@@ -81,7 +84,7 @@ pub async fn run() -> Result<()> {
   let (mut node_update_tracker_state, _tx_node_update_state, _rx_node_update_state) = NodeUpdateTrackerState::new(/* NodeUpdateState */); // we initialize a
   // `stdout` imported from `std::io`
   let backend = CrosstermBackend::new(stdout());
-  let mut term   = Terminal::new(backend)?;
+  let mut term  = Terminal::new(backend)?;
   // start with a clear sheet
   term.clear()?;
 
@@ -109,7 +112,7 @@ pub async fn run() -> Result<()> {
 
     /* 3.2 run the step – this awaits until its child process ends */
     // we borrow `tx_log` (transmitter buffer/output)
-    match step.run(&tx_log, &mut pipeline_state, &mut node_update_tracker_state).await {
+    match step.run(&tx_log).await {
       // step done without issue
       Ok(()) => {
         // we paint the sidebar step in blue
@@ -136,11 +139,25 @@ pub async fn run() -> Result<()> {
 
     /* 3.3 drain any log lines produced during the step */
     while let Ok(line) = rx_log.try_recv() {
-      // if need can write `line` to a debug file
+      /******************************************************************************************************************************
+      // create the function not here in the `shared_fn` and then import it here to do the filtering and update of that state on the fly
+      // so i can capture the `step` and `l` (line) in a function that will have the full logic of updating the shared state `PipelineState`
+      **********************************************************************************************************************************/
+      if matches!(
+        step.name(), "Discover Nodes"
+        | "Pull Repo Key" 
+        | "Madison Version" 
+        | "Upgrade Plan" 
+        | "Upgrade Apply" 
+        | "Upgrade Node" 
+        | "Veryfy Core DNS Proxy"
+        ) {
+        state_updater_for_ui_good_display(step.name(), &line, &mut pipeline_state, &mut node_update_tracker_state);
+      }
+      
+      // if need can write `line` to a debug file. Line is borrowed above and here moved so bye bye `line`!
       state.log.push(line);
     }
-
-    // check if we need to `recv` also the other states... for the stream to not be phantomaticly having something stored in it...
 
     /* 3.4 redraw with updated colours + new log */
     redraw_ui(&mut term, &mut state, &mut pipeline_state)?;

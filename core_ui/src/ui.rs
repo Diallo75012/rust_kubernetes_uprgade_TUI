@@ -7,9 +7,9 @@ use crate::state::{
   AppState,
   PipelineState,
   StepColor,
-  ClusterNodeType,
-  UpgradeStatus,
-  NodeUpdateTrackerState
+  //ClusterNodeType,
+  //UpgradeStatus,
+  //NodeUpdateTrackerState
 };
 
 pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineState) {
@@ -89,11 +89,11 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
     .constraints([
       Constraint::Length(3), // footer[0] space margin from left eadge
       Constraint::Length(18), // footer[1]
-      Constraint::Length(30),  // footer[2] to be cut for each version to fit on their own space
-      Constraint::Length(30),
-      Constraint::Length(30),
+      Constraint::Length(20),  // footer[2] to be cut for each version to fit on their own space
+      Constraint::Length(20),
+      Constraint::Length(20),
       Constraint::Min(1),
-      Constraint::Length(20) // footer[6]
+      Constraint::Length(50) // footer[6]
     ])
     .split(rects[2]);
   f.render_widget(Paragraph::new("q: quit"), footer[1]);
@@ -132,84 +132,3 @@ pub fn redraw_ui<B: Backend>(term: &mut Terminal<B>, s: &mut AppState, s_s: &mut
     term.draw(|f| draw_ui(f, s, s_s))?;
     Ok(())
 }
-
-//PipelineState: 
-//  color (StepColor:
-//    Grey, Green, Blue, Red
-//  ),
-//  log (SharedState: 
-//    buff(Hashmap(keys:
-//      kubeadm_v,
-//      kubelet_v,
-//      kubectl_v,
-//      containterd_v,
-//      node_name,
-//      node_role(ClusterNodeType:
-//        Controller, Worker, Undefined
-//      ),
-//      upgrade_status(UpgradeStatus:
-//        Upgraded, InProcess, Waiting, Error
-//      ),
-//    )
-//  ),
-
-
-/*
-  let items: Vec<ListItem> = state.steps.iter().map(|s| {
-    let style = match s.color {
-      // using the `enum` `stepColor` from `state.rs` to style the items
-      // using match pattern in the closure iterable mapped to `s` representing each items to check
-      StepColor::Grey  => Style::default().fg(Color::DarkGray), // `ratatui` styling
-      StepColor::Green => Style::default().fg(Color::Green),
-      StepColor::Blue  => Style::default().fg(Color::Blue),
-      StepColor::Red  => Style::default().fg(Color::Red),
-    };
-    // after we are creating a new `ListItem` with the right colors for each
-    ListItem::new(s.name).style(style)
-    // after here we collect to a `Vec<ListItem>` as defined above so will infer it (no need to `.collect<Vec<ListItem>>()`)
-  }).collect();
-  // some styling to the list of items presented on the sidebar: `block`, `title`, `borders`
-  let sidebar = List::new(items).block(Block::default().title("Steps").borders(Borders::ALL));
-  // we put the content of the sidebar in the `body` horizontal split which is located at `body[0]`
-  // using `ratatui` `.render_widget()` 'painter' (so actually writing to the layout created TUI)
-  f.render_widget(sidebar, body[0]);
-
-
-let share_state_style = shared_state.color;
-let log_shared_state_text: HashMap<String, String> = shared_state.log.buf.into_iter().cloned().collect();
-
-// rects[2].footer[2]
-node_role
-node_name
-// rects[0].header[1]
-let upgrade_status = log_shared_state_text.upgrade_
-// rects[2].footer[1]
-let kubeadm_version = log_shared_state_text.kubeadm_v;
-let kubelet_version = log_shared_state_text.kubelet_v;
-let kubectl_version = log_shared_state_text.kubectl_v;
-let containerd_version = log_shared_state_text.containerd_v;
-*/
-
-
-/*
-// functions available PipelineState
-new(mut self)
-update_shared_state_info(&mut self, k: &str, v: &str)
-update_shared_state_status(&mut self, status: UpgradeStatus)
-update_shared_state_node_type(&mut self, node_role: ClusterNodeType)
-
-// PiplelineState field `buf` available functions
-fn new(
-    kubeadm_v: String,
-    kubelet_v: String,
-    kubectl_v: String,
-    containerd_v: String,
-    node_name: String,
-    _node_role: ClusterNodeType,
-    upgrade_status: UpgradeStatus
-  )
-
-// for NodeDiscoveryInfo available functions
-new(node_name: &str)
-fn add_node_info(&mut self, node_name: &str, node_type: ClusterNodeType)
-*/

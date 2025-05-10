@@ -178,10 +178,15 @@ CLI flags (optional) 		| clap
 - [x] make `enum` for node role `worker` or `controller`
 - [x] do the UI layout and break parts until getting what needed with boilerplate sentences, that will later be feeded with dynamic data (`core_ui/src/ui.rs`)
 - [x] put in the boilerplate rendered `core_ui/src/lib/rs` fields not only plain text but try to populate with initialized `shared_state` `Pipeline` values
-- [ ] do a `shared_fn` that will do conditional on each steps to analyze line from `while` loop in `engine/src/lib.rs` and update the share state `PipelineState`
-- [ ] in `core_ui/src/ui.rs` make the Shared State field derived from `PipelineState` field update
+- [x] do a `shared_fn` that will do conditional on each steps to analyze line from `while` loop in `engine/src/lib.rs` and update the share state `PipelineState`
+- [x] in `core_ui/src/ui.rs` make the Shared State field derived from `PipelineState` field update
+- [x] change state logic to in order to be updated in `engine/src/lib.rs`, no need to do it inside the stream, do not overcomplicate.
+- [ ] do next step `pull repo key` and add `user input` versions desired when the app launches so that it can run smoothly and store in a new state 
 
-
+# 12. State logic updates of shared_state decision
+```markdown
+Step prints output ─▶ stream_child sends line ─▶ engine receives it ─▶ updates state ─▶ redraws TUI
+```
 /*
 // functions available PipelineState
 new(mut self)
