@@ -181,6 +181,8 @@ CLI flags (optional) 		| clap
 - [x] do a `shared_fn` that will do conditional on each steps to analyze line from `while` loop in `engine/src/lib.rs` and update the share state `PipelineState`
 - [x] in `core_ui/src/ui.rs` make the Shared State field derived from `PipelineState` field update
 - [x] change state logic to in order to be updated in `engine/src/lib.rs`, no need to do it inside the stream, do not overcomplicate.
+- [x] add a small snippet in `engine/src/lib.rs` to capture user press of keystroke `q` to quit the app gently.
+- [ ] before steps logic creation, create a blocking pop-up at the beinning to ask user input desired version of kube (kubelet/kubeadm/kubectl) and containerd
 - [ ] do next step `pull repo key` and add `user input` versions desired when the app launches so that it can run smoothly and store in a new state 
 
 # 12. State logic updates of shared_state decision
@@ -755,5 +757,12 @@ Outputs:
 1.7.25
 ```
 
-
+## `Git` commmand to see all previous `commit` and their **full** `commit message`
+Try any of those, the last one is with some formatting but same same but the same
+```bash
+git log --oneline --decorate --graph --all
+git log --pretty=full
+git log --pretty=fuller
+git log --pretty=format:"%C(auto)%h %d%nAuthor: %an <%ae>%nDate: %ad%n%n%s%n%b%n------------------------" --date=short
+```
 
