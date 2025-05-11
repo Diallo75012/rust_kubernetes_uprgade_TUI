@@ -169,7 +169,24 @@ pub async fn run() -> Result<()> {
     /* 3.4 redraw with updated colours + new log */
     redraw_ui(&mut term, &mut state, &mut pipeline_state)?;
     // just simulating some processing waiting a bit... will be replaced by real command duration....
-    sleep(Duration::from_secs(10)).await;
+    // sleep(Duration::from_secs(10)).await;
+
+    // now inside the big loop we check also if there were any key pressed:
+    // `event::poll` will detect keypressed and check if `q` to quit
+    if event::poll(std::time::Duration::from_millis(10))? {
+      if let Event::Key(key) = event::read()? {
+        if key.code == KeyCode::Char('q') {
+          println!("User pressed 'q'. Exiting.");
+          let _ = print_debug_log_file(
+            "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+            "Engine/lib.rs Quit Pressed: ",
+            "True"
+          );
+          return Ok(());
+        }
+      }
+    }
+    
   }
 
   /* 4. final paint ------------------------------------------------------- */

@@ -203,6 +203,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "core-ui",
+ "crossterm",
  "ratatui",
  "shared-fn",
  "shared-traits",
