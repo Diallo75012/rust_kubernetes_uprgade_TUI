@@ -65,3 +65,82 @@
 [Discover Nodes][OUT] node2.creditizens.net
 [Discover Nodes][OUT] kubeadm1.29.15
 [Discover Nodes][OUT] containerd1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm1.29.15
+[Discover Nodes][OUT] containerd1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm1.29.15
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm1.29.15
+[Discover Nodes][OUT] containerd1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm1.29.15
+[Discover Nodes][OUT] containerd1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm1.29.15
+[Discover Nodes][OUT] containerd1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25

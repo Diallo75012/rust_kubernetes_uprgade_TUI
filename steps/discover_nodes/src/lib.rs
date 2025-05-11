@@ -18,7 +18,7 @@ impl Step for DiscoverNodes {
       output_tx: &Sender<String>,
       ) -> Result<(), StepError> {
         // The shell command to run
-        let shell_cmd = r#"export KUBECONFIG=$HOME/.kube/config; kubectl get nodes --no-headers | awk '{print $1}' && kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm"$1 $NF}' && containerd --version | awk '{ print "containerd"$3 }'         export KUBECONFIG=$HOME/.kube/config; kubectl get nodes --no-headers | awk '{print $1}' && kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm"$1 $NF}' && containerd --version | awk '{ print "containerd"$3 }'"#;
+        let shell_cmd = r#"export KUBECONFIG=$HOME/.kube/config; kubectl get nodes --no-headers | awk '{print $1}' && kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm "$1 $NF}' && containerd --version | awk '{ print "containerd "$3 }'"#;
         /*
         let shell_cmd = r#"
           which kubectl && kubectl version --client &&

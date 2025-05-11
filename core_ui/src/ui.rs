@@ -89,22 +89,22 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
     .constraints([
       Constraint::Length(3), // footer[0] space margin from left eadge
       Constraint::Length(18), // footer[1]
-      Constraint::Length(20),  // footer[2] to be cut for each version to fit on their own space
-      Constraint::Length(20),
-      Constraint::Length(20),
+      Constraint::Length(25),  // footer[2] to be cut for each version to fit on their own space
+      Constraint::Length(25),
+      Constraint::Length(25),
       Constraint::Min(1),
-      Constraint::Length(50) // footer[6]
+      Constraint::Length(30) // footer[6]
     ])
     .split(rects[2]);
   f.render_widget(Paragraph::new("q: quit"), footer[1]);
   let log_kubeadm_v = shared_state.log.clone().shared_state_iter("kubeadm_v")[0].clone();
-  let log_kubeadm = Paragraph::new(log_kubeadm_v);
+  let log_kubeadm = Paragraph::new(format!("Kubeadm v{}", log_kubeadm_v));
   let log_kubelet_v = shared_state.log.clone().shared_state_iter("kubelet_v")[0].clone();
-  let log_kubelet = Paragraph::new(log_kubelet_v);
+  let log_kubelet = Paragraph::new(format!("Kubelet v{}", log_kubelet_v));
   let log_kubectl_v = shared_state.log.clone().shared_state_iter("kubectl_v")[0].clone();
-  let log_kubectl = Paragraph::new(log_kubectl_v);
+  let log_kubectl = Paragraph::new(format!("Kubectl v{}", log_kubectl_v));
   let log_containerd_v = shared_state.log.clone().shared_state_iter("containerd_v")[0].clone();
-  let log_containerd = Paragraph::new(log_containerd_v);
+  let log_containerd = Paragraph::new(format!("Containerd v{}", log_containerd_v));
   f.render_widget(log_kubeadm, footer[2]);
   f.render_widget(log_kubelet, footer[3]);
   f.render_widget(log_kubectl, footer[4]);

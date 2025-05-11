@@ -4,6 +4,7 @@ use tokio::{sync::mpsc};
 use tokio::time::{sleep, Duration};
 use std::io::stdout;
 use ratatui::{prelude::{CrosstermBackend, Terminal}};
+use crossterm::event::{self, Event, KeyCode};
 // the `TUI` manager drawer/painter
 use core_ui::{
   state::{

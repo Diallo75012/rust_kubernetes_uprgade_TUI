@@ -28,14 +28,26 @@ pub fn state_updater_for_ui_good_display(
             "Line:    ",
             l
           );
-          let parse_kubeadm_versions = l.split("m").collect::<Vec<&str>>(); // expect: ["kubead", "1.29..."]
-          components_versions.add("kube_versions", parse_kubeadm_versions[1]); // expect "1.29..."
-          shared_state.update_shared_state_info("kubeadm_v", parse_kubeadm_versions[1]); // update shared state kube versions
+          let parse_kubeadm_versions = l.split(" ").collect::<Vec<&str>>(); // expect: ["kubead", "1.29..."]
+          components_versions.add("kube_versions", parse_kubeadm_versions[3]); // expect "1.29..."
+          shared_state.update_shared_state_info("kubeadm_v", parse_kubeadm_versions[3]); // update shared state kube versions
+          shared_state.update_shared_state_info("kubelet_v", parse_kubeadm_versions[3]);
+          shared_state.update_shared_state_info("kubectl_v", parse_kubeadm_versions[3]);
+          let _ = print_debug_log_file(
+            "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+            "Shared State Log keys/values:\n",
+            &format!("{}", shared_state.log)
+          );
         },
-      l if l.contains("containerd") => { /* we will update the state by adding the `containerd_version`*/ 
-          let parse_containerd_version = l.split("d").collect::<Vec<&str>>(); // expect: ["container", "1.7..."]
-          components_versions.add("containerd_version", parse_containerd_version[1]); // expect "1.7..."
-          shared_state.update_shared_state_info("kubeadm_v", parse_containerd_version[1]); // update shared state containerd version
+      l if l.contains("containerd") => { /* we will update the state by adding the `containerd_version`*/
+          let _ = print_debug_log_file(
+            "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+            "Line:    ",
+            l
+          );
+          let parse_containerd_version = l.split(" ").collect::<Vec<&str>>(); // expect: ["container", "1.7..."]
+          components_versions.add("containerd_version", parse_containerd_version[3]); // expect "1.7..."
+          shared_state.update_shared_state_info("containerd_v", parse_containerd_version[3]); // update shared state containerd version
         },
       l => {
         node_update_tracker_state.discovered_node.push(l.to_string());

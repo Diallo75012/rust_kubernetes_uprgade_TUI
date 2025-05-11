@@ -1,5 +1,6 @@
 use tokio::sync::watch;
 use std::collections::{HashMap, VecDeque};
+use std::fmt::{self, Display};
 
 
 
@@ -94,6 +95,16 @@ impl NodeDiscoveryInfo {
 pub struct SharedState {
   // just a normal `HashMapuuuuu`
   pub buf: HashMap<String, String>,
+}
+//same as in documentation from ChatGPT
+impl Display for SharedState {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    writeln!(f, "MyStruct Contents:")?;
+    for (k, v) in &self.buf {
+      writeln!(f, "{}: {}", k, v)?;
+    }
+  Ok(())
+  }
 }
 impl SharedState {
   pub fn new(
