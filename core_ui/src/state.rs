@@ -338,19 +338,23 @@ impl ComponentsVersions {
 pub struct DesiredVersions {
   pub target_kube_versions: String,
   pub target_containerd_version: String,
+  pub madison_pulled_full_version: String,
 }
 impl DesiredVersions {
   pub fn new() -> Self {
     Self {
       target_kube_versions: String::from(""),
       target_containerd_version: String::from(""),
+      madison_pulled_full_version: String::from(""),
     }
   }
-  pub fn add(&mut self , target_component: &str, target_version: &str) {
+  pub fn add(&mut self, target_component: &str, target_version: &str) {
   	if "target_kube_versions" == target_component {
       self.target_kube_versions.push_str(target_version)
   	} else if "target_containerd_version" == target_component {
   	  self.target_containerd_version.push_str(target_version)
+  	} else if "madison_pulled_full_version" == target_component {
+  	  self.madison_pulled_full_version.push_str(target_version)
   	}
   }
 }

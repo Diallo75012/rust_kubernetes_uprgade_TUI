@@ -1,7 +1,10 @@
 use async_trait::async_trait;
 use tokio::process::Command;
 use tokio::sync::mpsc::Sender;
-use core_ui::cmd::stream_child;
+use core_ui::{
+  cmd::stream_child,
+  state::DesiredVersions,
+};
 use shared_traits::step_traits::{Step, StepError};
 
 
@@ -16,6 +19,7 @@ impl Step for DiscoverNodes {
     async fn run(
       &mut self,
       output_tx: &Sender<String>,
+      _desired_versions: &mut DesiredVersions,
       ) -> Result<(), StepError> {
         // The shell command to run
         let shell_cmd = r#"export KUBECONFIG=$HOME/.kube/config; kubectl get nodes --no-headers | awk '{print $1}' && kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm "$1 $NF}' && containerd --version | awk '{ print "containerd "$3 }'"#;

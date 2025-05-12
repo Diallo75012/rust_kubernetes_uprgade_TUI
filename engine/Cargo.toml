@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 core-ui                   = { path = "../core_ui" }
 step-discover-nodes       = { path = "../steps/discover_nodes" }
-#step-pull-repo-key        = { path = "../steps/pull_repo_key" }
+step-pull-repo-key        = { path = "../steps/pull_repo_key" }
 #step-madison-version      = { path = "../steps/madison_version" }
 #step-cordon               = { path = "../steps/cordon" }
 #step-drain                = { path = "../steps/drain" }

@@ -208,6 +208,7 @@ dependencies = [
  "shared-fn",
  "shared-traits",
  "step-discover-nodes",
+ "step-pull-repo-key",
  "tokio",
 ]
 

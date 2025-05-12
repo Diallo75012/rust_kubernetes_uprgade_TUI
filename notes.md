@@ -183,8 +183,10 @@ CLI flags (optional) 		| clap
 - [x] change state logic to in order to be updated in `engine/src/lib.rs`, no need to do it inside the stream, do not overcomplicate.
 - [x] add a small snippet in `engine/src/lib.rs` to capture user press of keystroke `q` to quit the app gently.
 - [x] before steps logic creation, create a blocking pop-up at the beginning to ask user input desired version of kube (kubelet/kubeadm/kubectl) and containerd
-- [ ] put tutorial display on the screens about what is expected to enter in the unser input fields with link to the place where they can find compatibility
-- [ ] do next step `pull repo key` and add `user input` versions desired when the app launches so that it can run smoothly and store in a new state 
+- [x] put tutorial display on the screens about what is expected to enter in the unser input fields with link to the place where they can find compatibility
+- [x] add `user input` versions desired when the app launches so that it can run smoothly and store in a new state 
+- [ ] activate next step that now we have the repeatable patterns and do step by step starting with `Pull Repo Key`
+- [ ] do next steps to the end and make sure to check how to get output of ssh command and what is ran from control plane and what is ran using ssh
 
 # 12. State logic updates of shared_state decision
 ```markdown
@@ -767,3 +769,37 @@ git log --pretty=fuller
 git log --pretty=format:"%C(auto)%h %d%nAuthor: %an <%ae>%nDate: %ad%n%n%s%n%b%n------------------------" --date=short
 ```
 
+## `ssh` commands to remote server for when we will need to do steps in the remote server
+- beforehands need to setup ssh connection so that the app runs smoothly and don't get password asked, so port open + ssh connection validated.
+  Admin user should be able to connect just using username@server (thereofore `server` need to be mapped in `/etc/hosts` to the `ip` of the `worker node`)
+```bash
+ssh creditizens@node1 'bash -c command'
+ssh creditizens@node1 'bash -c commad && other_command'
+ssh creditizens@node1 'command; other_command; some_more_commands'
+```
+
+## Prevent command to ask for user `password` by allowing for that user in a certain scope
+Here we are trying to solve the issue that the app can face while running commands and being prompted for password.
+Like for `ssh` which need to be setup on the server beforehands, here we need beforehands to have the user password accepting non-interactive command
+so that it is not prompted, there are different ways but we could use the one that selects for which binary it can be accepted,
+so keeping a kind of least priviledged sor that user only and for those binaries only like `apt`/`apt-get`/`kubeadm`/`kubectl`
+```bash
+# we need to update the `sudo` configs
+sudo visudo
+
+# then use the method here to select the user + to restrict this effect only to those binaries path (add the line at the end)
+<admin username> ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get
+# this method here is to allow for all binaries, straight forward but less secure
+<admin username> ALL=(ALL) NOPASSWD: ALL
+
+# then run the command in the script using `-n` option for non-interactive
+sudo -n apt update`
+```
+
+## `Madison` command to get the latest version available
+Here we will use the state `DesiredVersion` and get the minor version by parsing and formatting user saved version and then we will
+inject it to this command which will fetch all lines of the output having that same version number and the first line which will be the latest
+```bash
+# `$0` prints the full line and the `grep` is targeting the version and the `NR==1` get the first row
+sudo apt-cache madison kubectl | grep "1:29" | awk 'NR==1{print $0}'
+```

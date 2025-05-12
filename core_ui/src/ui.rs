@@ -171,7 +171,7 @@ pub fn draw_version_prompt(f: &mut Frame, input: &str, is_containerd: bool) {
   let rects = Layout::default()
     .direction(Direction::Vertical)
     .constraints([
-      Constraint::Length(20),
+      Constraint::Length(18),
       Constraint::Min(1),
       Constraint::Length(20),
     ])
@@ -190,6 +190,20 @@ pub fn draw_version_prompt(f: &mut Frame, input: &str, is_containerd: bool) {
   let cursor_x = input_area[1].x + input.len() as u16 + 1; // +1 for padding
   let cursor_y = input_area[1].y + 1; // +1 if your box has a border
   f.set_cursor(cursor_x, cursor_y); // top-left corner (x. y)
+
+  if is_containerd {
+    let tutorial = "Please see the right version of Containerd,if needed at: https://containerd.io/releases/.\n(You might not even need to upgrade it, then indicate the version that you have now. It is mandatory to provide a version number.)".to_string();
+    let tutorial_text = Paragraph::new(tutorial)
+      .block(Block::default().title("Extra Info").borders(Borders::ALL))
+      .style(Style::default().fg(Color::Green));
+    f.render_widget(tutorial_text, rects[0]);
+  } else {
+  	let tutorial = "Please get more information about Kubernetes Version Upgrade Here: https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/\n(Rule of Thumb is Only One Minor Version At a Time 1.2x.xx , Eg.: if you have 1.28.xx, next upgrade can only be 1.29.xx)\n\n INDICATE YOUR VERSION LIKE THAT, Eg: 1.29 or 1.30 or 1.31 (ONLY MINOR FOR KUBERNETES KUBe COMPONENTS)\n\nThe App will search for the latest statble version available in that range 1.xx".to_string();
+  	let tutorial_text = Paragraph::new(tutorial)
+      .block(Block::default().title("Extra Info").borders(Borders::ALL))
+  	  .style(Style::default().fg(Color::Green));
+  	  f.render_widget(tutorial_text, rects[0]);
+  }
 
   f.render_widget(paragraph, input_area[1]);
 }

@@ -23,12 +23,13 @@ use core_ui::{
   },
   update_shared_state_info::state_updater_for_ui_good_display,
   ui::run_input_prompt,
+  parse_lines::madison_get_full_version_for_kubeadm_upgrade_saved_to_state,
 };
 use core_ui::ui::{draw_ui, redraw_ui};
 // all the `steps`
 use step_discover_nodes::DiscoverNodes;
-/*
 use step_pull_repo_key::PullRepoKey;
+/*
 use step_madison_version::MadisonVersion;
 use step_cordon::Cordon;
 use step_drain::Drain;
@@ -49,9 +50,9 @@ pub async fn run() -> Result<()> {
   // 1. Static list of step names used to initialize UI state
   let step_names = [
     "Discover Nodes",
+    "Pull Repo Key",
   ];
   /*
-    "Pull Repo Key",
     "Madison Version",
     "Cordon",
     "Drain",
@@ -69,9 +70,9 @@ pub async fn run() -> Result<()> {
   // `Sync`: This means it can be safely shared between threads.
   let steps: Vec<Box<dyn Step + Send + Sync>> = vec![
     Box::new(DiscoverNodes),
+    Box::new(PullRepoKey),
   ];
   /*
-    Box::new(PullRepoKey),
     Box::new(MadisonVersion),
     Box::new(Cordon),
     Box::new(Drain),
@@ -140,7 +141,7 @@ pub async fn run() -> Result<()> {
 
     /* 3.2 run the step – this awaits until its child process ends */
     // we borrow `tx_log` (transmitter buffer/output)
-    match step.run(&tx_log).await {
+    match step.run(&tx_log, &mut desired_versions).await {
       // step done without issue
       Ok(()) => {
         // we paint the sidebar step in blue
@@ -176,8 +177,16 @@ pub async fn run() -> Result<()> {
       	"Discover Nodes" => {
       		state_updater_for_ui_good_display(step.name(), &line, &mut pipeline_state, &mut node_update_tracker_state, &mut components_versions);
       	},
-      	/*
-        "Pull Repo Key"  => {},
+        "Pull Repo Key"  => {
+        	  madison_get_full_version_for_kubeadm_upgrade_saved_to_state(&line, &mut desired_versions);
+        	  let _ = print_debug_log_file(
+        	    "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+        	    "Desired Versions Full Version: ",
+        	    &desired_versions.madison_pulled_full_version
+        	  );
+        },
+        // create a line to capture the version matching with the `DesiredVersion` (need one more field in the state for that) (if .contains()) and then split(" ") and get [2]
+        /*
       	"Madison Version"=> {},
       	"Upgrade Plan"   => {},
         "Upgrade Apply"  => {}, 

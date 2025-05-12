@@ -1,6 +1,6 @@
 
-message: Desired Versions State: , step started: kube desired version: 33333.33333
-contaienrd desired version: 77777.77777
+message: Desired Versions State: , step started: kube desired version: 1.29
+contaienrd desired version: 1.7.25-1
 message: discover node [0], step started: controller.creditizens.net
 
 message: check what inside vec discover nodde:, step started: [Discover Nodes][OUT] controller.creditizens.net
@@ -20,16 +20,16 @@ message: Line:    , step started: [Discover Nodes][OUT] kubeadm 1.29.15
 
 message: Shared State Log keys/values:
 , step started: MyStruct Contents:
+kubeadm_v: 1.29.15
+
 node_role: Controller
-upgrade_status: Step In Process...
 kubelet_v: 1.29.15
 
 kubectl_v: 1.29.15
 
-kubeadm_v: 1.29.15
-
 node_name: controller.creditizens.net
 
+upgrade_status: Step In Process...
 containerd_v: Wait for Update...
 
 message: Line:    , step started: [Discover Nodes][OUT] containerd 1.7.25
