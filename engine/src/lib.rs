@@ -4,7 +4,10 @@ use tokio::{sync::mpsc};
 use tokio::time::{sleep, Duration};
 use std::io::stdout;
 use ratatui::{prelude::{CrosstermBackend, Terminal}};
-use crossterm::event::{self, Event, KeyCode};
+use crossterm::{
+  event::{self, Event, KeyCode, poll,  DisableMouseCapture, EnableMouseCapture},
+  execute, terminal::{EnterAlternateScreen, LeaveAlternateScreen},
+};
 // the `TUI` manager drawer/painter
 use core_ui::{
   state::{
@@ -16,8 +19,10 @@ use core_ui::{
     //UpgradeStatus,
     NodeUpdateTrackerState,
     ComponentsVersions,
+    DesiredVersions,
   },
-  update_shared_state_info::state_updater_for_ui_good_display,  
+  update_shared_state_info::state_updater_for_ui_good_display,
+  ui::run_input_prompt,
 };
 use core_ui::ui::{draw_ui, redraw_ui};
 // all the `steps`
@@ -85,12 +90,32 @@ pub async fn run() -> Result<()> {
   let (mut pipeline_state, _tx_pipeline_state, _rx_pipeline_state) = PipelineState::new(/* PipelineState */); // we initialize a Shared State
   let (mut node_update_tracker_state, _tx_node_update_state, _rx_node_update_state) = NodeUpdateTrackerState::new(/* NodeUpdateState */); // we initialize Node update Tracker State
   let (mut components_versions, _tx_components_versions, _rx_components_versions) = ComponentsVersions::new(/* ComponentsVersions */); // we initalize Components Versions State
+  let mut desired_versions = DesiredVersions::new(); // initializing `DesiredVersions` state
+  /* ******************  initialize all other states trhat we might need ******************* */
+
+
+  // we setup the `backend` which is `Crossterm` in `ratatui` (but we used generics so we can swap it for anything eled)
   // `stdout` imported from `std::io`
   let backend = CrosstermBackend::new(stdout());
   let mut term  = Terminal::new(backend)?;
-  // start with a clear sheet
-  term.clear()?;
+  // might need to get the state that will save user input to this as parameter
+  // so we have access to it there and will be the state that we have initialized here and not another state
+  execute!(stdout(), EnterAlternateScreen, EnableMouseCapture)?;
+  crossterm::terminal::enable_raw_mode()?;
+  run_input_prompt(&mut term, &mut desired_versions, false)?;
+  run_input_prompt(&mut term, &mut desired_versions, true)?;
+  crossterm::terminal::disable_raw_mode()?;
+  execute!(term.backend_mut(), LeaveAlternateScreen, DisableMouseCapture)?;
+  let _ = print_debug_log_file(
+    "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+    "Desired Versions State: ",
+    &format!("kube desired version: {}\ncontaienrd desired version: {}", desired_versions.target_kube_versions, desired_versions.target_containerd_version)
+  );
 
+  // we clear the backend again here as we have done it before for the popup management to get user input.
+  // so for the steps running it will be new clear `backend`
+  term.clear()?;
+  
   // will be following the order in which data is sent (`send`) to channel and received (`recv`) in order
   // transmitter `tx_log` and receiver `rx_log`
   let (tx_log, mut rx_log) = mpsc::channel::<String>(1024);
@@ -173,21 +198,35 @@ pub async fn run() -> Result<()> {
 
     // now inside the big loop we check also if there were any key pressed:
     // `event::poll` will detect keypressed and check if `q` to quit
-    if event::poll(std::time::Duration::from_millis(10))? {
+    if poll(Duration::from_millis(10))? {
       if let Event::Key(key) = event::read()? {
-        if key.code == KeyCode::Char('q') {
-          println!("User pressed 'q'. Exiting.");
-          let _ = print_debug_log_file(
-            "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
-            "Engine/lib.rs Quit Pressed: ",
-            "True"
-          );
-          return Ok(());
+        match key.code {
+          KeyCode::Char('q') => {
+            let _ = print_debug_log_file(
+              "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+              "Engine/lib.rs Quit Pressed: ",
+              "True"
+            );
+            return Ok(())
+          }, // quit
+          KeyCode::Up | KeyCode::Char('k') => {
+            state.log_scroll_offset = state.log_scroll_offset.saturating_sub(1);
+          },
+          KeyCode::Down | KeyCode::Char('j') => {
+            state.log_scroll_offset = state.log_scroll_offset.saturating_add(1);
+          },
+          KeyCode::PageUp => {
+            state.log_scroll_offset = state.log_scroll_offset.saturating_sub(10);
+          },
+          KeyCode::PageDown => {
+            state.log_scroll_offset = state.log_scroll_offset.saturating_add(10);
+          },
+          _ => {},
         }
       }
     }
-    
-  }
+
+  } // enf of for loop
 
   /* 4. final paint ------------------------------------------------------- */
   term.draw(|f| draw_ui(f, &mut state, &mut pipeline_state))?;

@@ -3,7 +3,6 @@ use std::collections::{HashMap, VecDeque};
 use std::fmt::{self, Display};
 
 
-
 /* Here to Color `TUI` */
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum StepColor { Grey, Green, Blue, Red }
@@ -46,6 +45,7 @@ impl<T> RingBuffer<T> {
 pub struct AppState {
   pub steps: Vec<StepInfo>,
   pub log: RingBuffer<String>,
+  pub log_scroll_offset: usize,
 }
 impl AppState {
   pub fn new(step_names: &[&'static str]) -> (Self, watch::Sender<AppState>, watch::Receiver<AppState>) {
@@ -58,12 +58,30 @@ impl AppState {
       }).collect(),
       // this will be the `RingBuffer<String>` limits the buffer if the output is too long
       log: RingBuffer::<String>::new(5000), // here is were we default it to `5000`
+      log_scroll_offset: 0,
     };
     let (tx, rx) = watch::channel(state.clone());
     //(Self { steps, log: RingBuffer::new(5000) }, tx, rx)
     (state, tx, rx)
   }
+  // FUNCTIONS THAT CALUCLATED OFSSET WITH NO UNDER-FLOW
+  // those scroll with `usize::saturating_sub()` are making sure it is not less `< 0` as `usize` should always be positive
+  // will scroll up/down by the `n` offset but never passing `zero` so never passes the final line `index` up/down directions
+  // so here the `.min()` is here to not 'over-shoot' the end (pass over)
+  // we use `saturating_sub()` to do the logic but exist also its conterpart `saturating_add()`: all are safe way to substract and add
+  // so as `usize= 0 - 1` panics for `under-flow` as `usize` can't be negative, we need the safe subsctraction using `saturating_sub()`
+  // also be carefull as `usize` will load its largest value everytime `18 446 744 073 709 551 615`, so it need to be limited to its range `[0 … len‑1]`
+  // `right hand side = rhs`, `left ahnd side  = lhs`: result = if lhs >= rhs { lhs - rhs } else { 0 }
+  // thereofre the `saturating_sub()` will safely return `0` not `negative`(`panic` for `usize`) if  `rhs > lhs`
+  // pub fn scroll_up(&mut self, n: usize) { self.log_scroll_offset = self._log_scroll_offset.saturating_sub(n); }
+  // pub fn scroll_down(&mut self, n: usize) { 
+    // as we as going down we just need to make sure that last line is `subsctracted`
+    // that is why we use `saturatin_sub(1)` on the totla lines length `self.lines.len()``
+    // let last_line_idx = self.log.buf.len().saturating_sub(1);
+    // self.log_scroll_offset = (self.log_scroll_offset + n).min(last_line_idx);
+  // }
 }
+
 
 
 
@@ -309,11 +327,33 @@ impl ComponentsVersions {
   pub fn add(&mut self , component: &str, version: &str) {
   	if "kube_versions" == component {
       self.kube_versions.push_str(version)
+  	} else if "containerd_versions" == component {
+  	  self.containerd_version.push_str(version)
   	}
   }
 }
 
-
+/* Here we will get user desired target version from its input at the beginning of the app */
+#[derive(Debug, Clone, Default)]
+pub struct DesiredVersions {
+  pub target_kube_versions: String,
+  pub target_containerd_version: String,
+}
+impl DesiredVersions {
+  pub fn new() -> Self {
+    Self {
+      target_kube_versions: String::from(""),
+      target_containerd_version: String::from(""),
+    }
+  }
+  pub fn add(&mut self , target_component: &str, target_version: &str) {
+  	if "target_kube_versions" == target_component {
+      self.target_kube_versions.push_str(target_version)
+  	} else if "target_containerd_version" == target_component {
+  	  self.target_containerd_version.push_str(target_version)
+  	}
+  }
+}
 
 
 

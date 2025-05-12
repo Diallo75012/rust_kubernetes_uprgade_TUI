@@ -182,7 +182,8 @@ CLI flags (optional) 		| clap
 - [x] in `core_ui/src/ui.rs` make the Shared State field derived from `PipelineState` field update
 - [x] change state logic to in order to be updated in `engine/src/lib.rs`, no need to do it inside the stream, do not overcomplicate.
 - [x] add a small snippet in `engine/src/lib.rs` to capture user press of keystroke `q` to quit the app gently.
-- [ ] before steps logic creation, create a blocking pop-up at the beinning to ask user input desired version of kube (kubelet/kubeadm/kubectl) and containerd
+- [x] before steps logic creation, create a blocking pop-up at the beginning to ask user input desired version of kube (kubelet/kubeadm/kubectl) and containerd
+- [ ] put tutorial display on the screens about what is expected to enter in the unser input fields with link to the place where they can find compatibility
 - [ ] do next step `pull repo key` and add `user input` versions desired when the app launches so that it can run smoothly and store in a new state 
 
 # 12. State logic updates of shared_state decision

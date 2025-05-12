@@ -1,8 +1,11 @@
-use ratatui::prelude::{Frame, Constraint, Direction, Layout};
+use crossterm::event::{self, Event, KeyCode};
+use ratatui::Frame;
+use ratatui::layout::{Constraint, Rect, Direction, Layout};
 use ratatui::style::{Color, Style};
 use ratatui::widgets::{Block, Borders, List, ListItem, Paragraph};
 use ratatui::backend::Backend;
 use ratatui::Terminal;
+use std::io;
 use crate::state::{
   AppState,
   PipelineState,
@@ -10,7 +13,9 @@ use crate::state::{
   //ClusterNodeType,
   //UpgradeStatus,
   //NodeUpdateTrackerState,
+  DesiredVersions,
 };
+
 
 pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineState) {
   // using `ratutui` `Layout` grid helper
@@ -78,9 +83,18 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
   //`.iter()` will iterate orver `&String` (type inside the defined `VecQue`)
   // `.clone()` will make those `&String` transform to `String` and then collected to `Vec`
   // then `joined` on `&str` `"\n"` to be printable in one block returning at the line for each lines
-  let log_text = state.log.iter().cloned().collect::<Vec<_>>().join("\n");
+  //let log_text = state.log.iter().cloned().collect::<Vec<_>>().join("\n");
+  let log_lines: Vec<_> = state.log.iter().cloned().collect();
+  let log_view = log_lines
+    .iter()
+    .skip(state.log_scroll_offset) // scroll
+    .take(100) // max lines to show
+    .cloned()
+    .collect::<Vec<String>>()
+    .join("\n");
+
   // styling the text output
-  let log = Paragraph::new(log_text).block(Block::default().title("Log").borders(Borders::ALL));
+  let log = Paragraph::new(log_view).block(Block::default().title("Log").borders(Borders::ALL));
   // paints the commands output to the TUI (now we can see it)
   f.render_widget(log, body[1]);
 
@@ -124,11 +138,112 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
   ).block(Block::default());
   // f.render_widget(Paragraph::new("Node name:<...>\nNode role:<...>"), footer[6]);
   f.render_widget(node_processed_info, footer[6]);
+
 }
 
 // function to redraw the UI : This is a more reusable version using `generics`
 // as `ratatui` `Backend` accepts `CrosstermBackend` and `TermionBackend` (if want to change backend for example)
 pub fn redraw_ui<B: Backend>(term: &mut Terminal<B>, s: &mut AppState, s_s: &mut PipelineState) -> anyhow::Result<()> {
-    term.draw(|f| draw_ui(f, s, s_s))?;
-    Ok(())
+  term.draw(|f| draw_ui(f, s, s_s))?;
+  Ok(())
+}
+
+
+/* This is for the Pop-up Taht Captured User desired versions of kube components and containerd*/
+
+// Draws the actual popup window
+pub fn draw_version_prompt(f: &mut Frame, input: &str, is_containerd: bool) {
+
+  let title = if is_containerd {
+    "Enter Containerd Version"
+  } else {
+    "Enter Kubernetes Version"
+  };
+
+  let block = Block::default()
+    .title(title)
+    .borders(Borders::ALL);
+
+  let paragraph = Paragraph::new(input.to_string())
+    .block(block)
+    .style(Style::default().fg(Color::Cyan));
+
+  let rects = Layout::default()
+    .direction(Direction::Vertical)
+    .constraints([
+      Constraint::Length(20),
+      Constraint::Min(1),
+      Constraint::Length(20),
+    ])
+    .split(f.area());
+
+  let input_area = Layout::default()
+    .direction(Direction::Horizontal)
+    .constraints([
+      Constraint::Length(50),
+      Constraint::Min(1),
+      Constraint::Length(50)
+    ])
+    .split(rects[1]);
+
+  // place the cursor
+  let cursor_x = input_area[1].x + input.len() as u16 + 1; // +1 for padding
+  let cursor_y = input_area[1].y + 1; // +1 if your box has a border
+  f.set_cursor(cursor_x, cursor_y); // top-left corner (x. y)
+
+  f.render_widget(paragraph, input_area[1]);
+}
+
+// Captures keyboard input and stores it into `input`
+pub fn run_input_prompt<B: Backend>(
+  term: &mut Terminal<B>,
+  desired_versions_state: &mut DesiredVersions,
+  is_containerd: bool,
+  // mith ned to ad an input pramater for the state initialized in engine/src/lib/rs that will store the `DesiredVersions`
+) -> anyhow::Result<()> {
+
+  /******************************************************
+  This function might need to set a variable as buffer input to get to accumulate user keystroke by adding char and deleting
+  but when enter is pressed it would be saved to the state
+
+  ********************************************************/
+
+  let mut input_buffer = "".to_string();
+
+  loop {
+  
+    term.draw(|f| {
+      draw_version_prompt(f, &input_buffer, is_containerd); // so here `input` would use the buffer that we would have created here
+    })?;
+
+    if event::poll(std::time::Duration::from_millis(500))? {
+      if let Event::Key(key) = event::read()? {
+        match key.code {
+        // so here to have an input_buffer var that will pop characters or push those... and then save it as String to state
+          KeyCode::Char(c) => input_buffer.push(c),
+          KeyCode::Enter => {
+            let input_not_empty = !input_buffer.is_empty();
+            let input_is_not_alphabetic = !input_buffer.chars().all(char::is_alphabetic);
+            if input_not_empty && input_is_not_alphabetic {
+              if is_containerd {
+                desired_versions_state.add("target_containerd_version", &input_buffer);
+              } else {
+                desired_versions_state.add("target_kube_versions", &input_buffer);
+              }
+            }
+            break;
+          },
+          KeyCode::Backspace => {
+            input_buffer.pop();
+          },
+          KeyCode::Esc => {
+            input_buffer.clear();
+            break;
+          },
+          _ => {}
+        }
+      }
+    }
+  }
+  Ok(())
 }
