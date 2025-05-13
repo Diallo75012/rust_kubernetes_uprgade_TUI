@@ -107,6 +107,7 @@ pub async fn run() -> Result<()> {
   run_input_prompt(&mut term, &mut desired_versions, true)?;
   crossterm::terminal::disable_raw_mode()?;
   execute!(term.backend_mut(), LeaveAlternateScreen, DisableMouseCapture)?;
+  
   let _ = print_debug_log_file(
     "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
     "Desired Versions State: ",
@@ -127,6 +128,9 @@ pub async fn run() -> Result<()> {
   /* 3. engine loop ------------------------------------------------------- */
   // `.enumerate()` like in Python to get `index` and `value`
   for (idx, mut step) in steps.into_iter().enumerate() {
+
+    execute!(stdout(), EnableMouseCapture)?;
+    crossterm::terminal::enable_raw_mode()?;
 
     /* 3.1 mark running (green) (ratatui tui coloring stuff)*/
     state.steps[idx].color = StepColor::Green;
@@ -215,8 +219,6 @@ pub async fn run() -> Result<()> {
     // just simulating some processing waiting a bit... will be replaced by real command duration....
     // sleep(Duration::from_secs(10)).await;
 
-    // now inside the big loop we check also if there were any key pressed:
-    // `event::poll` will detect keypressed and check if `q` to quit
     if poll(Duration::from_millis(10))? {
       if let Event::Key(key) = event::read()? {
         match key.code {
@@ -244,10 +246,50 @@ pub async fn run() -> Result<()> {
         }
       }
     }
+    crossterm::terminal::disable_raw_mode()?;
+    execute!(stdout(), DisableMouseCapture)?;
+  } // enf of `for loop`
 
-  } // enf of for loop
+
 
   /* 4. final paint ------------------------------------------------------- */
+  // this is the last print when the  loop is done so steps are done
+  state.log.push("All Steps Are Done! Press 'q' to quit".to_string());
   term.draw(|f| draw_ui(f, &mut state, &mut pipeline_state))?;
+  // puting thos here to have the chance to get those user keytrokes captured (so we put it after the `for loop
+  // as inside it won't be in same scope so not working)
+  execute!(stdout(), EnableMouseCapture)?;
+  crossterm::terminal::enable_raw_mode()?;
+  loop {
+    if poll(Duration::from_millis(10))? {
+      if let Event::Key(key) = event::read()? {
+        match key.code {
+          KeyCode::Char('q') => {
+            let _ = print_debug_log_file(
+              "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+              "Engine/lib.rs Quit Pressed: ",
+              "True"
+            );
+            return Ok(())
+          }, // quit
+          KeyCode::Up | KeyCode::Char('k') => {
+            state.log_scroll_offset = state.log_scroll_offset.saturating_sub(1);
+          },
+          KeyCode::Down | KeyCode::Char('j') => {
+            state.log_scroll_offset = state.log_scroll_offset.saturating_add(1);
+          },
+          KeyCode::PageUp => {
+            state.log_scroll_offset = state.log_scroll_offset.saturating_sub(10);
+          },
+          KeyCode::PageDown => {
+            state.log_scroll_offset = state.log_scroll_offset.saturating_add(10);
+          },
+          _ => {},
+        }
+      }
+    }
+  }
+  crossterm::terminal::disable_raw_mode()?;
+  execute!(stdout(), LeaveAlternateScreen,  DisableMouseCapture)?;
   Ok(())
 }
