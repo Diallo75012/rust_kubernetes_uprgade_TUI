@@ -29,9 +29,9 @@ use core_ui::ui::{draw_ui, redraw_ui};
 // all the `steps`
 use step_discover_nodes::DiscoverNodes;
 use step_pull_repo_key::PullRepoKey;
-/*
 use step_madison_version::MadisonVersion;
 use step_cordon::Cordon;
+/*
 use step_drain::Drain;
 use step_upgrade_plan::UpgradePlan;
 use step_upgrade_apply_ctl::UpgradeApplyCtl;
@@ -51,10 +51,10 @@ pub async fn run() -> Result<()> {
   let step_names = [
     "Discover Nodes",
     "Pull Repo Key",
-  ];
-  /*
     "Madison Version",
     "Cordon",
+  ];
+  /*
     "Drain",
     "Upgrade Plan",
     "Uprgade Apply CTL",
@@ -71,10 +71,10 @@ pub async fn run() -> Result<()> {
   let steps: Vec<Box<dyn Step + Send + Sync>> = vec![
     Box::new(DiscoverNodes),
     Box::new(PullRepoKey),
-  ];
-  /*
     Box::new(MadisonVersion),
     Box::new(Cordon),
+  ];
+  /*
     Box::new(Drain),
     Box::new(UpgradePlan),
     Box::new(UpgradeApplyCtl),
@@ -177,17 +177,22 @@ pub async fn run() -> Result<()> {
       	"Discover Nodes" => {
       		state_updater_for_ui_good_display(step.name(), &line, &mut pipeline_state, &mut node_update_tracker_state, &mut components_versions);
       	},
-        "Pull Repo Key"  => {
-        	  madison_get_full_version_for_kubeadm_upgrade_saved_to_state(&line, &mut desired_versions);
-        	  let _ = print_debug_log_file(
-        	    "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
-        	    "Desired Versions Full Version: ",
-        	    &desired_versions.madison_pulled_full_version
-        	  );
-        },
+        //"Pull Repo Key"  => {
+        //},
         // create a line to capture the version matching with the `DesiredVersion` (need one more field in the state for that) (if .contains()) and then split(" ") and get [2]
+      	"Madison Version" => {
+          if line.contains(&desired_versions.target_kube_versions) {
+            // if the line has the version we update the state to get madison full version
+            // (it is like a double check aa if this fails it meand that the madison command parsing whas wrong)
+            madison_get_full_version_for_kubeadm_upgrade_saved_to_state(&line, &mut desired_versions);
+            let _ = print_debug_log_file(
+              "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+              "Desired Versions Full Version: ",
+              &desired_versions.madison_pulled_full_version
+            );
+          }
+      	},
         /*
-      	"Madison Version"=> {},
       	"Upgrade Plan"   => {},
         "Upgrade Apply"  => {}, 
  	    "Upgrade Node"   => {}, 

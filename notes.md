@@ -788,13 +788,14 @@ so keeping a kind of least priviledged sor that user only and for those binaries
 sudo visudo
 
 # then use the method here to select the user + to restrict this effect only to those binaries path (add the line at the end)
-<admin username> ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get
+<admin username> ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get, /bin/sh, /bin/bash
 # this method here is to allow for all binaries, straight forward but less secure
 <admin username> ALL=(ALL) NOPASSWD: ALL
 
 # then run the command in the script using `-n` option for non-interactive
 sudo -n apt update`
 ```
+**Note**: use `%<user group> if it is for a group instead of a single user`
 
 ## `Madison` command to get the latest version available
 Here we will use the state `DesiredVersion` and get the minor version by parsing and formatting user saved version and then we will
@@ -803,3 +804,8 @@ inject it to this command which will fetch all lines of the output having that s
 # `$0` prints the full line and the `grep` is targeting the version and the `NR==1` get the first row
 sudo apt-cache madison kubectl | grep "1:29" | awk 'NR==1{print $0}'
 ```
+
+## Rust command affinement for `apt`
+To avoid any warning when using `apt` command which is a wrapper and avoid the `warning` which print to our `error` leg in the `cmd.rs` match pattern,
+we can use instead `apt-get` and `apt-cache` which are more gently and will do the job without the warning as it is not recommended to use `apt` in scripts.
+

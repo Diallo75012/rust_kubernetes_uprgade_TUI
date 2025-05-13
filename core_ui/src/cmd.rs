@@ -41,6 +41,7 @@ pub async fn stream_child(
             Ok(None) => break, // end of stream
             Err(e) => {
               let _ = tx_clone.send(format!("[{}][ERR] error reading stdout: {}", step, e)).await;
+              write_step_cmd_debug(&format!("[{}][ERR][on line matching(rdr_out)] {}", step, e));
               break;
             }
           }
@@ -49,10 +50,12 @@ pub async fn stream_child(
           match line {
             Ok(Some(l)) => {
               let _ = tx_clone.send(format!("[{}][ERR] {}", step, l)).await;
+              write_step_cmd_debug(&format!("[{}][ERR][on line matching(rdr_err(some))] {}", step, l));
             }
             Ok(None) => break,
             Err(e) => {
               let _ = tx_clone.send(format!("[{}][ERR] error reading stderr: {}", step, e)).await;
+              write_step_cmd_debug(&format!("[{}][ERR][on line matching(rdr_err(none))] {}", step, e));
               break;
             }
           }
@@ -61,14 +64,29 @@ pub async fn stream_child(
     }
   });
 
-  // Wait for the process to finish with a timeout
-  let status = timeout(Duration::from_secs(10), child.wait())
-    .await
-    .context(format!("Timeout waiting for step `{}`", step))??;
-
-  if !status.success() {
-    return Err(anyhow::anyhow!("Command exited with status: {}", status));
-  }
+  // Wait for the process to finish with a timeout: need conditionals here to have different timeout duration for each steps.
+  if step == "Discover Nodes" {
+    let status = timeout(Duration::from_secs(10), child.wait())
+      .await
+      .context(format!("Timeout waiting for step `{}`", step))??;
+    if !status.success() {
+      return Err(anyhow::anyhow!("Command exited with status: {}", status));
+    }	
+  } else if step == "Pull Repository Key" {
+  	let status = timeout(Duration::from_secs(10), child.wait())
+  	  .await
+  	  .context(format!("Timeout waiting for step `{}`", step))??;
+    if !status.success() {
+      return Err(anyhow::anyhow!("Command exited with status: {}", status));
+    }
+  } else if step == "Madison Version" {
+  	let status = timeout(Duration::from_secs(10), child.wait())
+  	  .await
+  	  .context(format!("Timeout waiting for step `{}`", step))??;
+     if !status.success() {
+       return Err(anyhow::anyhow!("Command exited with status: {}", status));
+     }
+  } // add anoter if statement for other steps... and so on
 
   // Wait for the log task to complete
   log_task.await?;

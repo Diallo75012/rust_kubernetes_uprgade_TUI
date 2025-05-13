@@ -44,7 +44,8 @@ impl Step for DiscoverNodes {
             .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
 
         // Stream output + handle timeout via helper
-        stream_child(self.name(), child, output_tx.clone()).await
-            .map_err(|e| StepError::Other(e.to_string()))
+        let send_stream = stream_child(self.name(), child, output_tx.clone()).await
+            .map_err(|e| StepError::Other(e.to_string()));
+        send_stream
     }
 }

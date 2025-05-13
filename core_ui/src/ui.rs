@@ -171,7 +171,7 @@ pub fn draw_version_prompt(f: &mut Frame, input: &str, is_containerd: bool) {
   let rects = Layout::default()
     .direction(Direction::Vertical)
     .constraints([
-      Constraint::Length(18),
+      Constraint::Length(20),
       Constraint::Min(1),
       Constraint::Length(20),
     ])
@@ -180,9 +180,9 @@ pub fn draw_version_prompt(f: &mut Frame, input: &str, is_containerd: bool) {
   let input_area = Layout::default()
     .direction(Direction::Horizontal)
     .constraints([
-      Constraint::Length(50),
+      Constraint::Length(60),
       Constraint::Min(1),
-      Constraint::Length(50)
+      Constraint::Length(60)
     ])
     .split(rects[1]);
 

@@ -207,7 +207,9 @@ dependencies = [
  "ratatui",
  "shared-fn",
  "shared-traits",
+ "step-cordon",
  "step-discover-nodes",
+ "step-madison-version",
  "step-pull-repo-key",
  "tokio",
 ]
@@ -617,6 +619,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "core-ui",
+ "shared-fn",
  "shared-traits",
  "tokio",
 ]

@@ -2,6 +2,7 @@ use crate::state::{
   NodeUpdateTrackerState,
   DesiredVersions,
 };
+use shared_fn::debug_to_file::print_debug_log_file;
 
 /*** Discovery Node Parsers  ***/
 
@@ -39,7 +40,13 @@ pub fn madison_get_full_version_for_kubeadm_upgrade_saved_to_state(line: &str, d
   let formatted_version = format!("{}.{}", major_version, minor_version);
   if line.contains(&formatted_version) {
     let splitted_line = line.split(" ").collect::<Vec<&str>>();
-    let parsed_line = splitted_line[2];
+    // ["[Madison", "Version][OUT]", "", "", "", "kubectl", "|", "1.29.15-1.1", "|", "https://pkgs.k8s.io/core:/stable:/v1.29/deb", "", "Packages"]
+    let parsed_line = splitted_line[6];
+    let _ = print_debug_log_file(
+      "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+      "Madison version: ",
+      parsed_line
+    );
     desired_version_state.add("madison_pulled_full_version", parsed_line)	
   }
 } 

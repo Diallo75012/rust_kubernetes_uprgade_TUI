@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 core-ui         = { path = "../../core_ui" }
+shared-fn       = { path = "../../shared_fn" }
 shared-traits   = { path = "../../shared_traits" }
 async-trait  = "0.1"
 anyhow       = "1"

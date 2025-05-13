@@ -8,12 +8,12 @@ use core_ui::{
 use shared_traits::step_traits::{Step, StepError};
 
 
-pub struct PullRepoKey;
+pub struct MadisonVersion;
 
 #[async_trait]
-impl Step for PullRepoKey {
+impl Step for MadisonVersion {
     fn name(&self) -> &'static str {
-        "Pull Repo Key"
+        "Madison Version"
     }
 
     async fn run(
@@ -34,7 +34,7 @@ impl Step for PullRepoKey {
         let user_desired_kube_verison_parsed = format!("{}.{}", major_version, minor_version);
         // we grep the line with version number corresponding and then get the first row `NR==1`, `$0` for the full row (we will in `engine/src/lib.rs` parse the version from that line) 
         let command_formatted = format!(
-          "sudo -n apt-cache madison kubectl | grep '{}' | awk 'NR==1{print $0}",
+          r#"sudo -n apt-cache madison kubectl | grep '{}' | awk 'NR==1{{print $0}}'"#,
           user_desired_kube_verison_parsed
         );
 
@@ -48,7 +48,10 @@ impl Step for PullRepoKey {
             .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
 
         // Stream output + handle timeout via helper
-        stream_child(self.name(), child, output_tx.clone()).await
-            .map_err(|e| StepError::Other(e.to_string()))
+        let _ = stream_child(self.name(), child, output_tx.clone()).await
+            .map_err(|e| StepError::Other(e.to_string()));
+
+        Ok(())
     }
+
 }
