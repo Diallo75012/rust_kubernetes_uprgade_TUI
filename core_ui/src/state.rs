@@ -39,6 +39,7 @@ impl<T> RingBuffer<T> {
     self.buf.push_back(v);
   }
   pub fn iter(&self) -> impl Iterator<Item=&T> { self.buf.iter() }
+  pub fn len(&self) -> usize { self.buf.len() }
 }
 
 #[derive(Debug, Clone)]

@@ -32,19 +32,30 @@ pub fn discover_nodes_state_filter(state_node_tracking: &mut NodeUpdateTrackerSt
 
 // this  will parse the version that we got from our `apt-cache madison` command to get the full version for the next steps upgrades of `kubeadm`
 pub fn madison_get_full_version_for_kubeadm_upgrade_saved_to_state(line: &str, desired_version_state: &mut DesiredVersions) {
+  let _ = print_debug_log_file(
+    "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+    "Inside Parser Madison (full line): ",
+    line
+  );
+
   let desired_version_clone = desired_version_state.target_kube_versions.clone();
   let user_desired_kube_components_version = desired_version_clone.split(".").collect::<Vec<&str>>();
   let major_version = user_desired_kube_components_version[0];
   let minor_version = user_desired_kube_components_version[1];
   // if user play to much and give use a version like `1.29.34.45.etc...`, we want just the first (major version) and second (minor version)
   let formatted_version = format!("{}.{}", major_version, minor_version);
+  let _ = print_debug_log_file(
+    "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+    "Inside Parser Madison (formatted version): ",
+    &formatted_version
+  );
   if line.contains(&formatted_version) {
     let splitted_line = line.split(" ").collect::<Vec<&str>>();
     // ["[Madison", "Version][OUT]", "", "", "", "kubectl", "|", "1.29.15-1.1", "|", "https://pkgs.k8s.io/core:/stable:/v1.29/deb", "", "Packages"]
-    let parsed_line = splitted_line[6];
+    let parsed_line = splitted_line[7];
     let _ = print_debug_log_file(
       "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
-      "Madison version: ",
+      "Inside Parser Madison (parsed line): ",
       parsed_line
     );
     desired_version_state.add("madison_pulled_full_version", parsed_line)	

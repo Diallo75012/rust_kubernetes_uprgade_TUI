@@ -203,6 +203,11 @@ pub async fn run() -> Result<()> {
       
       // if need can write `line` to a debug file. Line is borrowed above and here moved so bye bye `line`!
       state.log.push(line);
+      // AUTO-SCROLL if at bottom (e.g., near latest lines)
+      let log_len = state.log.len();
+      if state.log_scroll_offset + 100 >= log_len.saturating_sub(1) {
+        state.log_scroll_offset = log_len.saturating_sub(100);
+      }
     }
 
     /* 3.4 redraw with updated colours + new log */

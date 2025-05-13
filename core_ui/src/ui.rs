@@ -84,11 +84,13 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
   // `.clone()` will make those `&String` transform to `String` and then collected to `Vec`
   // then `joined` on `&str` `"\n"` to be printable in one block returning at the line for each lines
   //let log_text = state.log.iter().cloned().collect::<Vec<_>>().join("\n");
+  let log_area_height = body[1].height.saturating_sub(2) as usize; // minus borders
+
   let log_lines: Vec<_> = state.log.iter().cloned().collect();
   let log_view = log_lines
     .iter()
-    .skip(state.log_scroll_offset) // scroll
-    .take(100) // max lines to show
+    .skip(state.log_scroll_offset)
+    .take(log_area_height)
     .cloned()
     .collect::<Vec<String>>()
     .join("\n");

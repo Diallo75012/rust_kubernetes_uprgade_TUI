@@ -26,7 +26,7 @@ impl Step for Cordon {
         ];
         // Prepare the child process (standard Rust async Command)
         // type of `child` is `tokio::process::Child`
-        let multi_command = for command in 0..commands.len() {
+        let _multi_command = for command in 0..commands.len() {
           let cmd = commands[command];
           let child = Command::new("bash")
             .arg("-c")

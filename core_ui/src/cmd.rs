@@ -86,6 +86,13 @@ pub async fn stream_child(
      if !status.success() {
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
+  } else if step == "Cordon" {
+        let status = timeout(Duration::from_secs(10), child.wait())
+          .await
+          .context(format!("Timeout waiting for step `{}`", step))??;
+     if !status.success() {
+       return Err(anyhow::anyhow!("Command exited with status: {}", status));
+     }
   } // add anoter if statement for other steps... and so on
 
   // Wait for the log task to complete
