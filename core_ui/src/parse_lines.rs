@@ -1,4 +1,5 @@
 use crate::state::{
+  PipelineState
   NodeUpdateTrackerState,
   DesiredVersions,
 };
@@ -69,3 +70,52 @@ pub fn madison_get_full_version_for_kubeadm_upgrade_saved_to_state(line: &str, d
 
 // make a function that would after upgrade plan get the state pipeline_state (shared state) update the kube component versions
 // and the containerd version as it has to match what user wanted
+
+pub fn check_upgrade_plan_version_and_update_shared_state_versions(
+  line: &str,
+  desired_version_state: &mut DesiredVersions,
+  shared_state: &mut PipelineState,
+) -> anyhow::Result<()> {
+  // Defining a helper macro to avoid repeating code
+  macro_rules! check_and_update {
+    ($prefix:expr, $desired:expr, $key:expr) => {
+      if line.contains($prefix) {
+        if let Some(version) = line.split($prefix).nth(1) {
+          let version = version.trim(); // clean any whitespace
+          if version != $desired {
+            return Err(anyhow::anyhow!(
+              "{} mismatch: expected `{}`, got `{}`",
+              $key, $desired, version
+            ));
+          } else {
+            shared_state.update_shared_state_info($key, version);
+          }
+        }
+      }
+    };
+  }
+
+  // Now use the macro for each component
+  check_and_update!(
+    "kubeadm_plan ",
+    &desired_version_state.target_kube_versions,
+    "kubeadm_v"
+  );
+  check_and_update!(
+    "kubelet_plan ",
+    &desired_version_state.target_kube_versions,
+    "kubelet_v"
+  );
+  check_and_update!(
+    "kubectl_plan ",
+    &desired_version_state.target_kube_versions,
+    "kubectl_v"
+  );
+  check_and_update!(
+    "containerd_plan ",
+    &desired_version_state.target_containerd_version,
+    "containerd_v"
+  );
+
+  Ok(())
+}

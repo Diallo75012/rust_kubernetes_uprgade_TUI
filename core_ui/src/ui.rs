@@ -113,6 +113,7 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
     ])
     .split(rects[2]);
   f.render_widget(Paragraph::new("q: quit"), footer[1]);
+  /************ Here have a conditional that checks if the state version updated is equal to desired state add effect to paint in green  **************/
   let log_kubeadm_v = shared_state.log.clone().shared_state_iter("kubeadm_v")[0].clone();
   let log_kubeadm = Paragraph::new(format!("Kubeadm v{}", log_kubeadm_v));
   let log_kubelet_v = shared_state.log.clone().shared_state_iter("kubelet_v")[0].clone();

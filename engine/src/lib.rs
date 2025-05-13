@@ -212,6 +212,9 @@ pub async fn run() -> Result<()> {
       // here we use 18 lines so that is fitting our `body` space in the `tui` and we always see last logs
       if state.log_scroll_offset + 18 >= log_len.saturating_sub(1) {
         state.log_scroll_offset = log_len.saturating_sub(18);
+      },
+      "Upgrade Plan" => {
+      	check_upgrade_plan_version_and_update_shared_state_versions(&line, &mut desired_versions, &mut pipeline_state);
       }
     }
 

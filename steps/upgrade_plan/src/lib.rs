@@ -46,9 +46,12 @@ impl Step for UpgradePlan {
         // unhold version to be able to upgrade those and then hold back those versions
         //Install Compatible Version of Containerd (Optional but better have it updated even if it is Ok for few years...)
         // Verify Upgrade Plan and Ugrade (Only in the first Control Plane: other ones are going to pick it up)
+        // using keyword to capt lines having the versions `kubeadm_plan, kubelet_plan, kubectl_plan, containerd_plan` with space so that i can split on it
+        // and will compare those to the one saved in state in `core_ui/src/parse_lines.rs`... and use at the end of `engine/src/lib/rs`
         let containerd_version_upgrade = &format!("sudo apt install containerd.io={}", containerd_desired_version_clone_madison_pulled_full_version);
         let kube_versions_upgrade = &format!("sudo apt-get install -y kubeadm={v} kubelet={v} kubectl={v}", v = kube_desired_version_clone_madison_pulled_full_version);
         let command = &format!(r#"
+          export KUBECONFIG=$HOME/.kube/config && \
           sudo apt-mark unhold kubeadm kubelet kubectl && \
           sudo apt-get update && \
           {} && \
@@ -57,7 +60,11 @@ impl Step for UpgradePlan {
           sudo systemctl restart containerd && \          
           sudo systemctl restart kubelet containerd && \
           sudo kubeadm upgrade plan --yes && \
-          sudo -n apt-get update -y"#,
+          sudo -n apt-get update -y && \
+          kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm_plan "$1 $NF}' && \
+          kubelet --version | awk '{ print $2}' | awk -F "[v]" '{ print "kubelet_plan "$1 $NF}' && \
+          kubectl version | awk 'NR==1{ print $3}' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF}' && \
+          containerd --version | awk '{ print "containerd_plan "$3 }'"# 
           containerd_version_upgrade,
           kube_versions_upgrade
         );
