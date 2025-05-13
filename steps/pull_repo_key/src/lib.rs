@@ -3,7 +3,10 @@ use tokio::process::Command;
 use tokio::sync::mpsc::Sender;
 use core_ui::{
   cmd::stream_child,
-  state::DesiredVersions,
+  state::{
+  DesiredVersions,
+  PipelineState,
+  },
 };
 use shared_traits::step_traits::{Step, StepError};
 use shared_fn::debug_to_file::print_debug_log_file;
@@ -21,6 +24,7 @@ impl Step for PullRepoKey {
       &mut self,
       output_tx: &Sender<String>,
       desired_versions: &mut DesiredVersions,
+      _pipeline_state: &mut PipelineState,
       ) -> Result<(), StepError> {
         // The shell command to run
         /*

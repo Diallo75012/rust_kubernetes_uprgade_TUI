@@ -209,6 +209,7 @@ dependencies = [
  "shared-traits",
  "step-cordon",
  "step-discover-nodes",
+ "step-drain",
  "step-madison-version",
  "step-pull-repo-key",
  "tokio",

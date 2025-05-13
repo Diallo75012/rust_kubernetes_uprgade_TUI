@@ -340,6 +340,7 @@ pub struct DesiredVersions {
   pub target_kube_versions: String,
   pub target_containerd_version: String,
   pub madison_pulled_full_version: String,
+  pub madison_parsed_upgrade_apply_version: String,
 }
 impl DesiredVersions {
   pub fn new() -> Self {
@@ -347,6 +348,7 @@ impl DesiredVersions {
       target_kube_versions: String::from(""),
       target_containerd_version: String::from(""),
       madison_pulled_full_version: String::from(""),
+      madison_parsed_upgrade_apply_version: String::from(""),
     }
   }
   pub fn add(&mut self, target_component: &str, target_version: &str) {

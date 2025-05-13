@@ -53,11 +53,19 @@ pub fn madison_get_full_version_for_kubeadm_upgrade_saved_to_state(line: &str, d
     let splitted_line = line.split(" ").collect::<Vec<&str>>();
     // ["[Madison", "Version][OUT]", "", "", "", "kubectl", "|", "1.29.15-1.1", "|", "https://pkgs.k8s.io/core:/stable:/v1.29/deb", "", "Packages"]
     let parsed_line = splitted_line[7];
+    // here we parse again but to get the version that is shorter for `kubedam apply` command
+    // should be 1.29.15 without the `-1.1` from the madison version needed to upgrade kube components
+    let parsed_upgrade_apply_version = splitted_line[7].split("-").collect::<Vec<&str>>()[0];
     let _ = print_debug_log_file(
       "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
       "Inside Parser Madison (parsed line): ",
       parsed_line
     );
-    desired_version_state.add("madison_pulled_full_version", parsed_line)	
+    // here add to state using the implemented function
+    desired_version_state.add("madison_pulled_full_version", parsed_line);
+    desired_version_state.add("madison_parsed_upgrade_apply_version", parsed_upgrade_apply_version)
   }
 } 
+
+// make a function that would after upgrade plan get the state pipeline_state (shared state) update the kube component versions
+// and the containerd version as it has to match what user wanted

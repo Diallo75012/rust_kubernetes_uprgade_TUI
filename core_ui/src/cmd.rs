@@ -73,27 +73,42 @@ pub async fn stream_child(
       return Err(anyhow::anyhow!("Command exited with status: {}", status));
     }	
   } else if step == "Pull Repository Key" {
-  	let status = timeout(Duration::from_secs(10), child.wait())
-  	  .await
-  	  .context(format!("Timeout waiting for step `{}`", step))??;
-    if !status.success() {
-      return Err(anyhow::anyhow!("Command exited with status: {}", status));
-    }
+  	  let status = timeout(Duration::from_secs(10), child.wait())
+  	    .await
+  	    .context(format!("Timeout waiting for step `{}`", step))??;
+      if !status.success() {
+        return Err(anyhow::anyhow!("Command exited with status: {}", status));
+      }
   } else if step == "Madison Version" {
-  	let status = timeout(Duration::from_secs(10), child.wait())
-  	  .await
-  	  .context(format!("Timeout waiting for step `{}`", step))??;
-     if !status.success() {
-       return Err(anyhow::anyhow!("Command exited with status: {}", status));
-     }
+  	  let status = timeout(Duration::from_secs(10), child.wait())
+  	    .await
+  	    .context(format!("Timeout waiting for step `{}`", step))??;
+      if !status.success() {
+        return Err(anyhow::anyhow!("Command exited with status: {}", status));
+      }
   } else if step == "Cordon" {
-        let status = timeout(Duration::from_secs(10), child.wait())
-          .await
-          .context(format!("Timeout waiting for step `{}`", step))??;
+  	  let status = timeout(Duration::from_secs(10), child.wait())
+  	    .await
+  	    .context(format!("Timeout waiting for step `{}`", step))??;
+      if !status.success() {
+        return Err(anyhow::anyhow!("Command exited with status: {}", status));
+      }
+  } else if step == "Drain" {
+  	 let status = timeout(Duration::from_secs(10), child.wait())
+  	   .await
+  	   .context(format!("Timeout waiting for step `{}`", step))??;
      if !status.success() {
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
-  } // add anoter if statement for other steps... and so on
+  } else if step == "Upgrade Plan" {
+     // here probably we need to match kubernetes timeout with is default to 5mn=300s but for the moment i keep it low and will see as we go
+  	 let status = timeout(Duration::from_secs(20), child.wait())
+  	   .await
+  	   .context(format!("Timeout waiting for step `{}`", step))??;
+     if !status.success() {
+       return Err(anyhow::anyhow!("Command exited with status: {}", status));
+     }
+  }// add anoter if statement for other steps... and so on
 
   // Wait for the log task to complete
   log_task.await?;

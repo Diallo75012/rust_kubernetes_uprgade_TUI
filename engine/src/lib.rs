@@ -31,8 +31,8 @@ use step_discover_nodes::DiscoverNodes;
 use step_pull_repo_key::PullRepoKey;
 use step_madison_version::MadisonVersion;
 use step_cordon::Cordon;
-/*
 use step_drain::Drain;
+/*
 use step_upgrade_plan::UpgradePlan;
 use step_upgrade_apply_ctl::UpgradeApplyCtl;
 use step_upgrade_node::UpgradeNode;
@@ -53,9 +53,9 @@ pub async fn run() -> Result<()> {
     "Pull Repo Key",
     "Madison Version",
     "Cordon",
+    "Drain",
   ];
   /*
-    "Drain",
     "Upgrade Plan",
     "Uprgade Apply CTL",
     "Uprgade Node",
@@ -73,9 +73,9 @@ pub async fn run() -> Result<()> {
     Box::new(PullRepoKey),
     Box::new(MadisonVersion),
     Box::new(Cordon),
-  ];
-  /*
     Box::new(Drain),
+    ];
+    /*
     Box::new(UpgradePlan),
     Box::new(UpgradeApplyCtl),
     Box::new(UpgradeNode),
@@ -145,7 +145,7 @@ pub async fn run() -> Result<()> {
 
     /* 3.2 run the step – this awaits until its child process ends */
     // we borrow `tx_log` (transmitter buffer/output)
-    match step.run(&tx_log, &mut desired_versions).await {
+    match step.run(&tx_log, &mut desired_versions, &mut pipeline_state).await {
       // step done without issue
       Ok(()) => {
         // we paint the sidebar step in blue
@@ -209,8 +209,9 @@ pub async fn run() -> Result<()> {
       state.log.push(line);
       // AUTO-SCROLL if at bottom (e.g., near latest lines)
       let log_len = state.log.len();
-      if state.log_scroll_offset + 100 >= log_len.saturating_sub(1) {
-        state.log_scroll_offset = log_len.saturating_sub(100);
+      // here we use 18 lines so that is fitting our `body` space in the `tui` and we always see last logs
+      if state.log_scroll_offset + 18 >= log_len.saturating_sub(1) {
+        state.log_scroll_offset = log_len.saturating_sub(18);
       }
     }
 

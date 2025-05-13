@@ -470,3 +470,295 @@
 [Pull Repo Key][OUT] Reading package lists...
 [Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
 [Cordon][OUT] Cordoning the shoes!
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Get:1 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:6 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Fetched 129 kB in 2s (61,3 kB/s)
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 233 not upgraded.
+[Pull Repo Key][OUT] curl install and aot-transport-https checked
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version {}. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] Cordoning the shoes!
+[Drain][OUT] controller.creditizens.net
+[Drain][OUT] node1.creditizens.net
+[Drain][OUT] node2.creditizens.net
+[Drain][OUT] kubeadm 1.29.15
+[Drain][OUT] containerd 1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 233 not upgraded.
+[Pull Repo Key][OUT] curl install and aot-transport-https checked
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version {}. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] Cordoning the shoes!: Controller
+[Drain][OUT] controller.creditizens.net
+[Drain][OUT] node1.creditizens.net
+[Drain][OUT] node2.creditizens.net
+[Drain][OUT] kubeadm 1.29.15
+[Drain][OUT] containerd 1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Hit:7 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 233 not upgraded.
+[Pull Repo Key][OUT] curl install and aot-transport-https checked
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version {}. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] controller.creditizens.net
+[Drain][OUT] node1.creditizens.net
+[Drain][OUT] node2.creditizens.net
+[Drain][OUT] kubeadm 1.29.15
+[Drain][OUT] containerd 1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:6 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 233 not upgraded.
+[Pull Repo Key][OUT] curl install and aot-transport-https checked
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version {}. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Get:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+[Pull Repo Key][OUT] Get:3 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+[Pull Repo Key][OUT] Hit:5 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Get:6 http://fr.archive.ubuntu.com/ubuntu jammy-updates/main i386 Packages [804 kB]
+[Pull Repo Key][OUT] Get:7 http://fr.archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [2 556 kB]
+[Pull Repo Key][OUT] Hit:8 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:9 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Get:10 http://fr.archive.ubuntu.com/ubuntu jammy-updates/main Translation-en [416 kB]
+[Pull Repo Key][OUT] Get:11 http://fr.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1 203 kB]
+[Pull Repo Key][OUT] Hit:4 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Fetched 5 237 kB in 8s (630 kB/s)
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 233 not upgraded.
+[Pull Repo Key][OUT] curl install and aot-transport-https checked
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version {}. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:5 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 233 not upgraded.
+[Pull Repo Key][OUT] curl install and aot-transport-https checked
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version {}. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Hit:7 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 233 not upgraded.
+[Pull Repo Key][OUT] curl install and aot-transport-https checked
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version {}. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:5 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 233 not upgraded.
+[Pull Repo Key][OUT] curl install and aot-transport-https checked
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version {}. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Hit:7 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25

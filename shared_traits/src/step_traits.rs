@@ -2,7 +2,10 @@
 use async_trait::async_trait;
 use std::io;
 use thiserror::Error;
-use core_ui::state::DesiredVersions;
+use core_ui::state::{
+  DesiredVersions,
+  PipelineState,
+};
 
 
 #[async_trait]
@@ -14,6 +17,7 @@ pub trait Step: Send + Sync {
       &mut self,
       output_tx: &tokio::sync::mpsc::Sender<String>,
       desired_versions: &mut DesiredVersions,
+      pipeline_state: &mut PipelineState,
     ) -> Result<(), StepError>;
 }
 
