@@ -64,14 +64,11 @@ pub async fn run() -> Result<()> {
     "Drain",
     "Upgrade Plan",
     "Upgrade Apply CTL",
-  ];
-  /*
     "Uprgade Node",
     "Uncordon",
     "Restart Services",
     "Verify Core DNS Proxy",
   ];
-  */
 
   // 2. Instantiate all step implementations, boxed as trait objects
   // `Send`: This means the type can be safely sent between threads.
@@ -84,14 +81,11 @@ pub async fn run() -> Result<()> {
     Box::new(Drain),
     Box::new(UpgradePlan),
     Box::new(UpgradeApplyCtl),
-  ];
-  /*
     Box::new(UpgradeNode),
     Box::new(Uncordon),
     Box::new(RestartServices),
     Box::new(VerifyCoreDnsProxy),
   ];
-  */
 
   /* 2. state, terminal, single log channel ------------------------------ */
   let (mut state, _tx_state, _rx_state) = AppState::new(&step_names);
@@ -211,6 +205,9 @@ pub async fn run() -> Result<()> {
       	"Upgrade Apply CTL" => {
           // put here the funciton that is going to check
           let _ = check_version_upgrade_apply_on_controller(&line, &mut desired_versions, &mut pipeline_state);
+      	},
+        "Verify Core DNS Proxy" => {
+          // put here the funciton that is going to check keyword: `"kubeproxy "`
       	},
       	/*
  	    "Upgrade Node"   => {}, 

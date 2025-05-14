@@ -212,9 +212,12 @@ dependencies = [
  "step-drain",
  "step-madison-version",
  "step-pull-repo-key",
+ "step-restart-services",
+ "step-uncordon",
  "step-upgrade-apply-ctl",
  "step-upgrade-node",
  "step-upgrade-plan",
+ "step-verify-coredns-proxy",
  "tokio",
 ]
 
@@ -579,6 +582,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "core-ui",
+ "shared-fn",
  "shared-traits",
  "tokio",
 ]
@@ -590,6 +594,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "core-ui",
+ "shared-fn",
  "shared-traits",
  "tokio",
 ]
@@ -601,6 +606,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "core-ui",
+ "shared-fn",
  "shared-traits",
  "tokio",
 ]
@@ -612,6 +618,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "core-ui",
+ "shared-fn",
  "shared-traits",
  "tokio",
 ]
@@ -635,6 +642,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "core-ui",
+ "shared-fn",
  "shared-traits",
  "tokio",
 ]
@@ -646,6 +654,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "core-ui",
+ "shared-fn",
  "shared-traits",
  "tokio",
 ]
@@ -693,6 +702,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "core-ui",
+ "shared-fn",
  "shared-traits",
  "tokio",
 ]

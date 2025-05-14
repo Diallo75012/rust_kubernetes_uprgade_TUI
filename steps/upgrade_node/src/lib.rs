@@ -58,7 +58,7 @@ impl Step for UpgradeNode {
         // Prepare the child process (standard Rust async Command)
         // type of `child` is `tokio::process::Child`
         // here check that the `node_type` is controller otherwise just `echo 'Junko'
-        if &node_type == "Worker" {
+        if node_type == "Worker" {
           let child = Command::new("bash")
             .arg("-c")
             .arg(command)

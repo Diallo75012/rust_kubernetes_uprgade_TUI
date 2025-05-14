@@ -189,6 +189,7 @@ CLI flags (optional) 		| clap
 - [ ] activate next step that now we have the repeatable patterns and do step by step starting with `Pull Repo Key`
 - [ ] add in each steps `lib.rs` a `command` to with `ssh` version of the command to run it on `worker` node so need to check `node_role` for all steps
 - [ ] do next steps to the end and make sure to check how to get output of ssh command and what is ran from control plane and what is ran using ssh
+- [ ] add function that checks if `Kube DNS Proxy version matched` and `draw a last sentence` to say that the `upgrade is done` user can exit with `q`
 
 # 12. State logic updates of shared_state decision
 ```markdown
@@ -933,13 +934,15 @@ Outputs:
 ```
 We can try to get `successfully` keyword from lines output to validate the upgrade status of the worker node
 
-
-
-
-   * "Pull Repo Key",
-    "Madison Version",
-   * "Cordon",
-   * "Drain",
-    "Uncordon",
-    "Restart Services",
-    "Verify Core DNS Proxy",
+## LAst Step Analysis Output
+```bash
+kubectl get daemonset kube-proxy -n kube-system -o=jsonpath='{.spec.template.spec.containers[0].image}'   
+Outputs:
+registry.k8s.io/kube-proxy:v1.29.15
+```
+We will use previous command tweeked and get the version formated with keyword `"kubeproxy "`
+```bash
+kubectl get daemonset kube-proxy -n kube-system -o=jsonpath='{.spec.template.spec.containers[0].image}' | awk '{split($0,a,"v"); print a[2]}' | awk -F "[v]" '{ print "kubeproxy "$2 $NF}'
+Outputs:
+kubeproxy 1.29.15
+```

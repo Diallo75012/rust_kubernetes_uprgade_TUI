@@ -25,13 +25,17 @@ impl Step for Drain {
       _desired_versions: &mut DesiredVersions,
       pipeline_state: &mut PipelineState,
       ) -> Result<(), StepError> {
+
+        // we capture the `node_type`
+        let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
+ 
         // The shell command to run
         let shell_cmd = &format!(
           r#"export KUBECONFIG=$HOME/.kube/config; kubectl drain {} --ignore-daemonsets --delete-emptydir-data;"#,
           pipeline_state.log.clone().shared_state_iter("node_name")[0].clone()
         );
 
-        if pipeline_state.log.clone().shared_state_iter("node_role")[0].clone() == "Controller" {
+        if node_type == "Controller" {
           let child = Command::new("bash")
              .arg("-c")
              .arg("echo 'This a single controller node, will skip Drain Step for it to stay reachable on upgrade.'")

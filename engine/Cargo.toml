@@ -13,9 +13,9 @@ step-drain                = { path = "../steps/drain" }
 step-upgrade-plan         = { path = "../steps/upgrade_plan" }
 step-upgrade-apply-ctl    = { path = "../steps/upgrade_apply_ctl" }
 step-upgrade-node         = { path = "../steps/upgrade_node" }
-#step-uncordon             = { path = "../steps/uncordon" }
-#step-restart-services     = { path = "../steps/restart_services" }
-#step-verify-coredns-proxy = { path = "../steps/verify_coredns_proxy" }
+step-uncordon             = { path = "../steps/uncordon" }
+step-restart-services     = { path = "../steps/restart_services" }
+step-verify-coredns-proxy = { path = "../steps/verify_coredns_proxy" }
 shared-traits             = { path = "../shared_traits" }
 shared-fn                 = { path = "../shared_fn" }
 async-trait     = "0.1"

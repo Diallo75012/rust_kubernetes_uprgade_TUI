@@ -24,18 +24,13 @@ impl Step for PullRepoKey {
       &mut self,
       output_tx: &Sender<String>,
       desired_versions: &mut DesiredVersions,
-      _pipeline_state: &mut PipelineState,
+      pipeline_state: &mut PipelineState,
       ) -> Result<(), StepError> {
-        // The shell command to run
-        /*
-        sudo apt update && sudo apt install -y curl apt-transport-https
-        # get the keys
-        curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+        // we get the node name
+        let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
+        let node_name = pipeline_state.log.clone().shared_state_iter("node_name")[0].clone();
         
-        # add kubernetes repo
-        echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
-        sudo apt update
-        */
         // normally here the state should be persistent for the full app lifetime so we can pull the user desired version for `kube` components
         let desired_version_clone = desired_versions.target_kube_versions.clone();
         let user_desired_kube_components_version = desired_version_clone.split(".").collect::<Vec<&str>>();
@@ -69,19 +64,37 @@ impl Step for PullRepoKey {
         ];
         // Prepare the child process (standard Rust async Command)
         // type of `child` is `tokio::process::Child`
-        let _multi_command = for command in 0..commands.len() {
-          let cmd = commands[command];
-          let child = Command::new("bash")
-            .arg("-c")
-            .arg(cmd)
-            .stdout(std::process::Stdio::piped())
-            .stderr(std::process::Stdio::piped())
-            .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
+        if &node_type == "Controller" {
+          let _multi_command = for command in 0..commands.len() {
+            let cmd = commands[command];
+            let child = Command::new("bash")
+              .arg("-c")
+              .arg(cmd)
+              .stdout(std::process::Stdio::piped())
+              .stderr(std::process::Stdio::piped())
+              .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
 
-          // Stream output + handle timeout via helper
-          stream_child(self.name(), child, output_tx.clone()).await
-            .map_err(|e| StepError::Other(e.to_string()))?;
-        };
-        Ok(())
+            // Stream output + handle timeout via helper
+            stream_child(self.name(), child, output_tx.clone()).await
+              .map_err(|e| StepError::Other(e.to_string()))?;
+          };
+          Ok(())
+        } else {
+          let _multi_command = for command in 0..commands.len() {
+            let cmd = commands[command];
+            let ssh_cmd = format!(r#"ssh {} '{}'"#, node_name, cmd);
+            let child = Command::new("bash")
+              .arg("-c")
+              .arg(ssh_cmd)
+              .stdout(std::process::Stdio::piped())
+              .stderr(std::process::Stdio::piped())
+              .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
+
+            // Stream output + handle timeout via helper
+            stream_child(self.name(), child, output_tx.clone()).await
+              .map_err(|e| StepError::Other(e.to_string()))?;
+          };
+          Ok(())        	
+        }
     }
 }

@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 core-ui         = { path = "../../core_ui" }
 shared-traits   = { path = "../../shared_traits" }
+shared-fn       = { path = "../../shared_fn" }
 async-trait  = "0.1"
 anyhow       = "1"
 tokio        = { version = "1", features=["process","macros"] }

@@ -25,13 +25,17 @@ impl Step for Cordon {
       _desired_versions: &mut DesiredVersions,
       pipeline_state: &mut PipelineState,
       ) -> Result<(), StepError> {
+
+        // we capture the `node_type`
+        let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
+ 
         let commands = [
          &format!(r#"export KUBECONFIG=$HOME/.kube/config; kubectl cordon {};"#, pipeline_state.log.clone().shared_state_iter("node_name")[0].clone()),
         ];
         // Prepare the child process (standard Rust async Command)
         // type of `child` is `tokio::process::Child`
         let _multi_command = for command in 0..commands.len() {
-          if pipeline_state.log.clone().shared_state_iter("node_role")[0].clone() == "Controller" {
+          if node_type == "Controller" {
             let cmd = "echo 'This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.'";
             let child = Command::new("bash")
               .arg("-c")
