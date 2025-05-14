@@ -207,7 +207,15 @@ impl SharedState {
     }
   }
 
-  pub fn shared_state_iter(self, key: &str) -> Vec<String> {
+  pub fn shared_state_iter(&self, key: &str) -> Vec<String> {
+    self.buf
+      .iter()
+      .filter(|(k, _)| k == &key)
+      .map(|(_, v)| v.clone())
+      .collect()
+    // previous implementation that used function aregument `self`
+    // instead of `&self` which need me to clone the full `buf` now can call the key without clone  =better
+    /*
     let mut values = Vec::new();
     for (k , v) in self.buf.iter() {
       if *k == key {
@@ -215,6 +223,7 @@ impl SharedState {
       }
     }
     values
+   */
   }
  
 }

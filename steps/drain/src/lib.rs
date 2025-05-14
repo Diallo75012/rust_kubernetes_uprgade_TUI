@@ -40,9 +40,9 @@ impl Step for Drain {
              .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
 
            // Stream output + handle timeout via helper
-           let send_stream = stream_child(self.name(), child, output_tx.clone()).await
-             .map_err(|e| StepError::Other(e.to_string()));
-           send_stream      	
+           stream_child(self.name(), child, output_tx.clone()).await
+             .map_err(|e| StepError::Other(e.to_string()))?;
+           Ok(())      	
         } else {
           let child = Command::new("bash")
              .arg("-c")
@@ -52,9 +52,9 @@ impl Step for Drain {
              .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
 
            // Stream output + handle timeout via helper
-           let send_stream = stream_child(self.name(), child, output_tx.clone()).await
-             .map_err(|e| StepError::Other(e.to_string()));
-           send_stream
+           stream_child(self.name(), child, output_tx.clone()).await
+             .map_err(|e| StepError::Other(e.to_string()))?;
+           Ok(())
         }
     }
 }

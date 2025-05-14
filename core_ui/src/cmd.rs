@@ -102,7 +102,7 @@ pub async fn stream_child(
      }
   } else if step == "Upgrade Plan" {
      // here probably we need to match kubernetes timeout with is default to 5mn=300s but for the moment i keep it low and will see as we go
-  	 let status = timeout(Duration::from_secs(20), child.wait())
+  	 let status = timeout(Duration::from_secs(300), child.wait())
   	   .await
   	   .context(format!("Timeout waiting for step `{}`", step))??;
      if !status.success() {

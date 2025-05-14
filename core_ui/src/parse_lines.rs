@@ -1,5 +1,5 @@
 use crate::state::{
-  PipelineState
+  PipelineState,
   NodeUpdateTrackerState,
   DesiredVersions,
 };
@@ -78,7 +78,7 @@ pub fn check_upgrade_plan_version_and_update_shared_state_versions(
 ) -> anyhow::Result<()> {
   // Defining a helper macro to avoid repeating code
   macro_rules! check_and_update {
-    ($prefix:expr, $desired:expr, $key:expr) => {
+    ($prefix:expr, $desired:expr, $key:expr) => {{
       if line.contains($prefix) {
         if let Some(version) = line.split($prefix).nth(1) {
           let version = version.trim(); // clean any whitespace
@@ -92,7 +92,7 @@ pub fn check_upgrade_plan_version_and_update_shared_state_versions(
           }
         }
       }
-    };
+    }};
   }
 
   // Now use the macro for each component

@@ -10,7 +10,7 @@ step-pull-repo-key        = { path = "../steps/pull_repo_key" }
 step-madison-version      = { path = "../steps/madison_version" }
 step-cordon               = { path = "../steps/cordon" }
 step-drain                = { path = "../steps/drain" }
-#step-upgrade-plan         = { path = "../steps/upgrade_plan" }
+step-upgrade-plan         = { path = "../steps/upgrade_plan" }
 #step-upgrade-apply-ctl    = { path = "../steps/upgrade_apply_ctl" }
 #step-upgrade-node         = { path = "../steps/upgrade_node" }
 #step-uncordon             = { path = "../steps/uncordon" }

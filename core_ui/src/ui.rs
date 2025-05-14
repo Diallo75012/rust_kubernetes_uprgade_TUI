@@ -1,11 +1,16 @@
 use crossterm::event::{self, Event, KeyCode};
 use ratatui::Frame;
-use ratatui::layout::{Constraint, Rect, Direction, Layout};
+use ratatui::layout::{
+  Constraint, 
+  // Rect,
+  Direction,
+  Layout
+};
 use ratatui::style::{Color, Style};
 use ratatui::widgets::{Block, Borders, List, ListItem, Paragraph};
 use ratatui::backend::Backend;
 use ratatui::Terminal;
-use std::io;
+// use std::io;
 use crate::state::{
   AppState,
   PipelineState,
@@ -15,9 +20,10 @@ use crate::state::{
   //NodeUpdateTrackerState,
   DesiredVersions,
 };
+use std::collections::HashMap;
 
 
-pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineState) {
+pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineState, desired_versions: &mut DesiredVersions) {
   // using `ratutui` `Layout` grid helper
   let rects = Layout::default()
     .direction(Direction::Vertical)
@@ -40,7 +46,7 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
     ])
     .split(rects[0]);
 
-  let log_upgrade_status = shared_state.log.clone().shared_state_iter("upgrade_status")[0].clone();
+  let log_upgrade_status = shared_state.log.shared_state_iter("upgrade_status")[0].clone();
 
   f.render_widget(Paragraph::new("Rust K8s Upgrade – Creditizens - v0.1.0"), header[1]);
   // so here will probably need to get the value from the `PipelineState` and inject to &str
@@ -114,6 +120,52 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
     .split(rects[2]);
   f.render_widget(Paragraph::new("q: quit"), footer[1]);
   /************ Here have a conditional that checks if the state version updated is equal to desired state add effect to paint in green  **************/
+  macro_rules! check_version_match {
+    ($shared:expr, $desired:expr, $key:expr, $area:expr) => {{
+      // just to indicatethat it is a type `String` but have to be cloned to play with it
+      let version_parse: String = $shared.shared_state_iter($key)[0].clone();
+      let version_parse_vec = version_parse.split(".").collect::<Vec<&str>>(); // 1.29.15 -> [1,29,15]
+      let shared_version_checker = &format!("{}.{}", version_parse_vec[0], version_parse_vec[1]); // 1.29
+      if *shared_version_checker == $desired {
+        let log_v = $shared.shared_state_iter($key)[0].clone();
+        let log = Paragraph::new(format!("{} :{}", $key, log_v))
+          .style(Style::default().fg(Color::Green));
+        f.render_widget(log, $area);
+      } else {
+          let log_v = $shared.shared_state_iter($key)[0].clone();
+          let log = Paragraph::new(format!("{}: {}", $key, log_v));
+          f.render_widget(log, $area);
+      }
+    }};
+  }
+  let key_area_hashmap = HashMap::from(
+  	[
+  	  ("kubeadm_v", footer[2]),
+  	  ("kubelet_v", footer[3]),
+  	  ("kubectl_v", footer[4]),
+  	  ("containerd_v", footer[5]),
+  	]
+  );
+
+  for (kube_component, area) in key_area_hashmap.iter() {
+    //shared_state.log: &PipelineState, desired_versions.target_kube_versions: &DesiredVersion, kube_component: &str, *area: `Rect`
+    check_version_match!(shared_state.log, desired_versions.target_kube_versions, kube_component, *area);
+  }
+  /*
+  let version_parse_minor_vec = shared_state.log.buf.kubeadm_v.clone().split(".").collect::<Vec<&str>>();  //  1.29.15 0:1 1:29 2:15
+  let shared_version_checker = &format!("{}.{}", version_parse_minor_vec[0], version_parse_minor_vec[1]); // 1.29
+  if shared_version_checker == desired_versions.target_kube_versions {
+    let log_kubeadm_v = shared_state.log.clone().shared_state_iter("kubeadm_v")[0].clone();
+    let log_kubeadm = Paragraph::new(format!("Kubeadm v{}", log_kubeadm_v));
+    f.render_widget(log_kubeadm, footer[2]);
+  } else {
+      let log_kubeadm_v = shared_state.log.clone().shared_state_iter("kubeadm_v")[0].clone();
+      let log_kubeadm = Paragraph::new(format!("Kubeadm v{}", log_kubeadm_v));
+      f.render_widget(log_kubeadm, footer[2]);	
+  }
+  */
+
+  /*
   let log_kubeadm_v = shared_state.log.clone().shared_state_iter("kubeadm_v")[0].clone();
   let log_kubeadm = Paragraph::new(format!("Kubeadm v{}", log_kubeadm_v));
   let log_kubelet_v = shared_state.log.clone().shared_state_iter("kubelet_v")[0].clone();
@@ -126,11 +178,13 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
   f.render_widget(log_kubelet, footer[3]);
   f.render_widget(log_kubectl, footer[4]);
   f.render_widget(log_containerd, footer[5]);
+  */
+
   // we are not gonna do here the logic of tracking `nodeupdatetrackerstate` but just use the field of `shared_state` and pull those info
   // in the `shared_fn` specifc to tracker `node update tracker state` we will there update `PipelineState` (shared_state).
   // so logic stays in its module, here we just paint to the `tui`
-  let log_node_name = shared_state.log.clone().shared_state_iter("node_name")[0].clone();
-  let log_node_role = shared_state.log.clone().shared_state_iter("node_role")[0].clone();
+  let log_node_name = shared_state.log.shared_state_iter("node_name")[0].clone();
+  let log_node_role = shared_state.log.shared_state_iter("node_role")[0].clone();
   let node_processed_info = List::new(
     Vec::from(
       [
@@ -146,8 +200,8 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
 
 // function to redraw the UI : This is a more reusable version using `generics`
 // as `ratatui` `Backend` accepts `CrosstermBackend` and `TermionBackend` (if want to change backend for example)
-pub fn redraw_ui<B: Backend>(term: &mut Terminal<B>, s: &mut AppState, s_s: &mut PipelineState) -> anyhow::Result<()> {
-  term.draw(|f| draw_ui(f, s, s_s))?;
+pub fn redraw_ui<B: Backend>(term: &mut Terminal<B>, s: &mut AppState, s_s: &mut PipelineState, d_v: &mut DesiredVersions) -> anyhow::Result<()> {
+  term.draw(|f| draw_ui(f, s, s_s, d_v))?;
   Ok(())
 }
 
@@ -155,6 +209,7 @@ pub fn redraw_ui<B: Backend>(term: &mut Terminal<B>, s: &mut AppState, s_s: &mut
 /* This is for the Pop-up Taht Captured User desired versions of kube components and containerd*/
 
 // Draws the actual popup window
+#[allow(deprecated)]
 pub fn draw_version_prompt(f: &mut Frame, input: &str, is_containerd: bool) {
 
   let title = if is_containerd {

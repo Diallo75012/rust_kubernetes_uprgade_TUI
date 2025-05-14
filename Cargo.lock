@@ -212,6 +212,7 @@ dependencies = [
  "step-drain",
  "step-madison-version",
  "step-pull-repo-key",
+ "step-upgrade-plan",
  "tokio",
 ]
 
@@ -676,6 +677,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "core-ui",
+ "shared-fn",
  "shared-traits",
  "tokio",
 ]

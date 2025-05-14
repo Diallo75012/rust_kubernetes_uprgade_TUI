@@ -1,5 +1,4 @@
 use async_trait::async_trait;
-use async_trait::async_trait;
 use tokio::process::Command;
 use tokio::sync::mpsc::Sender;
 use core_ui::{
@@ -48,26 +47,40 @@ impl Step for UpgradePlan {
         // Verify Upgrade Plan and Ugrade (Only in the first Control Plane: other ones are going to pick it up)
         // using keyword to capt lines having the versions `kubeadm_plan, kubelet_plan, kubectl_plan, containerd_plan` with space so that i can split on it
         // and will compare those to the one saved in state in `core_ui/src/parse_lines.rs`... and use at the end of `engine/src/lib/rs`
-        let containerd_version_upgrade = &format!("sudo apt install containerd.io={}", containerd_desired_version_clone_madison_pulled_full_version);
-        let kube_versions_upgrade = &format!("sudo apt-get install -y kubeadm={v} kubelet={v} kubectl={v}", v = kube_desired_version_clone_madison_pulled_full_version);
-        let command = &format!(r#"
-          export KUBECONFIG=$HOME/.kube/config && \
-          sudo apt-mark unhold kubeadm kubelet kubectl && \
-          sudo apt-get update && \
-          {} && \
-          sudo apt-mark hold kubeadm kubelet kubectl && \
-          {} && \
-          sudo systemctl restart containerd && \          
-          sudo systemctl restart kubelet containerd && \
-          sudo kubeadm upgrade plan --yes && \
-          sudo -n apt-get update -y && \
-          kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm_plan "$1 $NF}' && \
-          kubelet --version | awk '{ print $2}' | awk -F "[v]" '{ print "kubelet_plan "$1 $NF}' && \
-          kubectl version | awk 'NR==1{ print $3}' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF}' && \
-          containerd --version | awk '{ print "containerd_plan "$3 }'"# 
+        let export_kube_config = "export KUBECONFIG=$HOME/.kube/config";
+        let unhold_versions = "sudo apt-mark unhold kubeadm kubelet kubectl";
+        let containerd_version_upgrade = format!("sudo apt install containerd.io={}", containerd_desired_version_clone_madison_pulled_full_version);
+        let kube_versions_upgrade = format!("sudo apt-get install -y kubeadm={v} kubelet={v} kubectl={v}", v = kube_desired_version_clone_madison_pulled_full_version);
+        let hold_versions_back = "sudo apt-mark hold kubeadm kubelet kubectl";
+        let apt_update = "sudo -n apt-get update -y";
+        let restart_kubelet_and_containerd = "sudo systemctl restart kubelet containerd";
+        // upgrade plan is non interactive and do not prompt anything
+        let upgrade_plan = "sudo kubeadm upgrade plan";
+        let kubeadm_plan = r#"kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm_plan "$1 $NF }'"#;
+        let kubelet_plan = r#"kubelet --version | awk '{ print $2 }' | awk -F "[v]" '{ print "kubelet_plan "$1 $NF }'"#;
+        let kubectl_plan = r#"kubectl version | awk 'NR==1{ print $3 }' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF }'"#;
+        let containerd_plan = r#"containerd --version | awk '{ print "containerd_plan "$3 }'"#;
+
+        let command = format!(r#"{} && {} && {} && {} && {} && {} && {} && {} && {} && {} && {} && {}"#,
+          export_kube_config,
+          unhold_versions, 
           containerd_version_upgrade,
-          kube_versions_upgrade
+          kube_versions_upgrade,
+          hold_versions_back,
+          apt_update,
+          restart_kubelet_and_containerd,
+          upgrade_plan,
+          kubeadm_plan,
+          kubelet_plan,
+          kubectl_plan,
+          containerd_plan,        
         );
+        let _ = print_debug_log_file(
+          "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+          "FULL UpgradePlan CMD",
+          &command
+        );
+
         // Prepare the child process (standard Rust async Command)
         // type of `child` is `tokio::process::Child`
         let child = Command::new("bash")
@@ -78,8 +91,8 @@ impl Step for UpgradePlan {
           .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
 
         // Stream output + handle timeout via helper
-        let _ = stream_child(self.name(), child, output_tx.clone()).await
-          .map_err(|e| StepError::Other(e.to_string()));
+        stream_child(self.name(), child, output_tx.clone()).await
+          .map_err(|e| StepError::Other(e.to_string()))?;
         Ok(())
     }
 }

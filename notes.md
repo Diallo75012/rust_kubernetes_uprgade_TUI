@@ -184,7 +184,8 @@ CLI flags (optional) 		| clap
 - [x] add a small snippet in `engine/src/lib.rs` to capture user press of keystroke `q` to quit the app gently.
 - [x] before steps logic creation, create a blocking pop-up at the beginning to ask user input desired version of kube (kubelet/kubeadm/kubectl) and containerd
 - [x] put tutorial display on the screens about what is expected to enter in the unser input fields with link to the place where they can find compatibility
-- [x] add `user input` versions desired when the app launches so that it can run smoothly and store in a new state 
+- [x] add `user input` versions desired when the app launches so that it can run smoothly and store in a new state
+- [ ] for step `Upgrade Plan` add a special state capture from lines of `upgrade plan` command and store the versions, thenmake a comparison to fail app no good
 - [ ] activate next step that now we have the repeatable patterns and do step by step starting with `Pull Repo Key`
 - [ ] do next steps to the end and make sure to check how to get output of ssh command and what is ran from control plane and what is ran using ssh
 
@@ -809,3 +810,31 @@ sudo apt-cache madison kubectl | grep "1:29" | awk 'NR==1{print $0}'
 To avoid any warning when using `apt` command which is a wrapper and avoid the `warning` which print to our `error` leg in the `cmd.rs` match pattern,
 we can use instead `apt-get` and `apt-cache` which are more gently and will do the job without the warning as it is not recommended to use `apt` in scripts.
 
+## Output of `Upgrade Plan` to study to validate step with line fetching
+We need to actually check that the version when doing upgrade plan is same as the user desired version proof of correct version installation
+and madison fetching.
+```bash
+sudo kubeadm upgrade plan
+Outputs:
+[upgrade/config] Making sure the configuration is correct:
+[upgrade/config] Reading configuration from the cluster...
+[upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+[preflight] Running pre-flight checks.
+[upgrade] Running cluster health checks
+[upgrade] Fetching available versions to upgrade to
+[upgrade/versions] Cluster version: v1.29.15  # so here probably cretae a state just for this step to check version difference, split on "v"
+[upgrade/versions] kubeadm version: v1.29.15  # so here same as above and also check same as desired version
+I0514 03:23:23.386070  293426 version.go:256] remote version is much newer: v1.33.0; falling back to: stable-1.29
+[upgrade/versions] Target version: v1.29.15
+[upgrade/versions] Latest version in the v1.29 series: v1.29.15
+```
+
+Real line to format as app adds in its sentence prefix from the `cmd.rs`'s `stream_child` function,
+strategy of splitting on `v` will do the job and `if line.contains("[upgrade/versions] Cluster version: v")`:
+```bash
+[Upgrade Plan][OUT] [upgrade/versions] Cluster version: v1.29.15
+[Upgrade Plan][OUT] [upgrade/versions] kubeadm version: v1.29.15
+```
+so version of cluster has to be != to version of line `[upgrade/versions] kubeadm version` and split on `v` get index `[1]`
+and if different we check that it "version of line `[upgrade/versions] kubeadm version`" is equal to user `desired version`
+here will stop the app steps raising an error if not or if any of those conditions fail.

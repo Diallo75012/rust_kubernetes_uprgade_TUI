@@ -1,7 +1,10 @@
 //#![allow(unused_imports)]
 use anyhow::Result;
 use tokio::{sync::mpsc};
-use tokio::time::{sleep, Duration};
+use tokio::time::{
+  // sleep,
+  Duration
+};
 use std::io::stdout;
 use ratatui::{prelude::{CrosstermBackend, Terminal}};
 use crossterm::{
@@ -23,7 +26,10 @@ use core_ui::{
   },
   update_shared_state_info::state_updater_for_ui_good_display,
   ui::run_input_prompt,
-  parse_lines::madison_get_full_version_for_kubeadm_upgrade_saved_to_state,
+  parse_lines::{
+    madison_get_full_version_for_kubeadm_upgrade_saved_to_state,
+    check_upgrade_plan_version_and_update_shared_state_versions,
+  },
 };
 use core_ui::ui::{draw_ui, redraw_ui};
 // all the `steps`
@@ -32,8 +38,8 @@ use step_pull_repo_key::PullRepoKey;
 use step_madison_version::MadisonVersion;
 use step_cordon::Cordon;
 use step_drain::Drain;
-/*
 use step_upgrade_plan::UpgradePlan;
+/*
 use step_upgrade_apply_ctl::UpgradeApplyCtl;
 use step_upgrade_node::UpgradeNode;
 use step_uncordon::Uncordon;
@@ -54,9 +60,9 @@ pub async fn run() -> Result<()> {
     "Madison Version",
     "Cordon",
     "Drain",
+    "Upgrade Plan",
   ];
   /*
-    "Upgrade Plan",
     "Uprgade Apply CTL",
     "Uprgade Node",
     "Uncordon",
@@ -74,9 +80,9 @@ pub async fn run() -> Result<()> {
     Box::new(MadisonVersion),
     Box::new(Cordon),
     Box::new(Drain),
-    ];
-    /*
     Box::new(UpgradePlan),
+  ];
+  /*
     Box::new(UpgradeApplyCtl),
     Box::new(UpgradeNode),
     Box::new(Uncordon),
@@ -138,7 +144,7 @@ pub async fn run() -> Result<()> {
     // no color for `node update tracker`: we will do it on render if needed
 
     // we repaint the tui to get that green colored step out there
-    redraw_ui(&mut term, &mut state, &mut pipeline_state)?;
+    redraw_ui(&mut term, &mut state, &mut pipeline_state, &mut desired_versions)?;
 
     // this is custom function made to get some logs as the `tui` doesn't permit to see `println/eprintln` so we write to a file.
     let _ = print_debug_log_file("/home/creditizens/kubernetes_upgrade_rust_tui/debugging/debugging_logs.txt", "WILL STARTooo" , step.name());
@@ -179,7 +185,7 @@ pub async fn run() -> Result<()> {
 
       match step.name() {
       	"Discover Nodes" => {
-      		state_updater_for_ui_good_display(step.name(), &line, &mut pipeline_state, &mut node_update_tracker_state, &mut components_versions);
+      	  state_updater_for_ui_good_display(step.name(), &line, &mut pipeline_state, &mut node_update_tracker_state, &mut components_versions);
       	},
         //"Pull Repo Key"  => {
         //},
@@ -196,8 +202,10 @@ pub async fn run() -> Result<()> {
             );
           }
       	},
-        /*
-      	"Upgrade Plan"   => {},
+      	"Upgrade Plan" => {
+     	  let _ = check_upgrade_plan_version_and_update_shared_state_versions(&line, &mut desired_versions, &mut pipeline_state);
+      	},
+      	/*
         "Upgrade Apply"  => {}, 
  	    "Upgrade Node"   => {}, 
       	"Veryfy Core DNS Proxy" => {},
@@ -212,14 +220,11 @@ pub async fn run() -> Result<()> {
       // here we use 18 lines so that is fitting our `body` space in the `tui` and we always see last logs
       if state.log_scroll_offset + 18 >= log_len.saturating_sub(1) {
         state.log_scroll_offset = log_len.saturating_sub(18);
-      },
-      "Upgrade Plan" => {
-      	check_upgrade_plan_version_and_update_shared_state_versions(&line, &mut desired_versions, &mut pipeline_state);
       }
     }
 
     /* 3.4 redraw with updated colours + new log */
-    redraw_ui(&mut term, &mut state, &mut pipeline_state)?;
+    redraw_ui(&mut term, &mut state, &mut pipeline_state, &mut desired_versions)?;
     // just simulating some processing waiting a bit... will be replaced by real command duration....
     // sleep(Duration::from_secs(10)).await;
 
@@ -259,7 +264,7 @@ pub async fn run() -> Result<()> {
   /* 4. final paint ------------------------------------------------------- */
   // this is the last print when the  loop is done so steps are done
   state.log.push("All Steps Are Done! Press 'q' to quit".to_string());
-  term.draw(|f| draw_ui(f, &mut state, &mut pipeline_state))?;
+  term.draw(|f| draw_ui(f, &mut state, &mut pipeline_state, &mut desired_versions))?;
   // puting thos here to have the chance to get those user keytrokes captured (so we put it after the `for loop
   // as inside it won't be in same scope so not working)
   execute!(stdout(), EnableMouseCapture)?;
@@ -274,6 +279,8 @@ pub async fn run() -> Result<()> {
               "Engine/lib.rs Quit Pressed: ",
               "True"
             );
+            crossterm::terminal::disable_raw_mode()?;
+            execute!(stdout(), LeaveAlternateScreen,  DisableMouseCapture)?;
             return Ok(())
           }, // quit
           KeyCode::Up | KeyCode::Char('k') => {
@@ -293,7 +300,7 @@ pub async fn run() -> Result<()> {
       }
     }
   }
-  crossterm::terminal::disable_raw_mode()?;
-  execute!(stdout(), LeaveAlternateScreen,  DisableMouseCapture)?;
-  Ok(())
+  // crossterm::terminal::disable_raw_mode()?;
+  // execute!(stdout(), LeaveAlternateScreen,  DisableMouseCapture)?;
+  // Ok()
 }
