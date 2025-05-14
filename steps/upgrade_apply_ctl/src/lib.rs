@@ -6,19 +6,19 @@ use core_ui::{
   state::{
   DesiredVersions,
   PipelineState,
-  ClusterNodeType,
+  //ClusterNodeType,
   },
 };
 use shared_traits::step_traits::{Step, StepError};
 use shared_fn::debug_to_file::print_debug_log_file;
 
 
-pub struct UpgradePlan;
+pub struct UpgradeApplyCtl;
 
 #[async_trait]
-impl Step for UpgradePlan {
+impl Step for UpgradeApplyCtl {
     fn name(&self) -> &'static str {
-        "Upgrade Plan"
+        "Upgrade Apply CTL"
     }
 
     async fn run(

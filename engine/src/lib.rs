@@ -43,11 +43,9 @@ use step_drain::Drain;
 use step_upgrade_plan::UpgradePlan;
 use step_upgrade_apply_ctl::UpgradeApplyCtl;
 use step_upgrade_node::UpgradeNode;
-/*
 use step_uncordon::Uncordon;
 use step_restart_services::RestartServices;
 use step_verify_coredns_proxy::VerifyCoreDnsProxy;
-*/
 // the common helper `trait` shared between `steps`
 use shared_traits::step_traits::Step;
 use shared_fn::debug_to_file::print_debug_log_file;

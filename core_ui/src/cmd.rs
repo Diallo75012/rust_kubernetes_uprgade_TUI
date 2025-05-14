@@ -116,7 +116,7 @@ pub async fn stream_child(
      if !status.success() {
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
-  } else if step == "Upgrade Node" 
+  } else if step == "Upgrade Node" {
      // here probably we need to match kubernetes timeout with is default to 5mn=300s
          let status = timeout(Duration::from_secs(300), child.wait())
            .await
@@ -132,7 +132,7 @@ pub async fn stream_child(
      if !status.success() {
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
-  }else if step == "Verify Core DNS Proxy" {
+  } else if step == "Verify Core DNS Proxy" {
      // here probably we need to match kubernetes timeout with is default to 5mn=300s
          let status = timeout(Duration::from_secs(10), child.wait())
            .await
@@ -140,10 +140,11 @@ pub async fn stream_child(
      if !status.success() {
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
-  }// add anoter if statement for other steps... and so on
+  } // add anoter if statement for other steps... and so on
 
   // Wait for the log task to complete
   log_task.await?;
 
   Ok(())
 }
+

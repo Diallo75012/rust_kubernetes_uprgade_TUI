@@ -40,7 +40,7 @@ impl Step for RestartServices {
         if node_type == "Controller" {
           let child = Command::new("bash")
             .arg("-c")
-            .arg(comand)
+            .arg(command)
             .stdout(std::process::Stdio::piped())
             .stderr(std::process::Stdio::piped())
             .spawn()?;

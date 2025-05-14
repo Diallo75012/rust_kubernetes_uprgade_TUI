@@ -44,3 +44,39 @@ message: Upgrade Plan Version For Plan (Kube Components): , step started: 1.29.1
 message: Upgrade Plan Version For Plan (Containerd Components): , step started: 1.7.25-1
 message: FULL UpgradePlan CMD, step started: export KUBECONFIG=$HOME/.kube/config && sudo apt-mark unhold kubeadm kubelet kubectl && sudo apt install containerd.io=1.7.25-1 && sudo apt-get install -y kubeadm=1.29.15-1.1 kubelet=1.29.15-1.1 kubectl=1.29.15-1.1 && sudo apt-mark hold kubeadm kubelet kubectl && sudo -n apt-get update -y && sudo systemctl restart kubelet containerd && sudo kubeadm upgrade plan && kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm_plan "$1 $NF }' && kubelet --version | awk '{ print $2 }' | awk -F "[v]" '{ print "kubelet_plan "$1 $NF }' && kubectl version | awk 'NR==1{ print $3 }' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF }' && containerd --version | awk '{ print "containerd_plan "$3 }'
 message: Engine/lib.rs Quit Pressed: , step started: True
+message: Desired Versions State: , step started: kube desired version: 1.29
+contaienrd desired version: 1.7.25-1
+message: discover node [0], step started: controller.creditizens.net
+
+message: check what inside vec discover nodde:, step started: [Discover Nodes][OUT] controller.creditizens.net
+
+message: discover node [0], step started: controller.creditizens.net
+
+message: check what inside vec discover nodde:, step started: [Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+
+message: discover node [0], step started: controller.creditizens.net
+
+message: check what inside vec discover nodde:, step started: [Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+
+message: Line:    , step started: [Discover Nodes][OUT] kubeadm 1.29.15
+
+message: Shared State Log keys/values:
+, step started: MyStruct Contents:
+upgrade_status: Step In Process...
+node_name: controller.creditizens.net
+
+kubeadm_v: 1.29.15
+
+kubectl_v: 1.29.15
+
+containerd_v: Wait for Update...
+node_role: Controller
+kubelet_v: 1.29.15
+
+
+message: Line:    , step started: [Discover Nodes][OUT] containerd 1.7.25
+
+message: Pull Repo Key (User desired kube version parsed): , step started: 1.29
