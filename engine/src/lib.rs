@@ -29,6 +29,8 @@ use core_ui::{
   parse_lines::{
     madison_get_full_version_for_kubeadm_upgrade_saved_to_state,
     check_upgrade_plan_version_and_update_shared_state_versions,
+    check_upgrade_plan_output_available_next_version,
+    check_version_upgrade_apply_on_controller,
   },
 };
 use core_ui::ui::{draw_ui, redraw_ui};
@@ -39,9 +41,9 @@ use step_madison_version::MadisonVersion;
 use step_cordon::Cordon;
 use step_drain::Drain;
 use step_upgrade_plan::UpgradePlan;
-/*
 use step_upgrade_apply_ctl::UpgradeApplyCtl;
 use step_upgrade_node::UpgradeNode;
+/*
 use step_uncordon::Uncordon;
 use step_restart_services::RestartServices;
 use step_verify_coredns_proxy::VerifyCoreDnsProxy;
@@ -61,9 +63,9 @@ pub async fn run() -> Result<()> {
     "Cordon",
     "Drain",
     "Upgrade Plan",
+    "Upgrade Apply CTL",
   ];
   /*
-    "Uprgade Apply CTL",
     "Uprgade Node",
     "Uncordon",
     "Restart Services",
@@ -81,9 +83,9 @@ pub async fn run() -> Result<()> {
     Box::new(Cordon),
     Box::new(Drain),
     Box::new(UpgradePlan),
+    Box::new(UpgradeApplyCtl),
   ];
   /*
-    Box::new(UpgradeApplyCtl),
     Box::new(UpgradeNode),
     Box::new(Uncordon),
     Box::new(RestartServices),
@@ -200,13 +202,17 @@ pub async fn run() -> Result<()> {
               "Desired Versions Full Version: ",
               &desired_versions.madison_pulled_full_version
             );
-          }
+          } // maybe here else stop at this step as this means there is an error ....
       	},
       	"Upgrade Plan" => {
      	  let _ = check_upgrade_plan_version_and_update_shared_state_versions(&line, &mut desired_versions, &mut pipeline_state);
+     	  let _ = check_upgrade_plan_output_available_next_version(&line, &mut desired_versions);
+      	},
+      	"Upgrade Apply CTL" => {
+          // put here the funciton that is going to check
+          let _ = check_version_upgrade_apply_on_controller(&line, &mut desired_versions, &mut pipeline_state);
       	},
       	/*
-        "Upgrade Apply"  => {}, 
  	    "Upgrade Node"   => {}, 
       	"Veryfy Core DNS Proxy" => {},
       	*/

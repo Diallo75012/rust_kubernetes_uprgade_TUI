@@ -101,7 +101,15 @@ pub async fn stream_child(
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
   } else if step == "Upgrade Plan" {
-     // here probably we need to match kubernetes timeout with is default to 5mn=300s but for the moment i keep it low and will see as we go
+     // here probably we need to match kubernetes timeout with is default to 5mn=300s
+  	 let status = timeout(Duration::from_secs(300), child.wait())
+  	   .await
+  	   .context(format!("Timeout waiting for step `{}`", step))??;
+     if !status.success() {
+       return Err(anyhow::anyhow!("Command exited with status: {}", status));
+     }
+  } else if step == "Upgrade Apply CTL" {
+     // here probably we need to match kubernetes timeout with is default to 5mn=300s
   	 let status = timeout(Duration::from_secs(300), child.wait())
   	   .await
   	   .context(format!("Timeout waiting for step `{}`", step))??;

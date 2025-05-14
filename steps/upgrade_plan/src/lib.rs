@@ -24,9 +24,12 @@ impl Step for UpgradePlan {
       &mut self,
       output_tx: &Sender<String>,
       desired_versions: &mut DesiredVersions,
-      _pipeline_state: &mut PipelineState,
+      pipeline_state: &mut PipelineState,
       ) -> Result<(), StepError> {
-
+      
+        // we capture the `node_type`
+        let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
+        
         let containerd_desired_version_clone_madison_pulled_full_version = desired_versions.target_containerd_version.clone();
         // kube components: should be fine as it comes from `apt-cache madison` command
         let kube_desired_version_clone_madison_pulled_full_version = desired_versions.madison_pulled_full_version.clone();
@@ -83,16 +86,30 @@ impl Step for UpgradePlan {
 
         // Prepare the child process (standard Rust async Command)
         // type of `child` is `tokio::process::Child`
-        let child = Command::new("bash")
-          .arg("-c")
-          .arg(command)
-          .stdout(std::process::Stdio::piped())
-          .stderr(std::process::Stdio::piped())
-          .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
+        if &node_type == "Controller" {
+          let child = Command::new("bash")
+            .arg("-c")
+            .arg(command)
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::piped())
+            .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
 
-        // Stream output + handle timeout via helper
-        stream_child(self.name(), child, output_tx.clone()).await
-          .map_err(|e| StepError::Other(e.to_string()))?;
-        Ok(())
+          // Stream output + handle timeout via helper
+          stream_child(self.name(), child, output_tx.clone()).await
+            .map_err(|e| StepError::Other(e.to_string()))?;
+          Ok(())
+      } else {
+          let child = Command::new("bash")
+            .arg("-c")
+            .arg("For the Worker Node no need to plan, we skip this step which is only for Controller Node.")
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::piped())
+            .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
+
+          // Stream output + handle timeout via helper
+          stream_child(self.name(), child, output_tx.clone()).await
+            .map_err(|e| StepError::Other(e.to_string()))?;
+          Ok(())
+      }
     }
 }

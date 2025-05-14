@@ -2,6 +2,7 @@ use crate::state::{
   PipelineState,
   NodeUpdateTrackerState,
   DesiredVersions,
+  UpgradeStatus,
 };
 use shared_fn::debug_to_file::print_debug_log_file;
 
@@ -70,13 +71,32 @@ pub fn madison_get_full_version_for_kubeadm_upgrade_saved_to_state(line: &str, d
 
 // make a function that would after upgrade plan get the state pipeline_state (shared state) update the kube component versions
 // and the containerd version as it has to match what user wanted
+pub fn check_upgrade_plan_output_available_next_version(
+    line: &str,
+    desired_version_state: &mut DesiredVersions,	
+  ) -> anyhow::Result<()> {
+  // this will check the content of the output of `upgrade plan` which will confirm that our new `kubeadm` version is available and we can apply
+  // we make this function Fail the app and stop at that step if it is not present
+  if line.contains("[upgrade/versions] Target version: v") {
+    if let Some(version) = line.split("[upgrade/versions] Target version: v").nth(1) {
+      let version = version.trim(); // clean any whitespace
+      if version != desired_version_state.target_kube_versions {
+        Err(anyhow::anyhow!(
+          "{} mismatch: expected `{}`, got `{}`",
+          "[upgrade/versions] Target version: v", desired_version_state.target_kube_versions, version
+        ))
+      } else { Ok(()) }
+    } else { Ok(()) }
+  } else { Ok(()) }
+}
 
 pub fn check_upgrade_plan_version_and_update_shared_state_versions(
-  line: &str,
-  desired_version_state: &mut DesiredVersions,
-  shared_state: &mut PipelineState,
-) -> anyhow::Result<()> {
+    line: &str,
+    desired_version_state: &mut DesiredVersions,
+    shared_state: &mut PipelineState,
+  ) -> anyhow::Result<()> {
   // Defining a helper macro to avoid repeating code
+  // we create a macro that will apply only locally to this function and use `{{ }}` to avoid any issues of interpretation
   macro_rules! check_and_update {
     ($prefix:expr, $desired:expr, $key:expr) => {{
       if line.contains($prefix) {
@@ -118,4 +138,30 @@ pub fn check_upgrade_plan_version_and_update_shared_state_versions(
   );
 
   Ok(())
+}
+
+/* This for upgrade apply on controller node */
+// we want just to fails if the versions are different.. but should be fine
+// also we want to upgrade the state of the cluster from processing to upgraded
+pub fn check_version_upgrade_apply_on_controller(
+    line: &str,
+    desired_version_state: &mut DesiredVersions,
+    pipeline_state: &mut PipelineState,	
+  ) -> anyhow::Result<()> {
+  // this will check the content of the output of `upgrade plan` which will confirm that our new `kubeadm` version is available and we can apply
+  // we make this function Fail the app and stop at that step if it is not present
+  let version = format!("v{}", desired_version_state.target_kube_versions.clone()); 
+  if line.contains("[upgrade/successful]") && line.contains(&version) {
+    let line_vec = line.split("\"").collect::<Vec<&str>>();
+    let line_v = line_vec[1].split("v").collect::<Vec<&str>>();
+    if line_v[1].trim() != version {
+      Err(anyhow::anyhow!(
+        "{} mismatch: expected `{}`, got `{}`",
+        "[upgrade/versions] Target version: v", desired_version_state.target_kube_versions, version
+      ))
+    } else {
+    	pipeline_state.update_shared_state_status(UpgradeStatus::Upgraded);
+    	Ok(())
+    }
+  } else { Ok(()) }
 }

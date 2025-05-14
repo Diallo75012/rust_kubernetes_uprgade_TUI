@@ -7,6 +7,7 @@ use crate::state::{
 };
 use shared_fn::debug_to_file::print_debug_log_file;
 
+
 pub fn state_updater_for_ui_good_display(
   step: &'static str,
   line: &str,
@@ -94,6 +95,11 @@ pub fn state_updater_for_ui_good_display(
         }
       },
     }
+  /* Have completely forgotten that I had already planned that wor each step so that i can call it in the end of `engine/src/lib.rs
+     So there for each step have already created functions pulled from `core_ui/src/parsed_lines.rs`
+     So can more all here and only call one function there `engine/src/lib/rs`
+    ************* TO DO **************
+  `*/
   } else if "Pull Repo Key" == step {
  
   } else if "Madison Version" == step  {

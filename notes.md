@@ -185,8 +185,9 @@ CLI flags (optional) 		| clap
 - [x] before steps logic creation, create a blocking pop-up at the beginning to ask user input desired version of kube (kubelet/kubeadm/kubectl) and containerd
 - [x] put tutorial display on the screens about what is expected to enter in the unser input fields with link to the place where they can find compatibility
 - [x] add `user input` versions desired when the app launches so that it can run smoothly and store in a new state
-- [ ] for step `Upgrade Plan` add a special state capture from lines of `upgrade plan` command and store the versions, thenmake a comparison to fail app no good
+- [x] for step `Upgrade Plan` add a special state capture from lines of `upgrade plan` command and store the versions, thenmake a comparison to fail app no good
 - [ ] activate next step that now we have the repeatable patterns and do step by step starting with `Pull Repo Key`
+- [ ] add in each steps `lib.rs` a `command` to with `ssh` version of the command to run it on `worker` node so need to check `node_role` for all steps
 - [ ] do next steps to the end and make sure to check how to get output of ssh command and what is ran from control plane and what is ran using ssh
 
 # 12. State logic updates of shared_state decision
@@ -838,3 +839,107 @@ strategy of splitting on `v` will do the job and `if line.contains("[upgrade/ver
 so version of cluster has to be != to version of line `[upgrade/versions] kubeadm version` and split on `v` get index `[1]`
 and if different we check that it "version of line `[upgrade/versions] kubeadm version`" is equal to user `desired version`
 here will stop the app steps raising an error if not or if any of those conditions fail.
+
+**NOTE:**
+**As we are testing we can't fail when it is different as we are using same version as the one already installed to make sure all run smoothly so**
+**what we are going to do is to just check if the line output `Target version` is the same as desired version, and we will split on it fully  until the `v`.**
+**It is enough to make the app fail returning an `Err` `anyhow::anyhow!`**
+
+
+## Upgrade Apply for `Contoller` analysis output
+we need to get the lines saying `SUCCESS` and have an `OR`ed with `Enjoy!` also with `successful`:
+  - those are all in same line normally and we can check on the version which is also present "v1.29.15"
+```bash
+sudo kubeadm upgrade apply v1.29.15 --yes
+[upgrade/config] Making sure the configuration is correct:
+[upgrade/config] Reading configuration from the cluster...
+[upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+[preflight] Running pre-flight checks.
+[upgrade] Running cluster health checks
+[upgrade/version] You have chosen to change the cluster version to "v1.29.15"
+[upgrade/versions] Cluster version: v1.29.15
+[upgrade/versions] kubeadm version: v1.29.15
+[upgrade/prepull] Pulling images required for setting up a Kubernetes cluster
+[upgrade/prepull] This might take a minute or two, depending on the speed of your internet connection
+[upgrade/prepull] You can also perform this action in beforehand using 'kubeadm config images pull'
+[upgrade/apply] Upgrading your Static Pod-hosted control plane to version "v1.29.15" (timeout: 5m0s)...
+[upgrade/etcd] Upgrading to TLS for etcd
+[upgrade/staticpods] Preparing for "etcd" upgrade
+[upgrade/staticpods] Current and new manifests of etcd are equal, skipping upgrade
+[upgrade/etcd] Waiting for etcd to become available
+[upgrade/staticpods] Writing new Static Pod manifests to "/etc/kubernetes/tmp/kubeadm-upgraded-manifests85768002"
+[upgrade/staticpods] Preparing for "kube-apiserver" upgrade
+[upgrade/staticpods] Renewing apiserver certificate
+[upgrade/staticpods] Renewing apiserver-kubelet-client certificate
+[upgrade/staticpods] Renewing front-proxy-client certificate
+[upgrade/staticpods] Renewing apiserver-etcd-client certificate
+[upgrade/staticpods] Moved new manifest to "/etc/kubernetes/manifests/kube-apiserver.yaml" and backed up old manifest to "/etc/kubernetes/tmp/kubeadm-backup-manifests-2025-05-14-17-51-24/kube-apiserver.yaml"
+[upgrade/staticpods] Waiting for the kubelet to restart the component
+[upgrade/staticpods] This might take a minute or longer depending on the component/version gap (timeout 5m0s)
+[apiclient] Found 1 Pods for label selector component=kube-apiserver
+[upgrade/staticpods] Component "kube-apiserver" upgraded successfully!
+[upgrade/staticpods] Preparing for "kube-controller-manager" upgrade
+[upgrade/staticpods] Current and new manifests of kube-controller-manager are equal, skipping upgrade
+[upgrade/staticpods] Preparing for "kube-scheduler" upgrade
+[upgrade/staticpods] Current and new manifests of kube-scheduler are equal, skipping upgrade
+[upload-config] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
+[kubelet] Creating a ConfigMap "kubelet-config" in namespace kube-system with the configuration for the kubelets in the cluster
+[upgrade] Backing up kubelet config file to /etc/kubernetes/tmp/kubeadm-kubelet-config715180320/config.yaml
+[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+[kubeconfig] Writing "admin.conf" kubeconfig file
+[kubeconfig] Writing "super-admin.conf" kubeconfig file
+[bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to get nodes
+[bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
+[bootstrap-token] Configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
+[bootstrap-token] Configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
+[addons] Applied essential addon: CoreDNS
+[addons] Applied essential addon: kube-proxy
+
+[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.29.15". Enjoy!
+
+[upgrade/kubelet] Now that your control plane is upgraded, please proceed with upgrading your kubelets if you haven't already done so.
+
+```
+
+## Rust Check if variable contains substrings `AND`ed
+```rust
+let substrings = ["a", "version number"];
+if substrings.iter().all(|s| variable.contains(s)) {
+    // all substrings found
+}
+```
+OR
+```rust
+if variable.contains("a") && variable.contains("version number") {
+    // both substrings are present
+}
+```
+
+## Upgrade `Worker` through `ssh`
+Here you need first to do the manip on the `/etc/sudoers` or `sudo visudo` to not be prompted for password on `worker nodes`
+After you can from the app send command and get the output from the controller in the controller's output terminal
+```bash
+ssh node1.creditizens.net 'sudo kubeadm upgrade node'
+Outputs:
+[upgrade] Reading configuration from the cluster...
+[upgrade] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+[preflight] Running pre-flight checks
+[preflight] Skipping prepull. Not a control plane node.
+[upgrade] Skipping phase. Not a control plane node.
+[upgrade] Backing up kubelet config file to /etc/kubernetes/tmp/kubeadm-kubelet-config1844232366/config.yaml
+[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+[upgrade] The configuration for this node was successfully updated!
+[upgrade] Now you should go ahead and upgrade the kubelet package using your package manager.
+```
+We can try to get `successfully` keyword from lines output to validate the upgrade status of the worker node
+
+
+
+
+   * "Pull Repo Key",
+    "Madison Version",
+   * "Cordon",
+   * "Drain",
+    "Uncordon",
+    "Restart Services",
+    "Verify Core DNS Proxy",
