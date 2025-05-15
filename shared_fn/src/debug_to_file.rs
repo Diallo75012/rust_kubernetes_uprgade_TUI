@@ -7,6 +7,6 @@ pub fn print_debug_log_file(file_path: &str, status_or_message: &str, value_to_w
     .append(true)
     .create(true)
     .open(file_path)?;
-  writeln!(file, "message: {}, step started: {}", status_or_message, value_to_write)?;
+  writeln!(file, "\nmessage: {}\nstep started: {}", status_or_message, value_to_write)?;
   Ok(())
  }

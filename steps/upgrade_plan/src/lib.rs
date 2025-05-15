@@ -52,7 +52,7 @@ impl Step for UpgradePlan {
         // and will compare those to the one saved in state in `core_ui/src/parse_lines.rs`... and use at the end of `engine/src/lib/rs`
         let export_kube_config = "export KUBECONFIG=$HOME/.kube/config";
         let unhold_versions = "sudo apt-mark unhold kubeadm kubelet kubectl";
-        let containerd_version_upgrade = format!("sudo apt install containerd.io={}", containerd_desired_version_clone_madison_pulled_full_version);
+        let containerd_version_upgrade = format!("sudo apt-get install containerd.io={}", containerd_desired_version_clone_madison_pulled_full_version);
         let kube_versions_upgrade = format!("sudo apt-get install -y kubeadm={v} kubelet={v} kubectl={v}", v = kube_desired_version_clone_madison_pulled_full_version);
         let hold_versions_back = "sudo apt-mark hold kubeadm kubelet kubectl";
         let apt_update = "sudo -n apt-get update -y";

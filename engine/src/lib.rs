@@ -24,13 +24,15 @@ use core_ui::{
     ComponentsVersions,
     DesiredVersions,
   },
-  update_shared_state_info::state_updater_for_ui_good_display,
   ui::run_input_prompt,
   parse_lines::{
+    state_updater_for_ui_good_display,
     madison_get_full_version_for_kubeadm_upgrade_saved_to_state,
     check_upgrade_plan_version_and_update_shared_state_versions,
     check_upgrade_plan_output_available_next_version,
     check_version_upgrade_apply_on_controller,
+    check_worker_update_node_on_worker,
+    check_node_upgrade_state_and_kubeproxy_version,
   },
 };
 use core_ui::ui::{draw_ui, redraw_ui};
@@ -185,7 +187,8 @@ pub async fn run() -> Result<()> {
         //},
         // create a line to capture the version matching with the `DesiredVersion` (need one more field in the state for that) (if .contains()) and then split(" ") and get [2]
       	"Madison Version" => {
-          if line.contains(&desired_versions.target_kube_versions) {
+      	  let node_type_in_step = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
+      	  if node_type_in_step != "Worker" && line.contains(&desired_versions.target_kube_versions) {
             // if the line has the version we update the state to get madison full version
             // (it is like a double check aa if this fails it meand that the madison command parsing whas wrong)
             madison_get_full_version_for_kubeadm_upgrade_saved_to_state(&line, &mut desired_versions);
@@ -194,23 +197,34 @@ pub async fn run() -> Result<()> {
               "Desired Versions Full Version: ",
               &desired_versions.madison_pulled_full_version
             );
-          } // maybe here else stop at this step as this means there is an error ....
+          }
       	},
       	"Upgrade Plan" => {
-     	  let _ = check_upgrade_plan_version_and_update_shared_state_versions(&line, &mut desired_versions, &mut pipeline_state);
-     	  let _ = check_upgrade_plan_output_available_next_version(&line, &mut desired_versions);
+      	  let node_type_in_step = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
+      	  if node_type_in_step != "Worker" {
+            let _ = check_upgrade_plan_version_and_update_shared_state_versions(&line, &mut desired_versions, &mut pipeline_state);
+            let _ = check_upgrade_plan_output_available_next_version(&line, &mut desired_versions);
+     	  }
       	},
       	"Upgrade Apply CTL" => {
-          // put here the funciton that is going to check
-          let _ = check_version_upgrade_apply_on_controller(&line, &mut desired_versions, &mut pipeline_state);
+      	  let node_type_in_step = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
+          if node_type_in_step != "Worker" {
+            // put here the funciton that is going to check
+            let _ = check_version_upgrade_apply_on_controller(&line, &mut desired_versions, &mut pipeline_state);
+          }
+      	},
+      	"Upgrade Node" => {
+      	  let node_type_in_step = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
+          if node_type_in_step != "Controller" {
+      	    // put here the funciton that is going to check
+      	    // here we just check to upgrate the state to `Upgraded` and next step will check and invalidate if the state is not `Upgraded`
+      	    let _ = check_worker_update_node_on_worker(&line, &mut pipeline_state);
+      	  }
       	},
         "Verify Core DNS Proxy" => {
           // put here the funciton that is going to check keyword: `"kubeproxy "`
+          let _ = check_node_upgrade_state_and_kubeproxy_version(&line, &mut desired_versions, &mut pipeline_state);
       	},
-      	/*
- 	    "Upgrade Node"   => {}, 
-      	"Veryfy Core DNS Proxy" => {},
-      	*/
       	_ => {},
       }
       
@@ -222,7 +236,7 @@ pub async fn run() -> Result<()> {
       if state.log_scroll_offset + 18 >= log_len.saturating_sub(1) {
         state.log_scroll_offset = log_len.saturating_sub(18);
       }
-    }
+    } // end of `while` loop for line parsing
 
     /* 3.4 redraw with updated colours + new log */
     redraw_ui(&mut term, &mut state, &mut pipeline_state, &mut desired_versions)?;
@@ -258,6 +272,7 @@ pub async fn run() -> Result<()> {
     }
     crossterm::terminal::disable_raw_mode()?;
     execute!(stdout(), DisableMouseCapture)?;
+
   } // enf of `for loop`
 
 

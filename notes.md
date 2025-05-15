@@ -187,8 +187,8 @@ CLI flags (optional) 		| clap
 - [x] add `user input` versions desired when the app launches so that it can run smoothly and store in a new state
 - [x] for step `Upgrade Plan` add a special state capture from lines of `upgrade plan` command and store the versions, thenmake a comparison to fail app no good
 - [ ] activate next step that now we have the repeatable patterns and do step by step starting with `Pull Repo Key`
-- [ ] add in each steps `lib.rs` a `command` to with `ssh` version of the command to run it on `worker` node so need to check `node_role` for all steps
-- [ ] do next steps to the end and make sure to check how to get output of ssh command and what is ran from control plane and what is ran using ssh
+- [x] add in each steps `lib.rs` a `command` with `ssh` version of the command to run it on `worker` node so need to check `node_role` for all steps
+- [x] do next steps to the end and make sure to check how to get output of ssh command and what is ran from control plane and what is ran using ssh
 - [ ] add function that checks if `Kube DNS Proxy version matched` and `draw a last sentence` to say that the `upgrade is done` user can exit with `q`
 
 # 12. State logic updates of shared_state decision
@@ -945,4 +945,14 @@ We will use previous command tweeked and get the version formated with keyword `
 kubectl get daemonset kube-proxy -n kube-system -o=jsonpath='{.spec.template.spec.containers[0].image}' | awk '{split($0,a,"v"); print a[2]}' | awk -F "[v]" '{ print "kubeproxy "$2 $NF}'
 Outputs:
 kubeproxy 1.29.15
+```
+
+## Rust `if/else` rules
+As i try to make some `if` statements without `else` I get sometimes some compiling errors forcing me to add and `else` statement.
+After some search i foudn thsoe rules that explain more why:
+```markdown
+- If you have an if without an else, the body must always evaluate to unit, no exceptions.
+- If you have an if and an else, their blocks must evaluate to the same type.
+- If you return the result of an if/else expression from a function,
+  the return type of the function must match the type of the expressions in the if and else blocks.
 ```

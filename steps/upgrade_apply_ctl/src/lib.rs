@@ -30,7 +30,7 @@ impl Step for UpgradeApplyCtl {
 
         // we capture the `node_type`
         let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
-        let target_kube_version = desired_versions.target_kube_versions.clone();
+        let target_kube_version = desired_versions.madison_parsed_upgrade_apply_version.clone();
         let _ = print_debug_log_file(
           "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
           "Upgrade Apply (Target Kube Version): ",
@@ -47,7 +47,7 @@ impl Step for UpgradeApplyCtl {
         );
 
         // command echo for worker nodes to skip step
-        let command_worker_skip = r#"echo 'This is a Worker Node so we don't apply the upgrade, the step Upgrade Node, will do the job for Worker Node Types.''"#;
+        let command_worker_skip = r#"echo 'Worker Node: so we don't apply the upgrade, the step Upgrade Node, will do the job for Worker Node Types.'"#;
 
         // Prepare the child process (standard Rust async Command)
         // type of `child` is `tokio::process::Child`

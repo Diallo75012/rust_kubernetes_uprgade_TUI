@@ -43,14 +43,20 @@ pub fn state_updater_for_ui_good_display(
       l if l.contains("containerd") => { /* we will update the state by adding the `containerd_version`*/
           let _ = print_debug_log_file(
             "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
-            "Line:    ",
+            "Line: ",
             l
           );
           let parse_containerd_version = l.split(" ").collect::<Vec<&str>>(); // expect: ["container", "1.7..."]
           components_versions.add("containerd_version", parse_containerd_version[3]); // expect "1.7..."
           shared_state.update_shared_state_info("containerd_v", parse_containerd_version[3]); // update shared state containerd version
+          let _ = print_debug_log_file(
+            "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+            "Line index[3]: ",
+            parse_containerd_version[3]
+          );
         },
       l => {
+        // this is to parse
         node_update_tracker_state.discovered_node.push(l.to_string());
         // check to get rid from the vector what has already been updated
         for elem in node_update_tracker_state.node_already_updated.iter() {

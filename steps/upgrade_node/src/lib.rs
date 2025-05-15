@@ -6,7 +6,7 @@ use core_ui::{
   state::{
   DesiredVersions,
   PipelineState,
-  //ClusterNodeType,
+  ClusterNodeType,
   },
 };
 use shared_traits::step_traits::{Step, StepError};
@@ -31,7 +31,7 @@ impl Step for UpgradeNode {
         // we capture the `node_type`
         let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
         let node_name = pipeline_state.log.clone().shared_state_iter("node_name")[0].clone();
-        let target_kube_version = desired_versions.target_kube_versions.clone();
+        let target_kube_version = desired_versions.madison_parsed_upgrade_apply_version.clone();
         let _ = print_debug_log_file(
           "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
           "Upgrade Node (Target Kube Version): ",

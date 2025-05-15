@@ -367,11 +367,11 @@ impl DesiredVersions {
   	  self.target_containerd_version.push_str(target_version)
   	} else if "madison_pulled_full_version" == target_component {
   	  self.madison_pulled_full_version.push_str(target_version)
+  	} else if "madison_parsed_upgrade_apply_version" == target_component {
+  	  self.madison_parsed_upgrade_apply_version.push_str(target_version)
   	}
   }
 }
-
-
 
 
 
