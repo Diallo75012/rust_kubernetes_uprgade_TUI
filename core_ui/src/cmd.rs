@@ -73,59 +73,62 @@ pub async fn stream_child(
       return Err(anyhow::anyhow!("Command exited with status: {}", status));
     }	
   } else if step == "Pull Repository Key" {
-  	  let status = timeout(Duration::from_secs(10), child.wait())
+      // hre we put 100s as it can hang a bit
+  	  let status = timeout(Duration::from_secs(100), child.wait())
   	    .await
   	    .context(format!("Timeout waiting for step `{}`", step))??;
       if !status.success() {
         return Err(anyhow::anyhow!("Command exited with status: {}", status));
       }
   } else if step == "Madison Version" {
-  	  let status = timeout(Duration::from_secs(10), child.wait())
+  	  let status = timeout(Duration::from_secs(20), child.wait())
   	    .await
   	    .context(format!("Timeout waiting for step `{}`", step))??;
       if !status.success() {
         return Err(anyhow::anyhow!("Command exited with status: {}", status));
       }
   } else if step == "Cordon" {
-  	  let status = timeout(Duration::from_secs(30), child.wait())
+      // we give it 60s
+  	  let status = timeout(Duration::from_secs(60), child.wait())
   	    .await
   	    .context(format!("Timeout waiting for step `{}`", step))??;
       if !status.success() {
         return Err(anyhow::anyhow!("Command exited with status: {}", status));
       }
   } else if step == "Drain" {
-  	 let status = timeout(Duration::from_secs(30), child.wait())
+     // we give it 60s
+  	 let status = timeout(Duration::from_secs(60), child.wait())
   	   .await
   	   .context(format!("Timeout waiting for step `{}`", step))??;
      if !status.success() {
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
   } else if step == "Upgrade Plan" {
-     // here probably we need to match kubernetes timeout with is default to 5mn=300s
-  	 let status = timeout(Duration::from_secs(300), child.wait())
+     // here probably we need to match kubernetes timeout with is default to 5mn=300s + 150s for other installs
+  	 let status = timeout(Duration::from_secs(450), child.wait())
   	   .await
   	   .context(format!("Timeout waiting for step `{}`", step))??;
      if !status.success() {
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
   } else if step == "Upgrade Apply CTL" {
-     // here probably we need to match kubernetes timeout with is default to 5mn=300s
-  	 let status = timeout(Duration::from_secs(300), child.wait())
+     // here probably we need to match kubernetes timeout with is default to 5mn=300s + 20s bonus time
+  	 let status = timeout(Duration::from_secs(320), child.wait())
   	   .await
   	   .context(format!("Timeout waiting for step `{}`", step))??;
      if !status.success() {
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
   } else if step == "Upgrade Node" {
-     // here probably we need to match kubernetes timeout with is default to 5mn=300s
-         let status = timeout(Duration::from_secs(300), child.wait())
+     // here probably we need to match kubernetes timeout with is default to 5mn=300s + 20s bonus time
+         let status = timeout(Duration::from_secs(320), child.wait())
            .await
            .context(format!("Timeout waiting for step `{}`", step))??;
      if !status.success() {
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
   } else if step == "Restart Services" {
-     // here probably we need to match kubernetes timeout with is default to 5mn=300s
+         // this should be quick so just 20s
          let status = timeout(Duration::from_secs(20), child.wait())
            .await
            .context(format!("Timeout waiting for step `{}`", step))??;
@@ -133,8 +136,8 @@ pub async fn stream_child(
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
   } else if step == "Verify Core DNS Proxy" {
-     // here probably we need to match kubernetes timeout with is default to 5mn=300s
-         let status = timeout(Duration::from_secs(10), child.wait())
+         // This should be quick so just 20s
+         let status = timeout(Duration::from_secs(20), child.wait())
            .await
            .context(format!("Timeout waiting for step `{}`", step))??;
      if !status.success() {

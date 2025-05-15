@@ -59,7 +59,10 @@ impl Step for PullRepoKey {
             r#"echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{}/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list"#,
             user_desired_kube_version_parsed,
           ),
-          "echo 'successfully update the kubernetes repository to version {}. Just wait for last update before next step starts..... waitoooooo.....'",
+          &format!(
+            r#"echo 'successfully update the kubernetes repository to version {}. Just wait for last update before next step starts..... waitoooooo.....'"#,
+            user_desired_kube_version_parsed,
+          ),
           "sudo -n apt-get update -y",
         ];
         // Prepare the child process (standard Rust async Command)

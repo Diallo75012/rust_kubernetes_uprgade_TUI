@@ -295,6 +295,8 @@ pub fn check_worker_update_node_on_worker(
     // just upgrade the state of the `worker` node upgrade status
   	pipeline_state.update_shared_state_status(UpgradeStatus::Upgraded);
   	Ok(())
+  } else if line.contains("[upgrade/health] FATAL") {
+  	  Err(anyhow::anyhow!("Upgrade Apply failed: {}", line))
   } else {
   	Ok(())
   }

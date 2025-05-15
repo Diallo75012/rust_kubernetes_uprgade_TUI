@@ -690,22 +690,8 @@ Outputs:
 Test { d: ["naha", "kobe"], e: ["Tokyo"] }
 ```
 
-# Rust `|` is for boolean not for `OR`, and what to use for `OR`
-so do not use `|` or `||` for comparison to check if something is matching, like `"a" | "b" | "c" == var`
-use it only for `bool` `true/false`
 
-How to check in `Rust` comparing and having this `OR`:
-- use `matched!()` macro
-- use `.contains()`
-```rust
-// `.matches!()`
-if matches!(var, "a" | "b" | "c") { do something }
-// `.contains()`
-let my_selection = ["a", "b", "c"];
-if var.contains(&my_selection) { do something }
-```
-
-# Get Version `bash`
+## Get Version `bash`
 We will use those in the step `Pull Repository Key` or even from the beginning when `tui` starts so that we can see the version of the different components.
 and update in `engine/src/lib.rs` when receiving lines in the correst step using a special function or `crate` for that
 Eg: cheching output for each so that we can plan how to parse what we need to show in `TUI`, we will try to parse from the `cmd` passed in the stream directly
@@ -780,25 +766,6 @@ ssh creditizens@node1 'bash -c command'
 ssh creditizens@node1 'bash -c commad && other_command'
 ssh creditizens@node1 'command; other_command; some_more_commands'
 ```
-
-## Prevent command to ask for user `password` by allowing for that user in a certain scope
-Here we are trying to solve the issue that the app can face while running commands and being prompted for password.
-Like for `ssh` which need to be setup on the server beforehands, here we need beforehands to have the user password accepting non-interactive command
-so that it is not prompted, there are different ways but we could use the one that selects for which binary it can be accepted,
-so keeping a kind of least priviledged sor that user only and for those binaries only like `apt`/`apt-get`/`kubeadm`/`kubectl`
-```bash
-# we need to update the `sudo` configs
-sudo visudo
-
-# then use the method here to select the user + to restrict this effect only to those binaries path (add the line at the end)
-<admin username> ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get, /bin/sh, /bin/bash
-# this method here is to allow for all binaries, straight forward but less secure
-<admin username> ALL=(ALL) NOPASSWD: ALL
-
-# then run the command in the script using `-n` option for non-interactive
-sudo -n apt update`
-```
-**Note**: use `%<user group> if it is for a group instead of a single user`
 
 ## `Madison` command to get the latest version available
 Here we will use the state `DesiredVersion` and get the minor version by parsing and formatting user saved version and then we will
@@ -956,3 +923,52 @@ After some search i foudn thsoe rules that explain more why:
 - If you return the result of an if/else expression from a function,
   the return type of the function must match the type of the expressions in the if and else blocks.
 ```
+
+## Issues
+- `This` used in `bash` interpreted as a command. 
+  **solution**: don't use it is one, and the other is to wrap your `echo` command with quotes `echo "This..."` so it won't be misinterpreted
+```bash
+let cmd = r#"echo "This is a test""#;
+```
+
+- `Rust` `|` is for boolean not for `OR`, and what to use for `OR`
+```narkdown
+so do not use `|` or `||` for comparison to check if something is matching, like `"a" | "b" | "c" == var`
+use it only for `bool` `true/false`
+
+How to check in `Rust` comparing and having this `OR`:
+- use `matched!()` macro
+- use `.contains()`
+```
+```rust
+// `.matches!()`
+if matches!(var, "a" | "b" | "c") { do something }
+// `.contains()`
+let my_selection = ["a", "b", "c"];
+if var.contains(&my_selection) { do something }
+```
+
+- Prevent command to ask for user `password` by allowing for that user in a certain scope
+```markdown
+Here we are trying to solve the issue that the app can face while running commands and being prompted for password.
+Like for `ssh` which need to be setup on the server beforehands, here we need beforehands to have the user password accepting non-interactive command
+so that it is not prompted, there are different ways but we could use the one that selects for which binary it can be accepted,
+so keeping a kind of least priviledged sor that user only and for those binaries only like `apt`/`apt-get`/`kubeadm`/`kubectl`
+```
+```bash
+# we need to update the `sudo` configs
+sudo visudo
+
+# then use the method here to select the user + to restrict this effect only to those binaries path (add the line at the end)
+<admin username> ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get, /bin/sh, /bin/bash
+# this method here is to allow for all binaries, straight forward but less secure
+<admin username> ALL=(ALL) NOPASSWD: ALL
+
+# then run the command in the script using `-n` option for non-interactive
+sudo -n apt update`
+```
+```markdown
+**Note**: use `%<user group> if it is for a group instead of a single user`
+```
+
+

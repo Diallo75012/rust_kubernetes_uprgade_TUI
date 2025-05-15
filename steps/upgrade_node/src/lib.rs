@@ -6,7 +6,7 @@ use core_ui::{
   state::{
   DesiredVersions,
   PipelineState,
-  ClusterNodeType,
+  // ClusterNodeType,
   },
 };
 use shared_traits::step_traits::{Step, StepError};
@@ -42,16 +42,16 @@ impl Step for UpgradeNode {
         // ssh creditizens@node1 'bash -c command'
         // ssh creditizens@node1 'bash -c commad && other_command'
         // ssh creditizens@node1 'command; other_command; some_more_commands'
-        let command = format!(r#"ssh {} 'sudo kubeadm upgrade node'"#, node_name);
+        let command = format!(r#"export KUBECONFIG=$HOME/.kube/config; ssh {} 'sudo kubeadm upgrade node'"#, node_name);
         let _ = print_debug_log_file(
           "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
-          "FULL Upgrade Node CMD",
+          "FULL Upgrade Node Command:",
           &command
         );
 
         // controller echo message
         let command_controller_skip = format!(
-          r#"This is a Controller Node it will be applied upgrade on it and other Worker nodes would pull the new Cluster Version, here: v{}."#,
+          r#"echo 'Because This is a Controller Node: it will be applied upgrade on it already and other Worker nodes would pull the new Cluster Version, here: v{}.'"#,
           target_kube_version,
         );
 

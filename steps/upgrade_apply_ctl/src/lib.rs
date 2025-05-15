@@ -39,7 +39,7 @@ impl Step for UpgradeApplyCtl {
 
         // here we need to check which is the node type as it is only for `Controller` type
         // command: `sudo kubeadm upgrade apply v1.29.15 --yes` and here `y or --yes` does exist as there is interactivity
-        let command = format!(r#"sudo kubeadm upgrade apply v{} --yes"#, target_kube_version);
+        let command = format!(r#"export KUBECONFIG=$HOME/.kube/config; sudo kubeadm upgrade apply v{} --yes"#, target_kube_version);
         let _ = print_debug_log_file(
           "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
           "FULL Upgrade Apply CMD",
