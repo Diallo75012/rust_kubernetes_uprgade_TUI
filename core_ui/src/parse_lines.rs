@@ -354,6 +354,13 @@ pub fn check_node_upgrade_state_and_kubeproxy_version(
   }
 
   // now that all is checked and fine we need to update the state of the `node tracker` and add this node name in the `Vec<String>` `node_already_updated`
-  node_tracker.add_node_already_updated(&node_name);
+  node_tracker.add_node_already_updated(node_name);
+  // we delete the node already done from the list of `dicovered_node` if those are in `node_already_updated`
+  node_tracker.discovered_node.retain(|x| !node_tracker.node_already_updated.contains(x));
+  let _ = print_debug_log_file(
+    "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+    "check_node_upgrade_state_and_kubeproxy_version (node update tracker state: node_already_updated):\n",
+    &node_tracker.node_already_updated.iter().cloned().collect::<Vec<_>>().join("\n")
+  );
   Ok(())
 }

@@ -132,6 +132,16 @@ pub async fn run() -> Result<()> {
   // there is already a function in `core/src/parsed_lines.rs` that will update the state
   // and eliminate what is already done to put it in another `Vec<String>: `node_update_tracker_state.node_already_updated`
   while !node_update_tracker_state.discovered_node.is_empty() {
+    let _ = print_debug_log_file(
+      "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+      "Inside While Loop For Next Round (node update tracker state: discovered_node):\n",
+      &node_update_tracker_state.discovered_node.iter().cloned().collect::<Vec<_>>().join("\n")
+    );
+    let _ = print_debug_log_file(
+      "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+      "Inside While Loop For Next Round (node update tracker state: node_already_updated):\n",
+      &node_update_tracker_state.node_already_updated.iter().cloned().collect::<Vec<_>>().join("\n")
+    );
     // call the loop function
     match run_upgrade_steps(
       &mut term,

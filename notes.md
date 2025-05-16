@@ -192,6 +192,7 @@ CLI flags (optional) 		| clap
 - [x] add function that checks if `Kube DNS Proxy version matched` and `draw a last sentence` to say that the `upgrade is done` user can exit with `q`
 - [x] refactor code to put the loop in its own function so that we can reuse it and have the state reused to track which nodes have been done
 - [x] create a loop over the state `NodeUpdateTrackerState` to launch another round of upgrades for worker nodes.
+- [ ] add logging in the `engine/src/lib.rs` while loop that runs other rounds to see how the state tracking nodes works
 - [ ] fix the logic for the loop that get the right node as there is something wrong it gets back the `unique controller` node again when should be workers..
 
 
