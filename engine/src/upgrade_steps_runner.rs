@@ -38,6 +38,7 @@ use core_ui::{
     check_version_upgrade_apply_on_controller,
     check_worker_update_node_on_worker,
     check_node_upgrade_state_and_kubeproxy_version,
+    next_rounds_node_state_information_update,
   },
 };
 // all the `steps`
@@ -161,8 +162,14 @@ pub async fn run_upgrade_steps<B: Backend>(
       	  // we update states
           state_updater_for_ui_good_display(step.name(), &line, pipeline_state, node_update_tracker_state, components_versions);
       	},
-        //"Pull Repo Key"  => {
-        //},
+        "Pull Repo Key"  => {
+          // here we check if `state_update_tracker_state.discovery_already_done == true`
+          // if so we use a function to just parse the name as disvocery nodes was doing but from the `node_update_tracker_state.discovered_node[0]`
+          // we check also that the node name is upnot updated, if it has default value we perform the update. SO that this function is called once only
+          if node_update_tracker_state.discovery_already_done && pipeline_state.log.buf["node_name"] == "Wait for Update..." {
+            next_rounds_node_state_information_update(pipeline_state, node_update_tracker_state);
+          }
+        },
         // create a line to capture the version matching with the `DesiredVersion` (need one more field in the state for that) (if .contains()) and then split(" ") and get [2]
       	"Madison Version" => {
       	  let node_type_in_step = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
@@ -202,7 +209,11 @@ pub async fn run_upgrade_steps<B: Backend>(
         "Verify Core DNS Proxy" => {
           // put here the funciton that is going to check keyword: `"kubeproxy "`
           let node_name = pipeline_state.log.clone().shared_state_iter("node_name")[0].clone();
-          let _ = check_node_upgrade_state_and_kubeproxy_version(&line, desired_versions, pipeline_state, node_update_tracker_state, &node_name);
+          match check_node_upgrade_state_and_kubeproxy_version(&line, desired_versions, pipeline_state, node_update_tracker_state, &node_name) {
+            // just want to block the app and stop if any issues
+          	Ok(_) => (),
+          	Err(e) => return Err(e),
+          }
       	},
       	_ => {},
       }

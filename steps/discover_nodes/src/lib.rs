@@ -44,7 +44,18 @@ impl Step for DiscoverNodes {
     // type of `child` is `tokio::process::Child`
     // we run discovery node only once at the beginning then the line parser function will turn this field `discovery_already_done` to `true`
     // so we will skip for next nodes, this makes life easy no need to filter everywhere the state
-    if node_state_tracker.discovery_already_done != true {
+    if node_state_tracker.discovery_already_done {
+      let child = Command::new("bash")
+          .arg("-c")
+          .arg("echo 'Discovery Node already done before, we skip this step here as we have track of which nodes needs to be done.'")
+          .stdout(std::process::Stdio::piped())
+          .stderr(std::process::Stdio::piped())
+          .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
+
+      // Stream output + handle timeout via helper
+      stream_child(self.name(), child, output_tx.clone()).await
+        .map_err(|e| StepError::Other(e.to_string()))?;
+    } else {
       let child = Command::new("bash")
           .arg("-c")
           .arg(shell_cmd)
@@ -54,7 +65,7 @@ impl Step for DiscoverNodes {
 
       // Stream output + handle timeout via helper
       stream_child(self.name(), child, output_tx.clone()).await
-        .map_err(|e| StepError::Other(e.to_string()))?;
+        .map_err(|e| StepError::Other(e.to_string()))?;    	
     }
     Ok(())
   }

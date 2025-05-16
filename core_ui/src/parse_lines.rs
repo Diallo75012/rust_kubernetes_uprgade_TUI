@@ -12,14 +12,19 @@ use shared_fn::debug_to_file::print_debug_log_file;
 
 // this one will parse the line to get only the name of the node
 pub fn line_parser(field: &str) -> String {
-  let name = field.to_string();
-  let list_part_name_to_parse = name.split(" ").collect::<Vec<&str>>();
-  let mut parsed_name = String::new();
-  for i in 0..list_part_name_to_parse.len() {
-    if i == list_part_name_to_parse.len()-1 {
-      parsed_name += list_part_name_to_parse[i];
-    }
-  }
+  // improved version of this function
+  let parsed_name = match field.split_whitespace().last() {
+    Some(name) => name.to_string(),
+    None => "".to_string(),
+  };
+  // let name = field.to_string();
+  // let list_part_name_to_parse = name.split(" ").collect::<Vec<&str>>();
+  // let mut parsed_name = String::new();
+  // for i in 0..list_part_name_to_parse.len() {
+  //   if i == list_part_name_to_parse.len()-1 {
+  //     parsed_name += list_part_name_to_parse[i];
+  //   }
+  // }
   parsed_name
 }
 
@@ -93,48 +98,107 @@ pub fn state_updater_for_ui_good_display(
             &format!("{}", shared_state.log)
           );
         },
-      _ => {
-        // this is to parse
-        // now we update the field `node_name` in `shared_state` `PipelineState` taking the first index from `node_update_tracker_state`
-        // if coming for new round should get new node as we have filtered above what was already done out of the list of nodes to do `discovered_node`
-        let name = &node_update_tracker_state.discovered_node[0].to_string();
-        let list_part_name_to_parse = name.split(" ").collect::<Vec<&str>>();
-        let mut parsed_name = String::new();
-        for i in 0..list_part_name_to_parse.len() {
-          if i == list_part_name_to_parse.len()-1 {
-            parsed_name += list_part_name_to_parse[i]
-          }
-        }
-        let debug_var = node_update_tracker_state.discovered_node.iter().map(|x| x.to_string()).collect::<String>();
+      l => {
+          // log the line to see how it looks
+          let _ = print_debug_log_file(
+            "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+            "Line: ",
+            l
+          );
+        // // this is to parse
+        // node_update_tracker_state.discovered_node.push(l.to_string());
+        // // now we update the field `node_name` in `shared_state` `PipelineState` taking the first index from `node_update_tracker_state`
+        // // if coming for new round should get new node as we have filtered above what was already done out of the list of nodes to do `discovered_node`
+        // let name = &node_update_tracker_state.discovered_node[0].to_string();
+        // let list_part_name_to_parse = name.split(" ").collect::<Vec<&str>>();
+        // let mut parsed_name = String::new();
+        // for i in 0..list_part_name_to_parse.len() {
+        //   if i == list_part_name_to_parse.len()-1 {
+        //     parsed_name += list_part_name_to_parse[i]
+        //   }
+        // }
+        // let debug_var = node_update_tracker_state.discovered_node.iter().map(|x| x.to_string()).collect::<String>();
+        let parsed_name = line_parser(l);
         shared_state.update_shared_state_info("node_name", &parsed_name);
-    
         // debug to see node name
         let _ =  print_debug_log_file(
           "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
-          "discover node [0]",
+          "PARSED NAME NODE DISCOVERED:",
           &parsed_name
         );
-        let _ =  print_debug_log_file(
-          "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
-          "check what inside vec discover nodde:",
-          &debug_var
-        );    
+        // we add the node name to the discovered nodes
+        node_update_tracker_state.discovered_node.push(parsed_name);
+        // let _ =  print_debug_log_file(
+        //   "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+        //   "check what inside vec discover nodde:",
+        //   &debug_var
+        // );    
       
-        // then we update the `node_type` field of `shared_state` PipelineState`
-        if node_update_tracker_state.discovered_node[0].contains("controller") {
-          // update the `node_type` and the `status`
-          shared_state.update_shared_state_node_type(ClusterNodeType::Controller);
-          shared_state.update_shared_state_status(UpgradeStatus::InProcess);
-        } else {
-          // update the `node_type` and the `status`
-          shared_state.update_shared_state_node_type(ClusterNodeType::Worker);
-          shared_state.update_shared_state_status(UpgradeStatus::InProcess);	
-        }
       }, // end of last match leg
     } // end of match pattern
+    let _ =  print_debug_log_file(
+      "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+      "EVOLUTION OF discover node [0]",
+      &node_update_tracker_state.discovered_node[0].clone()
+    );
+    // then we update the `node_type` field of `shared_state` PipelineState`
+    if node_update_tracker_state.discovered_node[0].contains("controller") {
+      // update the `node_type` and the `status`
+      shared_state.update_shared_state_node_type(ClusterNodeType::Controller);
+      shared_state.update_shared_state_status(UpgradeStatus::InProcess);
+      let _ =  print_debug_log_file(
+        "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+        "IS CONTROLLER discover node [0]",
+        &node_update_tracker_state.discovered_node[0].clone()
+      );
+    } else {
+      // update the `node_type` and the `status`
+      shared_state.update_shared_state_node_type(ClusterNodeType::Worker);
+      shared_state.update_shared_state_status(UpgradeStatus::InProcess);
+      let _ =  print_debug_log_file(
+        "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+        "IS WORKER discover node [0]",
+        &node_update_tracker_state.discovered_node[0].clone()
+      );	
+    }
+    // we update now node name:
+    let name = node_update_tracker_state.discovered_node[0].clone();
+    shared_state.update_shared_state_info("node_name", &name);
     // we mark this step already done so for next round, it will be skipped 
     node_update_tracker_state.discovery_already_done = true;
   }	
+}
+
+/* this function is for subsequent round runs to just get the node name and role */
+// versions will be pulled and updated accordingly when the step after madison is going to update the TUI with newest version
+// could add logic to get actual versions, but will not do for the moment, it has to work in the simple form
+pub fn next_rounds_node_state_information_update(
+  shared_state: &mut PipelineState,
+  node_update_tracker_state: &mut NodeUpdateTrackerState,
+  ) {
+ 
+  // we get first node available in the TO DO list of nodes to upgrade and parse it properly
+  let name = node_update_tracker_state.discovered_node[0].clone();
+  // update the shared state infos
+  shared_state.update_shared_state_info("node_name", &name);
+  // debug to see node name
+  let _ =  print_debug_log_file(
+    "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+    "NEW ROUND discover node [0]",
+    &name
+  );   
+
+  // then we update the `node_type` field of `shared_state` PipelineState`
+  if node_update_tracker_state.discovered_node[0].contains("controller") {
+    // update the `node_type` and the `status`
+    shared_state.update_shared_state_node_type(ClusterNodeType::Controller);
+    shared_state.update_shared_state_status(UpgradeStatus::InProcess);
+  } else {
+    // update the `node_type` and the `status`
+    shared_state.update_shared_state_node_type(ClusterNodeType::Worker);
+    shared_state.update_shared_state_status(UpgradeStatus::InProcess);	
+  }
+
 }
 
 /** Madison Parser **/
@@ -342,10 +406,12 @@ pub fn check_node_upgrade_state_and_kubeproxy_version(
   	return Err(anyhow::anyhow!("Line mismatch: expected `kubeproxy ` in line, but got: `{}`", line))
   }
 
-  // now that all is checked and fine we need to update the state of the `node tracker` and add this node name in the `Vec<String>` `node_already_updated`
+  // we add the name of the node already upgraded to the list of the node DONE. `node_name` is already an `&str`
   node_tracker.add_node_already_updated(node_name);
-  // we delete the node already done from the list of `dicovered_node` if those are in `node_already_updated`
-  node_tracker.discovered_node.retain(|x| !node_tracker.node_already_updated.contains(x));
+  // we delete the node already done from the list of `dicovered_node` if there is any left inside of it
+  if !node_tracker.discovered_node.is_empty() {
+    node_tracker.discovered_node.remove(0);
+  }
   // we log state to check if update is done properly
   let _ = print_debug_log_file(
      "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
@@ -356,6 +422,10 @@ pub fn check_node_upgrade_state_and_kubeproxy_version(
        "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
        "NODE TRACKER DONE:\n",
        &node_tracker.node_already_updated.iter().cloned().collect::<Vec<_>>().join("\n")
-     ); 
+     );
+  let name = node_name.to_string();
+  if node_tracker.discovered_node.contains(&name) {
+  	return Err(anyhow::anyhow!("Node name is still inside the list of nodes TO_DO.. Nazeeeeeee?!"));
+  }
   Ok(())
 }

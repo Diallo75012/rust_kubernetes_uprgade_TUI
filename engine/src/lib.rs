@@ -151,11 +151,17 @@ pub async fn run() -> Result<()> {
     );
     // call the loop function
     match run_upgrade_steps(
+      // initialized
       &mut term,
+      // initialized
       &mut state,
+      // initialized
       &mut pipeline_state,
+      // not initialized as needed for the full app lifetimuuu
       &mut desired_versions,
+      // not initialized as needed for the full app lifetimuuu
       &mut node_update_tracker_state,
+      // initialized
       &mut components_versions,
     ).await {
       // steps done without issue

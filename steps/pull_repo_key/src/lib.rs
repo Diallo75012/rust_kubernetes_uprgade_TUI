@@ -51,7 +51,7 @@ impl Step for PullRepoKey {
         let commands = [
           "sudo -n apt-get update -y",
           "sudo -n apt-get install -y curl apt-transport-https",
-          "echo 'curl install and aot-transport-https checked'",
+          "echo 'curl install and apt-transport-https checked'",
           &format!(
             r#"curl -fsSL https://pkgs.k8s.io/core:/stable:/v{}/deb/Release.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg"#,
             user_desired_kube_version_parsed,
@@ -87,7 +87,7 @@ impl Step for PullRepoKey {
         } else {
           let _multi_command = for command in 0..commands.len() {
             let cmd = commands[command];
-            let ssh_cmd = format!(r#"ssh {} '{}'"#, node_name, cmd);
+            let ssh_cmd = format!(r#"ssh {} '{}'"#, &node_name, cmd);
             let child = Command::new("bash")
               .arg("-c")
               .arg(ssh_cmd)

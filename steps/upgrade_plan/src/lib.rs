@@ -31,6 +31,11 @@ impl Step for UpgradePlan {
       
         // we capture the `node_type`
         let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
+        let _ = print_debug_log_file(
+          "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+          "UpgradePlan Node Type",
+          &node_type
+        );
         
         let containerd_desired_version_clone_madison_pulled_full_version = desired_versions.target_containerd_version.clone();
         // kube components: should be fine as it comes from `apt-cache madison` command
