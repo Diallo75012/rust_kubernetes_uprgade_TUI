@@ -6,6 +6,7 @@ use core_ui::{
   state::{
   DesiredVersions,
   PipelineState,
+  NodeUpdateTrackerState,
   },
 };
 use shared_traits::step_traits::{Step, StepError};
@@ -24,6 +25,7 @@ impl Step for Uncordon {
       output_tx: &Sender<String>,
       _desired_versions: &mut DesiredVersions,
       pipeline_state: &mut PipelineState,
+      _node_state_tracker: &mut NodeUpdateTrackerState,
       ) -> Result<(), StepError> {
 
         // we capture the `node_type`

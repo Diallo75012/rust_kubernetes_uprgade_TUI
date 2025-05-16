@@ -7,6 +7,7 @@ use core_ui::{
   DesiredVersions,
   PipelineState,
   // ClusterNodeType,
+  NodeUpdateTrackerState,
   },
 };
 use shared_traits::step_traits::{Step, StepError};
@@ -26,6 +27,7 @@ impl Step for UpgradeNode {
       output_tx: &Sender<String>,
       desired_versions: &mut DesiredVersions,
       pipeline_state: &mut PipelineState,
+      _node_state_tracker: &mut NodeUpdateTrackerState,
       ) -> Result<(), StepError> {
 
         // we capture the `node_type`

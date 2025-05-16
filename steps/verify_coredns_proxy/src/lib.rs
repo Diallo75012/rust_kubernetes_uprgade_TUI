@@ -6,6 +6,7 @@ use core_ui::{
   state::{
   DesiredVersions,
   PipelineState,
+  NodeUpdateTrackerState,
   },
 };
 use shared_traits::step_traits::{Step, StepError};
@@ -24,6 +25,7 @@ impl Step for VerifyCoreDnsProxy {
       output_tx: &Sender<String>,
       _desired_versions: &mut DesiredVersions,
       _pipeline_state: &mut PipelineState,
+      _node_state_tracker: &mut NodeUpdateTrackerState,
       ) -> Result<(), StepError> {
  
         let command = r#"export KUBECONFIG=$HOME/.kube/config;  kubectl get daemonset kube-proxy -n kube-system -o=jsonpath='{.spec.template.spec.containers[0].image}' | awk '{split($0,a,"v"); print a[2]}' | awk -F "[v]" '{ print "kubeproxy "$2 $NF}'"#;

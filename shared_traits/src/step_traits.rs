@@ -5,6 +5,7 @@ use thiserror::Error;
 use core_ui::state::{
   DesiredVersions,
   PipelineState,
+  NodeUpdateTrackerState,
 };
 
 
@@ -18,6 +19,7 @@ pub trait Step: Send + Sync {
       output_tx: &tokio::sync::mpsc::Sender<String>,
       desired_versions: &mut DesiredVersions,
       pipeline_state: &mut PipelineState,
+      node_state_tracker: &mut NodeUpdateTrackerState,
     ) -> Result<(), StepError>;
 }
 

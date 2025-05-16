@@ -132,6 +132,13 @@ pub async fn run() -> Result<()> {
   // there is already a function in `core/src/parsed_lines.rs` that will update the state
   // and eliminate what is already done to put it in another `Vec<String>: `node_update_tracker_state.node_already_updated`
   while !node_update_tracker_state.discovered_node.is_empty() {
+    /* ** Here we are going to reinitialize all other states other than `node_update_tracker_state` and `desired_versions`
+       which are the only ones that we need to live longer ** */
+    let (mut state, _tx_state, _rx_state) = AppState::new(&step_names);
+    // `mut` for `pipeline_state` as we want to mutate the `color` field in this function
+    let (mut pipeline_state, _tx_pipeline_state, _rx_pipeline_state) = PipelineState::new(/* PipelineState */); // we initialize a Shared State
+    let (mut components_versions, _tx_components_versions, _rx_components_versions) = ComponentsVersions::new(/* ComponentsVersions */); // we initalize Components Versions State
+  
     let _ = print_debug_log_file(
       "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
       "Inside While Loop For Next Round (node update tracker state: discovered_node):\n",

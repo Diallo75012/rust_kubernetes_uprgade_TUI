@@ -93,23 +93,10 @@ pub fn state_updater_for_ui_good_display(
             &format!("{}", shared_state.log)
           );
         },
-      l => {
+      _ => {
         // this is to parse
-        // we need to check if name of node already in the list of nodes `to do`, if not we add it, otherwise the next part will compare with `done` and clean up
-        node_update_tracker_state.discovered_node.push(l.to_string());
-        // check to get rid from the vector what has already been updated, it will do even if double , triple..etc.. to do nodes will be cleeeean (discovered_node)
-        let _ =  discover_nodes_state_filter(node_update_tracker_state);
-        let _ = print_debug_log_file(
-           "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
-           "NODE TRACKER TO_DO (len()):\n",
-           &format!("{}", node_update_tracker_state.discovered_node.len())
-         );
-         let _ = print_debug_log_file(
-             "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
-             "NODE TRACKER DONE (len()):\n",
-             &format!("{}", node_update_tracker_state.node_already_updated.len())
-           ); 
         // now we update the field `node_name` in `shared_state` `PipelineState` taking the first index from `node_update_tracker_state`
+        // if coming for new round should get new node as we have filtered above what was already done out of the list of nodes to do `discovered_node`
         let name = &node_update_tracker_state.discovered_node[0].to_string();
         let list_part_name_to_parse = name.split(" ").collect::<Vec<&str>>();
         let mut parsed_name = String::new();
@@ -145,6 +132,8 @@ pub fn state_updater_for_ui_good_display(
         }
       }, // end of last match leg
     } // end of match pattern
+    // we mark this step already done so for next round, it will be skipped 
+    node_update_tracker_state.discovery_already_done = true;
   }	
 }
 
@@ -357,10 +346,16 @@ pub fn check_node_upgrade_state_and_kubeproxy_version(
   node_tracker.add_node_already_updated(node_name);
   // we delete the node already done from the list of `dicovered_node` if those are in `node_already_updated`
   node_tracker.discovered_node.retain(|x| !node_tracker.node_already_updated.contains(x));
+  // we log state to check if update is done properly
   let _ = print_debug_log_file(
-    "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
-    "check_node_upgrade_state_and_kubeproxy_version (node update tracker state: node_already_updated):\n",
-    &node_tracker.node_already_updated.iter().cloned().collect::<Vec<_>>().join("\n")
-  );
+     "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+     "NODE TRACKER TO_DO:\n",
+     &node_tracker.discovered_node.iter().cloned().collect::<Vec<_>>().join("\n")
+   );
+   let _ = print_debug_log_file(
+       "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+       "NODE TRACKER DONE:\n",
+       &node_tracker.node_already_updated.iter().cloned().collect::<Vec<_>>().join("\n")
+     ); 
   Ok(())
 }

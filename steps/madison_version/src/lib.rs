@@ -6,6 +6,7 @@ use core_ui::{
   state::{
   DesiredVersions,
   PipelineState,
+  NodeUpdateTrackerState,
   },
 };
 use shared_traits::step_traits::{Step, StepError};
@@ -23,11 +24,12 @@ impl Step for MadisonVersion {
       &mut self,
       output_tx: &Sender<String>,
       desired_versions: &mut DesiredVersions,
-      pipeline_state: &mut PipelineState,
-      ) -> Result<(), StepError> {
+      _pipeline_state: &mut PipelineState,
+      _node_state_tracker: &mut NodeUpdateTrackerState,
+    ) -> Result<(), StepError> {
 
         // we capture the `node_type`
-        let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
+        // let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
         
         // The shell command to run
         /*
@@ -48,33 +50,34 @@ impl Step for MadisonVersion {
 
         // Prepare the child process (standard Rust async Command)
         // type of `child` is `tokio::process::Child`
-        if &node_type == "Controller" {
-          let child = Command::new("bash")
-              .arg("-c")
-              .arg(command_formatted)
-              .stdout(std::process::Stdio::piped())
-              .stderr(std::process::Stdio::piped())
-              .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
+        // if &node_type == "Controller" {
+        //* We will run madison step even in worker nodes as we want the TUI to show their components actual version before we upgrade those
+        let child = Command::new("bash")
+            .arg("-c")
+            .arg(command_formatted)
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::piped())
+            .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
 
-          // Stream output + handle timeout via helper
-          stream_child(self.name(), child, output_tx.clone()).await
-            .map_err(|e| StepError::Other(e.to_string()))?;
+        // Stream output + handle timeout via helper
+        stream_child(self.name(), child, output_tx.clone()).await
+          .map_err(|e| StepError::Other(e.to_string()))?;
 
-          Ok(())
-       } else {
-          let child = Command::new("bash")
-              .arg("-c")
-              .arg("We are working on Worker Node Upgrade so no need to parse versions available, already done by Controller Node.")
-              .stdout(std::process::Stdio::piped())
-              .stderr(std::process::Stdio::piped())
-              .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
-
-          // Stream output + handle timeout via helper
-          stream_child(self.name(), child, output_tx.clone()).await
-            .map_err(|e| StepError::Other(e.to_string()))?;
-
-          Ok(())       	
-       }
+        Ok(())
+//        } else {
+//           let child = Command::new("bash")
+//               .arg("-c")
+//               .arg("We are working on Worker Node Upgrade so no need to parse versions available, already done by Controller Node.")
+//               .stdout(std::process::Stdio::piped())
+//               .stderr(std::process::Stdio::piped())
+//               .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
+// 
+//           // Stream output + handle timeout via helper
+//           stream_child(self.name(), child, output_tx.clone()).await
+//             .map_err(|e| StepError::Other(e.to_string()))?;
+// 
+//           Ok(())       	
+//        }
     }
 
 }

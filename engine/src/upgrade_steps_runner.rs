@@ -118,7 +118,7 @@ pub async fn run_upgrade_steps<B: Backend>(
 
     /* 3.2 run the step – this awaits until its child process ends */
     // we borrow `tx_log` (transmitter buffer/output)
-    match step.run(&tx_log, desired_versions, pipeline_state).await {
+    match step.run(&tx_log, desired_versions, pipeline_state, node_update_tracker_state).await {
       // step done without issue
       Ok(()) => {
         // we paint the sidebar step in blue
@@ -152,18 +152,14 @@ pub async fn run_upgrade_steps<B: Backend>(
 
       match step.name() {
       	"Discover Nodes" => {
-      	  // we can as safeguard not let the line having the node name already done entering this state_updater.
-      	  // so if node_update_tracker_state.node_already_updated.contains(`line`)` we don't use that `line` to update state has, it has already been done.
-      	  if !node_update_tracker_state.node_already_updated.contains(&line) {
-      	    // we log the state 'node_update_tracker_state' which should have been cleaned up in previous round last step `Verify Core DNS Proxy`
-            let _ = print_debug_log_file(
-              "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
-              "Inside While Loop Discovery Nodes Step Before CleanUp (node update tracker state: discovered_node):\n",
-              &node_update_tracker_state.discovered_node.iter().cloned().collect::<Vec<_>>().join("\n")
-            );
-      	    // we update states
-            state_updater_for_ui_good_display(step.name(), &line, pipeline_state, node_update_tracker_state, components_versions);
-          }
+          // we log the state 'node_update_tracker_state' which should have been cleaned up in previous round last step `Verify Core DNS Proxy`
+          let _ = print_debug_log_file(
+            "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+            "Inside While Loop Discovery Nodes Step Before CleanUp (node update tracker state: discovered_node):\n",
+            &node_update_tracker_state.discovered_node.iter().cloned().collect::<Vec<_>>().join("\n")
+          );
+      	  // we update states
+          state_updater_for_ui_good_display(step.name(), &line, pipeline_state, node_update_tracker_state, components_versions);
       	},
         //"Pull Repo Key"  => {
         //},

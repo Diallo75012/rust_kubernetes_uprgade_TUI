@@ -302,12 +302,15 @@ impl PipelineState {
 /* Here will be the state managing the tracking of which nodes discovered have been updated or not to tell which will be next */
 #[derive(Debug, Clone)]
 pub struct NodeUpdateTrackerState {
+  // we will run the step discovery nodes only once and will track here that it has already been done so that in the step function we can skip it
+  pub discovery_already_done: bool,
   pub discovered_node: Vec<String>,
   pub node_already_updated: Vec<String>,
 }
 impl NodeUpdateTrackerState {
   pub fn new() -> (Self, watch::Sender<NodeUpdateTrackerState>, watch::Receiver<NodeUpdateTrackerState>) {
     let node_update_tracker_state = Self {
+      discovery_already_done: false,
       discovered_node: Vec::new(),
       node_already_updated: Vec::new() ,
     };
@@ -316,6 +319,7 @@ impl NodeUpdateTrackerState {
   }
   pub fn add_node_already_updated(&mut self, node_name: &str) {
   	self.node_already_updated.push(node_name.to_string())
+  	// we can also see if we can filter from here and get rid of the `node_name` from the `discovered_node` fields
   }
 }
 
