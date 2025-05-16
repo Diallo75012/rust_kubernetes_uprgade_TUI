@@ -314,6 +314,9 @@ impl NodeUpdateTrackerState {
     let (tx, rx) = watch::channel(node_update_tracker_state.clone());
     (node_update_tracker_state, tx, rx)
   }
+  pub fn add_node_already_updated(&mut self, node_name: &str) {
+  	self.node_already_updated.push(node_name.to_string())
+  }
 }
 
 

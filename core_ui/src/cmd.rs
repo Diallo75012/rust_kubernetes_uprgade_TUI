@@ -40,7 +40,7 @@ pub async fn stream_child(
             },
             Ok(None) => break, // end of stream
             Err(e) => {
-              let _ = tx_clone.send(format!("[{}][ERR] error reading stdout: {}", step, e)).await;
+              let _ = tx_clone.send(format!("[{}][ERR][on line matching(rdr_out)] error reading stdout: {}", step, e)).await;
               write_step_cmd_debug(&format!("[{}][ERR][on line matching(rdr_out)] {}", step, e));
               break;
             }
@@ -49,7 +49,7 @@ pub async fn stream_child(
         line = rdr_err.next_line() => {
           match line {
             Ok(Some(l)) => {
-              let _ = tx_clone.send(format!("[{}][ERR] {}", step, l)).await;
+              let _ = tx_clone.send(format!("[{}][ERR][on line matching(rdr_err(some))] {}", step, l)).await;
               write_step_cmd_debug(&format!("[{}][ERR][on line matching(rdr_err(some))] {}", step, l));
             }
             Ok(None) => break,

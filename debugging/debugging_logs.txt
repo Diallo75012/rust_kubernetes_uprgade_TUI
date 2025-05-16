@@ -33,48 +33,6 @@ step started: Drain
 message: WILL STARTooo
 step started: Upgrade Plan
 
-message: FAILED
-step started: Upgrade Plan
-
-message: WILL STARTooo
-step started: Discover Nodes
-
-message: FAILED
-step started: Discover Nodes
-
-message: WILL STARTooo
-step started: Discover Nodes
-
-message: SUCCESS
-step started: Discover Nodes
-
-message: WILL STARTooo
-step started: Pull Repo Key
-
-message: SUCCESS
-step started: Pull Repo Key
-
-message: WILL STARTooo
-step started: Madison Version
-
-message: SUCCESS
-step started: Madison Version
-
-message: WILL STARTooo
-step started: Cordon
-
-message: SUCCESS
-step started: Cordon
-
-message: WILL STARTooo
-step started: Drain
-
-message: SUCCESS
-step started: Drain
-
-message: WILL STARTooo
-step started: Upgrade Plan
-
 message: SUCCESS
 step started: Upgrade Plan
 
@@ -107,3 +65,15 @@ step started: Verify Core DNS Proxy
 
 message: SUCCESS
 step started: Verify Core DNS Proxy
+
+message: SUCCESS STEP ROUND
+step started: Step Went Well!
+
+message: WILL STARTooo
+step started: Discover Nodes
+
+message: SUCCESS
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Pull Repo Key

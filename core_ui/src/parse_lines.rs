@@ -24,15 +24,21 @@ pub fn line_parser(field: &str) -> String {
 }
 
 // this one would check if the node haven't been already done, if yes, pop it from the list of ndoes to update
+// pub fn discover_nodes_state_filter(state_node_tracking: &mut NodeUpdateTrackerState) -> anyhow::Result<()> {
+//   for elem in state_node_tracking.node_already_updated.iter() {
+//     if state_node_tracking.discovered_node.contains(elem) {
+//       // we keep only what hasn't been updated yet in `node_update_tracker_state.discover_node`
+//       state_node_tracking.discovered_node.retain(|x| x != elem);
+//     }
+//   }
+//   Ok(())
+// }
 pub fn discover_nodes_state_filter(state_node_tracking: &mut NodeUpdateTrackerState) -> anyhow::Result<()> {
-  for elem in state_node_tracking.node_already_updated.iter() {
-    if state_node_tracking.discovered_node.contains(elem) {
-      // we keep only what hasn't been updated yet in `node_update_tracker_state.discover_node`
-      state_node_tracking.discovered_node.retain(|x| x != elem);
-    }
-  }
+  // Clean discovered_node to keep only items not in node_already_updated
+  state_node_tracking.discovered_node.retain(|x| !state_node_tracking.node_already_updated.contains(x));
   Ok(())
 }
+
 
 
 pub fn state_updater_for_ui_good_display(
@@ -89,14 +95,20 @@ pub fn state_updater_for_ui_good_display(
         },
       l => {
         // this is to parse
+        // we need to check if name of node already in the list of nodes `to do`, if not we add it, otherwise the next part will compare with `done` and clean up
         node_update_tracker_state.discovered_node.push(l.to_string());
-        // check to get rid from the vector what has already been updated
-        for elem in node_update_tracker_state.node_already_updated.iter() {
-          if node_update_tracker_state.discovered_node.contains(elem) {
-            // we keep only what hasn't been updated yet in `node_update_tracker_state.discover_node`
-            node_update_tracker_state.discovered_node.retain(|x| x != elem);
-          }
-        }
+        // check to get rid from the vector what has already been updated, it will do even if double , triple..etc.. to do nodes will be cleeeean (discovered_node)
+        let _ =  discover_nodes_state_filter(node_update_tracker_state);
+        let _ = print_debug_log_file(
+           "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+           "NODE TRACKER TO_DO (len()):\n",
+           &format!("{}", node_update_tracker_state.discovered_node.len())
+         );
+         let _ = print_debug_log_file(
+             "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+             "NODE TRACKER DONE (len()):\n",
+             &format!("{}", node_update_tracker_state.node_already_updated.len())
+           ); 
         // now we update the field `node_name` in `shared_state` `PipelineState` taking the first index from `node_update_tracker_state`
         let name = &node_update_tracker_state.discovered_node[0].to_string();
         let list_part_name_to_parse = name.split(" ").collect::<Vec<&str>>();
@@ -308,7 +320,9 @@ pub fn check_worker_update_node_on_worker(
 pub fn check_node_upgrade_state_and_kubeproxy_version(
     line: &str,
     desired_version_state: &mut DesiredVersions,
-    pipeline_state: &mut PipelineState,	
+    pipeline_state: &mut PipelineState,
+    node_tracker: &mut NodeUpdateTrackerState,
+    node_name: &str,
   ) -> anyhow::Result<()> {
 
   // First we check if the upgrade has been done by checking state of the upgrade which should have been changed by the previous step
@@ -335,8 +349,11 @@ pub fn check_node_upgrade_state_and_kubeproxy_version(
         "[upgrade/versions] Target version: v", desired_version, parsed_line_kube_proxy_actual_version
       ))
   	}
-    Ok(())
   } else {
-  	Err(anyhow::anyhow!("Line mismatch: expected `kubeproxy ` in line, but got: `{}`", line))
+  	return Err(anyhow::anyhow!("Line mismatch: expected `kubeproxy ` in line, but got: `{}`", line))
   }
+
+  // now that all is checked and fine we need to update the state of the `node tracker` and add this node name in the `Vec<String>` `node_already_updated`
+  node_tracker.add_node_already_updated(&node_name);
+  Ok(())
 }

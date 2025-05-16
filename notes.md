@@ -186,10 +186,14 @@ CLI flags (optional) 		| clap
 - [x] put tutorial display on the screens about what is expected to enter in the unser input fields with link to the place where they can find compatibility
 - [x] add `user input` versions desired when the app launches so that it can run smoothly and store in a new state
 - [x] for step `Upgrade Plan` add a special state capture from lines of `upgrade plan` command and store the versions, thenmake a comparison to fail app no good
-- [ ] activate next step that now we have the repeatable patterns and do step by step starting with `Pull Repo Key`
+- [x] activate next step that now we have the repeatable patterns and do step by step starting with `Pull Repo Key`
 - [x] add in each steps `lib.rs` a `command` with `ssh` version of the command to run it on `worker` node so need to check `node_role` for all steps
 - [x] do next steps to the end and make sure to check how to get output of ssh command and what is ran from control plane and what is ran using ssh
-- [ ] add function that checks if `Kube DNS Proxy version matched` and `draw a last sentence` to say that the `upgrade is done` user can exit with `q`
+- [x] add function that checks if `Kube DNS Proxy version matched` and `draw a last sentence` to say that the `upgrade is done` user can exit with `q`
+- [x] refactor code to put the loop in its own function so that we can reuse it and have the state reused to track which nodes have been done
+- [x] create a loop over the state `NodeUpdateTrackerState` to launch another round of upgrades for worker nodes.
+- [ ] fix the logic for the loop that get the right node as there is something wrong it gets back the `unique controller` node again when should be workers..
+
 
 # 12. State logic updates of shared_state decision
 ```markdown
