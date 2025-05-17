@@ -239,8 +239,8 @@ pub fn madison_get_full_version_for_kubeadm_upgrade_saved_to_state(line: &str, d
       &parsed_upgrade_apply_version
     );
     // here add to state using the implemented function
-    desired_version_state.add("madison_pulled_full_version", parsed_line);
-    desired_version_state.add("madison_parsed_upgrade_apply_version", &parsed_upgrade_apply_version);
+    desired_version_state.add("madison_pulled_full_version", parsed_line.trim());
+    desired_version_state.add("madison_parsed_upgrade_apply_version", parsed_upgrade_apply_version.trim());
   }
 
   // log the 'madison_parsed_upgrade_apply_version' line as it seems that it is empty in later steps
@@ -333,17 +333,28 @@ pub fn check_version_upgrade_apply_on_controller(
   ) -> anyhow::Result<()> {
   // this will check the content of the output of `upgrade plan` which will confirm that our new `kubeadm` version is available and we can apply
   // we make this function Fail the app and stop at that step if it is not present
-  let version = format!("v{}", desired_version_state.madison_parsed_upgrade_apply_version.clone()); 
-  if line.contains("[upgrade/successful]") && line.contains(&version) {
+  let version = desired_version_state.madison_parsed_upgrade_apply_version.clone(); 
+  if line.contains(r#"[upgrade/successful]"#) && line.contains(&version) {
     let line_vec = line.split("\"").collect::<Vec<&str>>();
     let line_v = line_vec[1].split("v").collect::<Vec<&str>>();
     if line_v[1].trim() != version {
+      let _ = print_debug_log_file(
+        "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+        "UPGRADE APPLY CHECK VERSIONS:\n",
+        &format!("Version mismatch: madison version:{} - user desired version:{}", desired_version_state.madison_parsed_upgrade_apply_version, &version)
+      );
       Err(anyhow::anyhow!(
         "{} mismatch: expected `{}`, got `{}`",
         "[upgrade/versions] Target version: v", &desired_version_state.madison_parsed_upgrade_apply_version, version
       ))
-    } else {
+    } else { 
     	pipeline_state.update_shared_state_status(UpgradeStatus::Upgraded);
+        let _ = print_debug_log_file(
+          "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+          "UPGRADE APPLY UPGRADE STATUS CHECK (changed to Upgraded?):\n",
+          &pipeline_state.log.buf["upgrade_status"],
+          // &pipeline_state.shared_state_iter("upgrade_status")[0],
+        );
     	Ok(())
     }
   } else { Ok(()) }
@@ -377,10 +388,19 @@ pub fn check_node_upgrade_state_and_kubeproxy_version(
     node_tracker: &mut NodeUpdateTrackerState,
     node_name: &str,
   ) -> anyhow::Result<()> {
-
+   let _ = print_debug_log_file(
+       "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+       "VERIFY LAST STEP PARSED FUNCTION:\n",
+       "Inside of it beginning of function"
+     );
   // First we check if the upgrade has been done by checking state of the upgrade which should have been changed by the previous step
   // if it is not we invalidate step and return error
   let node_status = pipeline_state.log.clone().shared_state_iter("upgrade_status")[0].clone();
+  let _ = print_debug_log_file(
+      "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+      "VERIFY LAST STEP PARSED FUNCTION (Node status Upgraded or not?):\n",
+      &node_status
+    );
   if node_status != "Upgraded!" {
   	return Err(anyhow::anyhow!(
   	  "{} mismatch: expected `{}`, got `{}`",
@@ -396,18 +416,33 @@ pub fn check_node_upgrade_state_and_kubeproxy_version(
   	let desired_version = desired_version_state.madison_parsed_upgrade_apply_version.clone();
   	// if statement expect return type Result so use `return` keyworkd here otherwise it will be just a bare statement for `rust compiler`
   	// and it will get what its want and not complain also that no `else` if given. Need after to put `Ok(())` so that also it doesn't cry
-  	if parsed_line_kube_proxy_actual_version != desired_version {
+  	if parsed_line_kube_proxy_actual_version.trim() != desired_version.trim() { // .trin() to get rid of the `\n` at the end of the line where the version is...
+  	  let _ = print_debug_log_file(
+  	    "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+  	    "VERIFY LAST STEP PARSED FUNCTION MISMATCH (versions differ):\n",
+  	    &format!("Desired version:{} - parsed kube proxy version:{}", desired_version, parsed_line_kube_proxy_actual_version)
+  	  );
       return Err(anyhow::anyhow!(
         "{} mismatch: expected `{}`, got `{}`",
         "[upgrade/versions] Target version: v", desired_version, parsed_line_kube_proxy_actual_version
       ))
   	}
   } else {
+    let _ = print_debug_log_file(
+      "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+      "VERIFY LAST STEP PARSED FUNCTION ERROR(no 'kubeproxy' in line):\n",
+      line
+    );
   	return Err(anyhow::anyhow!("Line mismatch: expected `kubeproxy ` in line, but got: `{}`", line))
   }
 
   // we add the name of the node already upgraded to the list of the node DONE. `node_name` is already an `&str`
-  node_tracker.add_node_already_updated(node_name);
+  node_tracker.node_already_updated.push(node_name.to_string());
+  let _ = print_debug_log_file(
+    "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+    "VERIFY LAST STEP PARSED FUNCTION (check node_already_updated content):\n",
+    &node_tracker.node_already_updated.to_vec().join("\n")
+  );
   // we delete the node already done from the list of `dicovered_node` if there is any left inside of it
   if !node_tracker.discovered_node.is_empty() {
     node_tracker.discovered_node.remove(0);
@@ -416,12 +451,15 @@ pub fn check_node_upgrade_state_and_kubeproxy_version(
   let _ = print_debug_log_file(
      "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
      "NODE TRACKER TO_DO:\n",
-     &node_tracker.discovered_node.iter().cloned().collect::<Vec<_>>().join("\n")
+     // use `.to_vec` more efficient and simpler
+     //&node_tracker.discovered_node.iter().cloned().collect::<Vec<_>>().join("\n")
+     &node_tracker.discovered_node.to_vec().join("\n")
    );
    let _ = print_debug_log_file(
        "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
        "NODE TRACKER DONE:\n",
-       &node_tracker.node_already_updated.iter().cloned().collect::<Vec<_>>().join("\n")
+       //&node_tracker.node_already_updated.iter().cloned().collect::<Vec<_>>().join("\n")
+       &node_tracker.node_already_updated.to_vec().join("\n")
      );
   let name = node_name.to_string();
   if node_tracker.discovered_node.contains(&name) {

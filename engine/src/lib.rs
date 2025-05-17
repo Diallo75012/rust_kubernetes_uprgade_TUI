@@ -2,7 +2,7 @@
 use anyhow::Result;
 // use tokio::{sync::mpsc};
 use tokio::time::{
-  // sleep,
+  sleep,
   Duration
 };
 use std::io::stdout;
@@ -132,6 +132,9 @@ pub async fn run() -> Result<()> {
   // there is already a function in `core/src/parsed_lines.rs` that will update the state
   // and eliminate what is already done to put it in another `Vec<String>: `node_update_tracker_state.node_already_updated`
   while !node_update_tracker_state.discovered_node.is_empty() {
+    // we put a little timeout before starting on next node, so i have time to talk 
+    sleep(Duration::from_secs(30)).await;
+
     /* ** Here we are going to reinitialize all other states other than `node_update_tracker_state` and `desired_versions`
        which are the only ones that we need to live longer ** */
     let (mut state, _tx_state, _rx_state) = AppState::new(&step_names);

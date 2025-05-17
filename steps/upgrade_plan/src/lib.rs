@@ -62,7 +62,7 @@ impl Step for UpgradePlan {
         let containerd_version_upgrade = format!("sudo apt-get install containerd.io={}", containerd_desired_version_clone_madison_pulled_full_version);
         let kube_versions_upgrade = format!("sudo apt-get install -y kubeadm={v} kubelet={v} kubectl={v}", v = kube_desired_version_clone_madison_pulled_full_version);
         let hold_versions_back = "sudo apt-mark hold kubeadm kubelet kubectl";
-        let apt_update = "sudo -n apt-get update -y";
+        // let apt_update = "sudo -n apt-get update -y";
         let restart_kubelet_and_containerd = "sudo systemctl restart kubelet containerd";
         // upgrade plan is non interactive and do not prompt anything
         let upgrade_plan = "sudo kubeadm upgrade plan";
@@ -71,13 +71,13 @@ impl Step for UpgradePlan {
         let kubectl_plan = r#"kubectl version | awk 'NR==1{ print $3 }' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF }'"#;
         let containerd_plan = r#"containerd --version | awk '{ print "containerd_plan "$3 }'"#;
 
-        let command = format!(r#"{} && {} && {} && {} && {} && {} && {} && {} && {} && {} && {} && {}"#,
+        let command = format!(r#"{} && {} && {} && {} && {} && {} && {} && {} && {} && {} && {}"#,
           export_kube_config,
           unhold_versions, 
           containerd_version_upgrade,
           kube_versions_upgrade,
           hold_versions_back,
-          apt_update,
+          //apt_update,
           restart_kubelet_and_containerd,
           upgrade_plan,
           kubeadm_plan,

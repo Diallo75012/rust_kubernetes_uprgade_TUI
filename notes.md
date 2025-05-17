@@ -195,44 +195,14 @@ CLI flags (optional) 		| clap
 - [x] add logging in the `engine/src/lib.rs` while loop that runs other rounds to see how the state tracking nodes works
 - [x] fix the logic for the loop that get the right node as there is something wrong it gets back the `unique controller` node again when should be workers..
 - [x] add state to prevent lot of code checking for tracker node upgrade, just a bool field and then skip the step of `node discovery`
+- [ ] do a function logic that will be actioned on next rounds discovery mode instead of skipping it use it to update the new shared state fields
+
 
 # 12. State logic updates of shared_state decision
 ```markdown
 Step prints output ─▶ stream_child sends line ─▶ engine receives it ─▶ updates state ─▶ redraws TUI
 ```
-/*
-// functions available PipelineState
-new(mut self)
-update_shared_state_info(&mut self, k: &str, v: &str)
-update_shared_state_status(&mut self, status: UpgradeStatus)
-update_shared_state_node_type(&mut self, node_role: ClusterNodeType)
 
-// PiplelineState field `buf` available functions
-fn new(
-    kubeadm_v: String,
-    kubelet_v: String,
-    kubectl_v: String,
-    containerd_v: String,
-    node_name: String,
-    _node_role: ClusterNodeType,
-    upgrade_status: UpgradeStatus
-  )
-
-// for NodeDiscoveryInfo available functions
-new(node_name: &str)
-fn add_node_info(&mut self, node_name: &str, node_type: ClusterNodeType)
-*/
-/*
-// TO PLAN THOSE AT EACH STEP
-  "Discover Nodes" (here we put all nodes in state so we can update PipelineState with the right node name (stored in state NodeDiscoveryInfo)),
-  "Pull Repo Key" (here we can get the versions of the different components and start displaying the PipelineState fields to the `tui`),
-  "Madison Version" (here we might create another state of add it to existing NodeDiscovery to save the future version number that will be used for upgrade)
-  "Upgrade Plan" (Here we will upgrade Kubeadm, Kubelet, Kubectl and can display Versions On Worker/OR/Controller node .. maybe some ssh commands if worker...)
-  "Upgrade Apply" (here we can update PipelineState (kubeadm) version if Controller),
-  "Upgrade Node" (Here we can update PipelineState (kubeadm) version if  Worker),
-  "Veryfy Core DNS Proxy" (Here after this is confirmed matching the state targeted version from `Madison Version` step 
-                           where we stored in state the upgrade target version, we will update the PipelineSatte status for 'tui to show `Upgraded`')
-*/
 
 # Extra Notes
 
@@ -975,5 +945,14 @@ sudo -n apt update`
 ```markdown
 **Note**: use `%<user group> if it is for a group instead of a single user`
 ```
+
+## Rust use `to_vec()`
+instead of using `.iter().cloned().collect::<Vec<_>>().join("\n")` on `Vec<Type>`
+we can use `.to_vec()` to make it shorter and more efficient: `.to_vec().join("\n")`
+
+
+
+
+
 
 
