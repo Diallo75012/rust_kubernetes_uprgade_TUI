@@ -30,11 +30,12 @@ impl Step for Drain {
 
         // we capture the `node_type`
         let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
+        let node_name = pipeline_state.log.clone().shared_state_iter("node_name")[0].clone();
  
         // The shell command to run
         let shell_cmd = &format!(
           r#"export KUBECONFIG=$HOME/.kube/config; kubectl drain {} --ignore-daemonsets --delete-emptydir-data;"#,
-          pipeline_state.log.clone().shared_state_iter("node_name")[0].clone()
+          node_name
         );
 
         if node_type == "Controller" {

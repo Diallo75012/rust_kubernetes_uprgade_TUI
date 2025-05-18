@@ -28,11 +28,11 @@ impl Step for Cordon {
       _node_state_tracker: &mut NodeUpdateTrackerState,
       ) -> Result<(), StepError> {
 
-        // we capture the `node_type`
+        // we capture the `node_type: `.clone()` at the end as got a move error for type `String` don't know why as i have cloned the `log`.. will as chatGPT..
         let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
- 
+        let node_name = pipeline_state.log.clone().shared_state_iter("node_name")[0].clone();
         let commands = [
-         &format!(r#"export KUBECONFIG=$HOME/.kube/config; kubectl cordon {};"#, pipeline_state.log.clone().shared_state_iter("node_name")[0].clone()),
+         &format!(r#"export KUBECONFIG=$HOME/.kube/config; kubectl cordon {};"#, node_name),
         ];
         // Prepare the child process (standard Rust async Command)
         // type of `child` is `tokio::process::Child`

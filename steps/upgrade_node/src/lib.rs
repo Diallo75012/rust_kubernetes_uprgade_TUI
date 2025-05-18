@@ -33,6 +33,7 @@ impl Step for UpgradeNode {
         // we capture the `node_type`
         let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
         let node_name = pipeline_state.log.clone().shared_state_iter("node_name")[0].clone();
+
         let target_kube_version = desired_versions.madison_parsed_upgrade_apply_version.clone();
         let _ = print_debug_log_file(
           "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
@@ -44,7 +45,7 @@ impl Step for UpgradeNode {
         // ssh creditizens@node1 'bash -c command'
         // ssh creditizens@node1 'bash -c commad && other_command'
         // ssh creditizens@node1 'command; other_command; some_more_commands'
-        let command = format!(r#"export KUBECONFIG=$HOME/.kube/config; ssh {} 'sudo kubeadm upgrade node'"#, node_name);
+        let command = format!(r#"ssh {} sudo kubeadm upgrade node"#, node_name);
         let _ = print_debug_log_file(
           "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
           "FULL Upgrade Node Command:",

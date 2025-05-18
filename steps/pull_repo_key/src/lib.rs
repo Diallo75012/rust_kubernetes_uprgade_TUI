@@ -70,8 +70,8 @@ impl Step for PullRepoKey {
         // Prepare the child process (standard Rust async Command)
         // type of `child` is `tokio::process::Child`
         if &node_type == "Controller" {
-          let _multi_command = for command in 0..commands.len() {
-            let cmd = commands[command];
+          let _multi_command = for idx in 0..commands.len() {
+            let cmd = commands[idx];
             let child = Command::new("bash")
               .arg("-c")
               .arg(cmd)
@@ -85,9 +85,9 @@ impl Step for PullRepoKey {
           };
           Ok(())
         } else {
-          let _multi_command = for command in 0..commands.len() {
-            let cmd = commands[command];
-            let ssh_cmd = format!(r#"ssh {} '{}'"#, &node_name, cmd);
+          let _multi_command = for idx in 0..commands.len() {
+            let cmd = commands[idx];
+            let ssh_cmd = format!(r#"ssh {} {}"#, node_name, cmd);
             let child = Command::new("bash")
               .arg("-c")
               .arg(ssh_cmd)

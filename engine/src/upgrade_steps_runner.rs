@@ -2,7 +2,7 @@
 use anyhow::Result;
 use tokio::{sync::mpsc};
 use tokio::time::{
-  // sleep,
+  sleep,
   Duration
 };
 use std::io::stdout;
@@ -38,8 +38,8 @@ use core_ui::{
     check_version_upgrade_apply_on_controller,
     check_worker_update_node_on_worker,
     check_node_upgrade_state_and_kubeproxy_version,
-    next_rounds_node_state_information_update,
   },
+  ui::redraw_ui,
 };
 // all the `steps`
 use step_discover_nodes::DiscoverNodes;
@@ -53,7 +53,6 @@ use step_upgrade_node::UpgradeNode;
 use step_uncordon::Uncordon;
 use step_restart_services::RestartServices;
 use step_verify_coredns_proxy::VerifyCoreDnsProxy;
-use core_ui::ui::redraw_ui;
 // the common helper `trait` shared between `steps`
 use shared_traits::step_traits::Step;
 use shared_fn::debug_to_file::print_debug_log_file;
@@ -157,19 +156,11 @@ pub async fn run_upgrade_steps<B: Backend>(
           let _ = print_debug_log_file(
             "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
             "Inside While Loop Discovery Nodes Step Before CleanUp (node update tracker state: discovered_node):\n",
-            &node_update_tracker_state.discovered_node.iter().cloned().collect::<Vec<_>>().join("\n")
+            &node_update_tracker_state.discovered_node.to_vec().join("\n")
           );
       	  // we update states
           state_updater_for_ui_good_display(step.name(), &line, pipeline_state, node_update_tracker_state, components_versions);
       	},
-        "Pull Repo Key"  => {
-          // here we check if `state_update_tracker_state.discovery_already_done == true`
-          // if so we use a function to just parse the name as disvocery nodes was doing but from the `node_update_tracker_state.discovered_node[0]`
-          // we check also that the node name is upnot updated, if it has default value we perform the update. SO that this function is called once only
-          if node_update_tracker_state.discovery_already_done && pipeline_state.log.buf["node_name"] == "Wait for Update..." {
-            next_rounds_node_state_information_update(pipeline_state, node_update_tracker_state);
-          }
-        },
         // create a line to capture the version matching with the `DesiredVersion` (need one more field in the state for that) (if .contains()) and then split(" ") and get [2]
       	"Madison Version" => {
       	  let node_type_in_step = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
@@ -190,6 +181,8 @@ pub async fn run_upgrade_steps<B: Backend>(
             let _ = check_upgrade_plan_version_and_update_shared_state_versions(&line, desired_versions, pipeline_state);
             let _ = check_upgrade_plan_output_available_next_version(&line, desired_versions);
      	  }
+     	  // we sleep a bit to give the time for the node to be ready as i get frequently node not ready state in the next step `Upgrade Apply cTL`
+     	  sleep(Duration::from_secs(15)).await;
       	},
       	"Upgrade Apply CTL" => {
       	  let node_type_in_step = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
@@ -265,6 +258,12 @@ pub async fn run_upgrade_steps<B: Backend>(
     execute!(stdout(), DisableMouseCapture)?;
 
   } // enf of `for loop`
+  if !node_update_tracker_state.discovered_node.is_empty() {
+    state.log.push("\n\nAll Steps Are Done For This Round\n\n".to_string());
+  } else {
+  	state.log.push("\n\nLast Round Done, Congratualations! Cluster Is Fully Upgraded! \n\n".to_string());
+  }
+  redraw_ui(term, state, pipeline_state, desired_versions)?;
   Ok(())
 
 }

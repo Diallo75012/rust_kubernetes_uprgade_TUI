@@ -11,7 +11,10 @@ use core_ui::{
   },
 };
 use shared_traits::step_traits::{Step, StepError};
-use shared_fn::debug_to_file::print_debug_log_file;
+use shared_fn::{
+  parse_version::parse_versions,
+  debug_to_file::print_debug_log_file,
+};
 
 
 pub struct UpgradeApplyCtl;
@@ -32,6 +35,7 @@ impl Step for UpgradeApplyCtl {
 
         // we capture the `node_type`
         let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
+        let kube_actual_version = pipeline_state.log.clone().shared_state_iter("kubeadm_v")[0].clone();
         let target_kube_version = desired_versions.madison_parsed_upgrade_apply_version.clone();
         let _ = print_debug_log_file(
           "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
@@ -39,33 +43,58 @@ impl Step for UpgradeApplyCtl {
           &target_kube_version
         );
 
-        // here we need to check which is the node type as it is only for `Controller` type
-        // command: `sudo kubeadm upgrade apply v1.29.15 --yes` and here `y or --yes` does exist as there is interactivity
-        let command = format!(r#"export KUBECONFIG=$HOME/.kube/config; sudo kubeadm upgrade apply v{} --yes"#, target_kube_version);
-        let _ = print_debug_log_file(
-          "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
-          "FULL Upgrade Apply CMD",
-          &command
-        );
-
         // command echo for worker nodes to skip step
-        let command_worker_skip = r#"echo 'Worker Node: so we don't apply the upgrade, the step Upgrade Node, will do the job for Worker Node Types.'"#;
+        let command_worker_skip = r#"echo Skip because worker node nothing to apply"#;
 
         // Prepare the child process (standard Rust async Command)
         // type of `child` is `tokio::process::Child`
         // here check that the `node_type` is controller otherwise just `echo 'Junko'
         if &node_type == "Controller" {
-          let child = Command::new("bash")
-            .arg("-c")
-            .arg(command)
-            .stdout(std::process::Stdio::piped())
-            .stderr(std::process::Stdio::piped())
-            .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
+        // here we need to check which is the node type as it is only for `Controller` type
+        // command: `sudo kubeadm upgrade apply v1.29.15 --yes` and here `y or --yes` does exist as there is interactivity
 
-          // Stream output + handle timeout via helper
-          stream_child(self.name(), child, output_tx.clone()).await
-            .map_err(|e| StepError::Other(e.to_string()))?;
-          Ok(())
+          // here we check and try a downgrade if the version desired `target_kube_version` is lower than the actual kube version
+          if parse_versions(&target_kube_version).1 < parse_versions(&kube_actual_version).1 {
+            let command = format!(r#"export KUBECONFIG=$HOME/.kube/config; sudo kubeadm upgrade apply v{} --allow-downgrades --yes"#, target_kube_version);
+            let _ = print_debug_log_file(
+              "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+              "FULL Upgrade Apply CMD (with --allow-downgrades)",
+              &command
+            );
+
+            let child = Command::new("bash")
+              .arg("-c")
+              .arg(command)
+              .stdout(std::process::Stdio::piped())
+              .stderr(std::process::Stdio::piped())
+              .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
+
+            // Stream output + handle timeout via helper
+            stream_child(self.name(), child, output_tx.clone()).await
+              .map_err(|e| StepError::Other(e.to_string()))?;
+            Ok(())
+
+          } else {  
+
+            let command = format!(r#"export KUBECONFIG=$HOME/.kube/config; sudo kubeadm upgrade apply v{} --yes"#, target_kube_version);
+            let _ = print_debug_log_file(
+              "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+              "FULL Upgrade Apply CMD",
+              &command
+            );
+
+            let child = Command::new("bash")
+              .arg("-c")
+              .arg(command)
+              .stdout(std::process::Stdio::piped())
+              .stderr(std::process::Stdio::piped())
+              .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
+
+            // Stream output + handle timeout via helper
+            stream_child(self.name(), child, output_tx.clone()).await
+              .map_err(|e| StepError::Other(e.to_string()))?;
+            Ok(())
+          }
         } else {
           let child = Command::new("bash")
             .arg("-c")

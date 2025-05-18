@@ -2,7 +2,223 @@
 [Discover Nodes][OUT] controller.creditizens.net
 [Discover Nodes][OUT] node1.creditizens.net
 [Discover Nodes][OUT] node2.creditizens.net
-[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] kubeadm 1.30.13
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.30/deb  InRelease
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.30.13
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.30/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] Hit:1 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Get:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease [1 192 B]
+[Pull Repo Key][OUT] Get:8 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  Packages [21,3 kB]
+[Pull Repo Key][OUT] Fetched 22,5 kB in 13s (1 787 B/s)
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Upgrade Plan][OUT] Canceled hold on kubeadm.
+[Upgrade Plan][OUT] Canceled hold on kubelet.
+[Upgrade Plan][OUT] Canceled hold on kubectl.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] containerd.io is already the newest version (1.7.25-1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 231 not upgraded.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] The following packages will be DOWNGRADED:
+[Upgrade Plan][OUT]   kubeadm kubectl kubelet
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 3 downgraded, 0 to remove and 232 not upgraded.
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] E: Packages were downgraded and -y was used without --allow-downgrades.
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.30.13
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Pull Repo Key][OUT] curl install and apt-transport-https checked
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version 1.29. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Get:2 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Fetched 129 kB in 13s (9 641 B/s)
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Upgrade Plan][OUT] kubeadm was already not on hold.
+[Upgrade Plan][OUT] kubelet was already not on hold.
+[Upgrade Plan][OUT] kubectl was already not on hold.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] containerd.io is already the newest version (1.7.25-1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 231 not upgraded.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] The following packages will be DOWNGRADED:
+[Upgrade Plan][OUT]   kubeadm kubectl kubelet
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] E: Packages were downgraded and -y was used without --allow-downgrades.
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 3 downgraded, 0 to remove and 232 not upgraded.
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.30.13
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Get:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Fetched 128 kB in 15s (8 328 B/s)
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version 1.29. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Upgrade Plan][OUT] kubeadm was already not on hold.
+[Upgrade Plan][OUT] kubelet was already not on hold.
+[Upgrade Plan][OUT] kubectl was already not on hold.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] containerd.io is already the newest version (1.7.25-1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 231 not upgraded.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] Package kubeadm is not available, but is referred to by another package.
+[Upgrade Plan][OUT] This may mean that the package is missing, has been obsoleted, or
+[Upgrade Plan][OUT] is only available from another source
+[Upgrade Plan][OUT] 
+[Upgrade Plan][OUT] Package kubelet is not available, but is referred to by another package.
+[Upgrade Plan][OUT] This may mean that the package is missing, has been obsoleted, or
+[Upgrade Plan][OUT] is only available from another source
+[Upgrade Plan][OUT] 
+[Upgrade Plan][OUT] Package kubectl is not available, but is referred to by another package.
+[Upgrade Plan][OUT] This may mean that the package is missing, has been obsoleted, or
+[Upgrade Plan][OUT] is only available from another source
+[Upgrade Plan][OUT] 
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] E: Version '' for 'kubeadm' was not found
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] E: Version '' for 'kubelet' was not found
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] E: Version '' for 'kubectl' was not found
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.30.13
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Pull Repo Key][OUT] curl install and apt-transport-https checked
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:5 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Upgrade Plan][OUT] kubeadm was already not on hold.
+[Upgrade Plan][OUT] kubelet was already not on hold.
+[Upgrade Plan][OUT] kubectl was already not on hold.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] containerd.io is already the newest version (1.7.25-1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 231 not upgraded.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] The following packages will be DOWNGRADED:
+[Upgrade Plan][OUT]   kubeadm kubectl kubelet
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 3 downgraded, 0 to remove and 232 not upgraded.
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] E: Packages were downgraded and -y was used without --allow-downgrades.
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.30.13
 [Discover Nodes][OUT] containerd 1.7.25
 [Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
 [Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
@@ -17,7 +233,123 @@
 [Pull Repo Key][OUT] Reading state information...
 [Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
 [Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
-[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 233 not upgraded.
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version 1.29. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:3 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:6 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Upgrade Plan][OUT] kubeadm was already not on hold.
+[Upgrade Plan][OUT] kubelet was already not on hold.
+[Upgrade Plan][OUT] kubectl was already not on hold.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] containerd.io is already the newest version (1.7.25-1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 231 not upgraded.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] The following packages will be DOWNGRADED:
+[Upgrade Plan][OUT]   kubeadm kubectl kubelet
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 3 downgraded, 0 to remove and 232 not upgraded.
+[Upgrade Plan][OUT] Need to get 10,3 MB/41,0 MB of archives.
+[Upgrade Plan][OUT] After this operation, 9 808 kB of additional disk space will be used.
+[Upgrade Plan][OUT] Get:1 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  kubeadm 1.29.15-1.1 [10,3 MB]
+[Upgrade Plan][OUT] Fetched 10,3 MB in 3s (3 218 kB/s)
+[Upgrade Plan][OUT] dpkg: warning: downgrading kubelet from 1.30.13-1.1 to 1.29.15-1.1
+[Upgrade Plan][OUT] (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 215102 files and directories currently installed.)
+[Upgrade Plan][OUT] Preparing to unpack .../kubelet_1.29.15-1.1_amd64.deb ...
+[Upgrade Plan][OUT] Unpacking kubelet (1.29.15-1.1) over (1.30.13-1.1) ...
+[Upgrade Plan][OUT] dpkg: warning: downgrading kubectl from 1.30.13-1.1 to 1.29.15-1.1
+[Upgrade Plan][OUT] Preparing to unpack .../kubectl_1.29.15-1.1_amd64.deb ...
+[Upgrade Plan][OUT] Unpacking kubectl (1.29.15-1.1) over (1.30.13-1.1) ...
+[Upgrade Plan][OUT] dpkg: warning: downgrading kubeadm from 1.30.13-1.1 to 1.29.15-1.1
+[Upgrade Plan][OUT] Preparing to unpack .../kubeadm_1.29.15-1.1_amd64.deb ...
+[Upgrade Plan][OUT] Unpacking kubeadm (1.29.15-1.1) over (1.30.13-1.1) ...
+[Upgrade Plan][OUT] Setting up kubectl (1.29.15-1.1) ...
+[Upgrade Plan][OUT] Setting up kubelet (1.29.15-1.1) ...
+[Upgrade Plan][OUT] Setting up kubeadm (1.29.15-1.1) ...
+[Upgrade Plan][OUT] kubeadm set on hold.
+[Upgrade Plan][OUT] kubelet set on hold.
+[Upgrade Plan][OUT] kubectl set on hold.
+[Upgrade Plan][OUT] [upgrade/config] Making sure the configuration is correct:
+[Upgrade Plan][OUT] [upgrade/config] Reading configuration from the cluster...
+[Upgrade Plan][OUT] [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+[Upgrade Plan][OUT] [preflight] Running pre-flight checks.
+[Upgrade Plan][OUT] [upgrade] Running cluster health checks
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] [upgrade/health] FATAL: [preflight] Some fatal errors occurred:
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] 	[ERROR CreateJob]: could not delete Job "upgrade-health-check" in the namespace "kube-system": Delete "https://192.168.186.146:6443/apis/batch/v1/namespaces/kube-system/jobs/upgrade-health-check?timeout=10s": dial tcp 192.168.186.146:6443: connect: connection refused
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] 	[ERROR ControlPlaneNodesReady]: could not list nodes labeled with "node-role.kubernetes.io/control-plane": Get "https://192.168.186.146:6443/api/v1/nodes?labelSelector=node-role.kubernetes.io%2Fcontrol-plane%3D": dial tcp 192.168.186.146:6443: connect: connection refused
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] [preflight] If you know what you are doing, you can make a check non-fatal with `--ignore-preflight-errors=...`
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] To see the stack trace of this error execute with --v=5 or higher
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Pull Repo Key][OUT] curl install and apt-transport-https checked
+[Pull Repo Key][ERR][on line matching(rdr_err(some))] curl: (22) The requested URL returned error: 403
+[Pull Repo Key][ERR][on line matching(rdr_err(some))] gpg: no valid OpenPGP data found.
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1./deb/ /
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:6 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Err:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1./deb  InRelease
+[Pull Repo Key][OUT]   403  Forbidden [IP: 18.245.199.32 443]
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][ERR][on line matching(rdr_err(some))] E: Failed to fetch https://pkgs.k8s.io/core:/stable:/v1./deb/InRelease  403  Forbidden [IP: 18.245.199.32 443]
+[Pull Repo Key][ERR][on line matching(rdr_err(some))] E: The repository 'https://pkgs.k8s.io/core:/stable:/v1./deb  InRelease' is not signed.
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Err:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1./deb  InRelease
+[Pull Repo Key][OUT]   403  Forbidden [IP: 18.245.199.32 443]
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][ERR][on line matching(rdr_err(some))] E: Failed to fetch https://pkgs.k8s.io/core:/stable:/v1./deb/InRelease  403  Forbidden [IP: 18.245.199.32 443]
+[Pull Repo Key][ERR][on line matching(rdr_err(some))] E: The repository 'https://pkgs.k8s.io/core:/stable:/v1./deb  InRelease' is not signed.
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 231 not upgraded.
 [Pull Repo Key][OUT] curl install and apt-transport-https checked
 [Pull Repo Key][OUT] successfully pulled the keyrings
 [Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
@@ -25,8 +357,80 @@
 [Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
 [Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
 [Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:7 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Upgrade Plan][OUT] Canceled hold on kubeadm.
+[Upgrade Plan][OUT] Canceled hold on kubelet.
+[Upgrade Plan][OUT] Canceled hold on kubectl.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] containerd.io is already the newest version (1.7.25-1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 231 not upgraded.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] kubeadm is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] kubectl is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] kubelet is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Upgrade Plan][OUT] kubeadm set on hold.
+[Upgrade Plan][OUT] kubelet set on hold.
+[Upgrade Plan][OUT] kubectl set on hold.
+[Upgrade Plan][OUT] [upgrade/config] Making sure the configuration is correct:
+[Upgrade Plan][OUT] [upgrade/config] Reading configuration from the cluster...
+[Upgrade Plan][OUT] [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+[Upgrade Plan][OUT] [preflight] Running pre-flight checks.
+[Upgrade Plan][OUT] [upgrade] Running cluster health checks
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] [upgrade/health] FATAL: [preflight] Some fatal errors occurred:
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] 	[ERROR ControlPlaneNodesReady]: there are NotReady control-planes in the cluster: [controller.creditizens.net]
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] [preflight] If you know what you are doing, you can make a check non-fatal with `--ignore-preflight-errors=...`
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] To see the stack trace of this error execute with --v=5 or higher
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
 [Pull Repo Key][OUT] Hit:4 http://security.ubuntu.com/ubuntu jammy-security InRelease
-[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Pull Repo Key][OUT] curl install and apt-transport-https checked
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version 1.29. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 http://security.ubuntu.com/ubuntu jammy-security InRelease
 [Pull Repo Key][OUT] Hit:6 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
 [Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
 [Pull Repo Key][OUT] Reading package lists...
@@ -40,14 +444,74 @@
 [Upgrade Plan][OUT] Building dependency tree...
 [Upgrade Plan][OUT] Reading state information...
 [Upgrade Plan][OUT] containerd.io is already the newest version (1.7.25-1).
-[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 231 not upgraded.
 [Upgrade Plan][OUT] Reading package lists...
 [Upgrade Plan][OUT] Building dependency tree...
 [Upgrade Plan][OUT] Reading state information...
 [Upgrade Plan][OUT] kubeadm is already the newest version (1.29.15-1.1).
 [Upgrade Plan][OUT] kubectl is already the newest version (1.29.15-1.1).
 [Upgrade Plan][OUT] kubelet is already the newest version (1.29.15-1.1).
-[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 233 not upgraded.
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Upgrade Plan][OUT] kubeadm set on hold.
+[Upgrade Plan][OUT] kubelet set on hold.
+[Upgrade Plan][OUT] kubectl set on hold.
+[Upgrade Plan][OUT] [upgrade/config] Making sure the configuration is correct:
+[Upgrade Plan][OUT] [upgrade/config] Reading configuration from the cluster...
+[Upgrade Plan][OUT] [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+[Upgrade Plan][OUT] [preflight] Running pre-flight checks.
+[Upgrade Plan][OUT] [upgrade] Running cluster health checks
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] [upgrade/health] FATAL: [preflight] Some fatal errors occurred:
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] 	[ERROR ControlPlaneNodesReady]: there are NotReady control-planes in the cluster: [controller.creditizens.net]
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] [preflight] If you know what you are doing, you can make a check non-fatal with `--ignore-preflight-errors=...`
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] To see the stack trace of this error execute with --v=5 or higher
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version 1.29. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Upgrade Plan][OUT] Canceled hold on kubeadm.
+[Upgrade Plan][OUT] Canceled hold on kubelet.
+[Upgrade Plan][OUT] Canceled hold on kubectl.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] containerd.io is already the newest version (1.7.25-1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 231 not upgraded.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] kubeadm is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] kubectl is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] kubelet is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
 [Upgrade Plan][OUT] kubeadm set on hold.
 [Upgrade Plan][OUT] kubelet set on hold.
 [Upgrade Plan][OUT] kubectl set on hold.
@@ -59,7 +523,7 @@
 [Upgrade Plan][OUT] [upgrade] Fetching available versions to upgrade to
 [Upgrade Plan][OUT] [upgrade/versions] Cluster version: v1.29.15
 [Upgrade Plan][OUT] [upgrade/versions] kubeadm version: v1.29.15
-[Upgrade Plan][ERR][on line matching(rdr_err(some))] I0517 03:30:15.641231  308081 version.go:256] remote version is much newer: v1.33.1; falling back to: stable-1.29
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] I0518 01:12:28.967938   16154 version.go:256] remote version is much newer: v1.33.1; falling back to: stable-1.29
 [Upgrade Plan][OUT] [upgrade/versions] Target version: v1.29.15
 [Upgrade Plan][OUT] [upgrade/versions] Latest version in the v1.29 series: v1.29.15
 [Upgrade Plan][OUT] 
@@ -72,42 +536,77 @@
 [Upgrade Apply CTL][OUT] [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
 [Upgrade Apply CTL][OUT] [preflight] Running pre-flight checks.
 [Upgrade Apply CTL][OUT] [upgrade] Running cluster health checks
-[Upgrade Apply CTL][OUT] [upgrade/version] You have chosen to change the cluster version to "v1.29.15"
-[Upgrade Apply CTL][OUT] [upgrade/versions] Cluster version: v1.29.15
-[Upgrade Apply CTL][OUT] [upgrade/versions] kubeadm version: v1.29.15
-[Upgrade Apply CTL][OUT] [upgrade/prepull] Pulling images required for setting up a Kubernetes cluster
-[Upgrade Apply CTL][OUT] [upgrade/prepull] This might take a minute or two, depending on the speed of your internet connection
-[Upgrade Apply CTL][OUT] [upgrade/prepull] You can also perform this action in beforehand using 'kubeadm config images pull'
-[Upgrade Apply CTL][OUT] [upgrade/apply] Upgrading your Static Pod-hosted control plane to version "v1.29.15" (timeout: 5m0s)...
-[Upgrade Apply CTL][OUT] [upgrade/etcd] Upgrading to TLS for etcd
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Preparing for "etcd" upgrade
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Current and new manifests of etcd are equal, skipping upgrade
-[Upgrade Apply CTL][OUT] [upgrade/etcd] Waiting for etcd to become available
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Writing new Static Pod manifests to "/etc/kubernetes/tmp/kubeadm-upgraded-manifests4152201602"
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Preparing for "kube-apiserver" upgrade
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Current and new manifests of kube-apiserver are equal, skipping upgrade
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Preparing for "kube-controller-manager" upgrade
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Current and new manifests of kube-controller-manager are equal, skipping upgrade
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Preparing for "kube-scheduler" upgrade
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Current and new manifests of kube-scheduler are equal, skipping upgrade
-[Upgrade Apply CTL][OUT] [upload-config] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
-[Upgrade Apply CTL][OUT] [kubelet] Creating a ConfigMap "kubelet-config" in namespace kube-system with the configuration for the kubelets in the cluster
-[Upgrade Apply CTL][OUT] [upgrade] Backing up kubelet config file to /etc/kubernetes/tmp/kubeadm-kubelet-config1435531973/config.yaml
-[Upgrade Apply CTL][OUT] [kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
-[Upgrade Apply CTL][OUT] [kubeconfig] Writing "admin.conf" kubeconfig file
-[Upgrade Apply CTL][OUT] [kubeconfig] Writing "super-admin.conf" kubeconfig file
-[Upgrade Apply CTL][OUT] [bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to get nodes
-[Upgrade Apply CTL][OUT] [bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
-[Upgrade Apply CTL][OUT] [bootstrap-token] Configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
-[Upgrade Apply CTL][OUT] [bootstrap-token] Configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
-[Upgrade Apply CTL][OUT] [addons] Applied essential addon: CoreDNS
-[Upgrade Apply CTL][OUT] [addons] Applied essential addon: kube-proxy
-[Upgrade Apply CTL][OUT] 
-[Upgrade Apply CTL][OUT] [upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.29.15". Enjoy!
-[Upgrade Apply CTL][OUT] 
-[Upgrade Apply CTL][OUT] [upgrade/kubelet] Now that your control plane is upgraded, please proceed with upgrading your kubelets if you haven't already done so.
-[Upgrade Node][OUT] Because This is a Controller Node: it will be applied upgrade on it already and other Worker nodes would pull the new Cluster Version, here: v1.29.15.
-[Verify Core DNS Proxy][OUT] kubeproxy 1.29.15
+[Upgrade Apply CTL][ERR][on line matching(rdr_err(some))] [upgrade/health] FATAL: [preflight] Some fatal errors occurred:
+[Upgrade Apply CTL][ERR][on line matching(rdr_err(some))] 	[ERROR ControlPlaneNodesReady]: there are NotReady control-planes in the cluster: [controller.creditizens.net]
+[Upgrade Apply CTL][ERR][on line matching(rdr_err(some))] [preflight] If you know what you are doing, you can make a check non-fatal with `--ignore-preflight-errors=...`
+[Upgrade Apply CTL][ERR][on line matching(rdr_err(some))] To see the stack trace of this error execute with --v=5 or higher
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Get:1 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+[Pull Repo Key][OUT] Hit:2 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:4 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:3 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Hit:5 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:7 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Fetched 129 kB in 3s (39,0 kB/s)
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Pull Repo Key][OUT] curl install and apt-transport-https checked
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version 1.29. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Hit:7 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Upgrade Plan][OUT] Canceled hold on kubeadm.
+[Upgrade Plan][OUT] Canceled hold on kubelet.
+[Upgrade Plan][OUT] Canceled hold on kubectl.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] containerd.io is already the newest version (1.7.25-1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 231 not upgraded.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] kubeadm is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] kubectl is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] kubelet is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Upgrade Plan][OUT] kubeadm set on hold.
+[Upgrade Plan][OUT] kubelet set on hold.
+[Upgrade Plan][OUT] kubectl set on hold.
+[Upgrade Plan][OUT] [upgrade/config] Making sure the configuration is correct:
+[Upgrade Plan][OUT] [upgrade/config] Reading configuration from the cluster...
+[Upgrade Plan][OUT] [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+[Upgrade Plan][OUT] [preflight] Running pre-flight checks.
+[Upgrade Plan][OUT] [upgrade] Running cluster health checks
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] [upgrade/health] FATAL: [preflight] Some fatal errors occurred:
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] 	[ERROR ControlPlaneNodesReady]: there are NotReady control-planes in the cluster: [controller.creditizens.net]
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] [preflight] If you know what you are doing, you can make a check non-fatal with `--ignore-preflight-errors=...`
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] To see the stack trace of this error execute with --v=5 or higher
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
 [Discover Nodes][OUT] controller.creditizens.net
 [Discover Nodes][OUT] node1.creditizens.net
 [Discover Nodes][OUT] node2.creditizens.net
@@ -115,8 +614,76 @@
 [Discover Nodes][OUT] containerd 1.7.25
 [Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
 [Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:4 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:7 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Pull Repo Key][OUT] curl install and apt-transport-https checked
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version 1.29. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
 [Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
-[Pull Repo Key][OUT] Hit:4 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:4 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:6 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Upgrade Plan][OUT] Canceled hold on kubeadm.
+[Upgrade Plan][OUT] Canceled hold on kubelet.
+[Upgrade Plan][OUT] Canceled hold on kubectl.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] containerd.io is already the newest version (1.7.25-1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 231 not upgraded.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] kubeadm is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] kubectl is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] kubelet is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Upgrade Plan][OUT] kubeadm set on hold.
+[Upgrade Plan][OUT] kubelet set on hold.
+[Upgrade Plan][OUT] kubectl set on hold.
+[Upgrade Plan][OUT] [upgrade/config] Making sure the configuration is correct:
+[Upgrade Plan][OUT] [upgrade/config] Reading configuration from the cluster...
+[Upgrade Plan][OUT] [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+[Upgrade Plan][OUT] [preflight] Running pre-flight checks.
+[Upgrade Plan][OUT] [upgrade] Running cluster health checks
+[Upgrade Plan][OUT] [upgrade] Fetching available versions to upgrade to
+[Upgrade Plan][OUT] [upgrade/versions] Cluster version: v1.29.15
+[Upgrade Plan][OUT] [upgrade/versions] kubeadm version: v1.29.15
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] I0518 01:54:19.390249   46627 version.go:256] remote version is much newer: v1.33.1; falling back to: stable-1.29
+[Upgrade Plan][OUT] [upgrade/versions] Target version: v1.29.15
+[Upgrade Plan][OUT] [upgrade/versions] Latest version in the v1.29 series: v1.29.15
+[Upgrade Plan][OUT] 
+[Upgrade Plan][OUT] kubeadm_plan 1.29.15
+[Upgrade Plan][OUT] kubelet_plan 1.29.15
+[Upgrade Plan][OUT] kubectl_plan 1.29.15
+[Upgrade Plan][OUT] containerd_plan 1.7.25
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
 [Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
 [Pull Repo Key][OUT] Hit:6 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
 [Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
@@ -126,19 +693,21 @@
 [Pull Repo Key][OUT] Reading state information...
 [Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
 [Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
-[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 233 not upgraded.
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Pull Repo Key][OUT] curl install and apt-transport-https checked
 [Pull Repo Key][OUT] successfully pulled the keyrings
 [Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
 [Pull Repo Key][OUT] successfully update the kubernetes repository to version 1.29. Just wait for last update before next step starts..... waitoooooo.....
 [Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
 [Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
-[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
-[Pull Repo Key][OUT] Hit:4 http://security.ubuntu.com/ubuntu jammy-security InRelease
-[Pull Repo Key][OUT] Hit:5 https://download.docker.com/linux/ubuntu jammy InRelease
-[Pull Repo Key][OUT] Hit:7 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
-[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Hit:3 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:4 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:5 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
 [Pull Repo Key][OUT] Reading package lists...
 [Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
 [Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
 [Upgrade Plan][OUT] Canceled hold on kubeadm.
 [Upgrade Plan][OUT] Canceled hold on kubelet.
@@ -147,14 +716,14 @@
 [Upgrade Plan][OUT] Building dependency tree...
 [Upgrade Plan][OUT] Reading state information...
 [Upgrade Plan][OUT] containerd.io is already the newest version (1.7.25-1).
-[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 231 not upgraded.
 [Upgrade Plan][OUT] Reading package lists...
 [Upgrade Plan][OUT] Building dependency tree...
 [Upgrade Plan][OUT] Reading state information...
 [Upgrade Plan][OUT] kubeadm is already the newest version (1.29.15-1.1).
 [Upgrade Plan][OUT] kubectl is already the newest version (1.29.15-1.1).
 [Upgrade Plan][OUT] kubelet is already the newest version (1.29.15-1.1).
-[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 233 not upgraded.
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
 [Upgrade Plan][OUT] kubeadm set on hold.
 [Upgrade Plan][OUT] kubelet set on hold.
 [Upgrade Plan][OUT] kubectl set on hold.
@@ -166,7 +735,7 @@
 [Upgrade Plan][OUT] [upgrade] Fetching available versions to upgrade to
 [Upgrade Plan][OUT] [upgrade/versions] Cluster version: v1.29.15
 [Upgrade Plan][OUT] [upgrade/versions] kubeadm version: v1.29.15
-[Upgrade Plan][ERR][on line matching(rdr_err(some))] I0517 03:35:28.500251  314476 version.go:256] remote version is much newer: v1.33.1; falling back to: stable-1.29
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] I0518 02:03:02.617510   53870 version.go:256] remote version is much newer: v1.33.1; falling back to: stable-1.29
 [Upgrade Plan][OUT] [upgrade/versions] Target version: v1.29.15
 [Upgrade Plan][OUT] [upgrade/versions] Latest version in the v1.29 series: v1.29.15
 [Upgrade Plan][OUT] 
@@ -174,50 +743,71 @@
 [Upgrade Plan][OUT] kubelet_plan 1.29.15
 [Upgrade Plan][OUT] kubectl_plan 1.29.15
 [Upgrade Plan][OUT] containerd_plan 1.7.25
-[Upgrade Apply CTL][OUT] [upgrade/config] Making sure the configuration is correct:
-[Upgrade Apply CTL][OUT] [upgrade/config] Reading configuration from the cluster...
-[Upgrade Apply CTL][OUT] [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
-[Upgrade Apply CTL][OUT] [preflight] Running pre-flight checks.
-[Upgrade Apply CTL][OUT] [upgrade] Running cluster health checks
-[Upgrade Apply CTL][OUT] [upgrade/version] You have chosen to change the cluster version to "v1.29.15"
-[Upgrade Apply CTL][OUT] [upgrade/versions] Cluster version: v1.29.15
-[Upgrade Apply CTL][OUT] [upgrade/versions] kubeadm version: v1.29.15
-[Upgrade Apply CTL][OUT] [upgrade/prepull] Pulling images required for setting up a Kubernetes cluster
-[Upgrade Apply CTL][OUT] [upgrade/prepull] This might take a minute or two, depending on the speed of your internet connection
-[Upgrade Apply CTL][OUT] [upgrade/prepull] You can also perform this action in beforehand using 'kubeadm config images pull'
-[Upgrade Apply CTL][OUT] [upgrade/apply] Upgrading your Static Pod-hosted control plane to version "v1.29.15" (timeout: 5m0s)...
-[Upgrade Apply CTL][OUT] [upgrade/etcd] Upgrading to TLS for etcd
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Preparing for "etcd" upgrade
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Current and new manifests of etcd are equal, skipping upgrade
-[Upgrade Apply CTL][OUT] [upgrade/etcd] Waiting for etcd to become available
-[Upgrade Apply CTL][ERR][on line matching(rdr_err(some))] {"level":"warn","ts":"2025-05-17T03:35:58.211201+0200","logger":"etcd-client","caller":"v3@v3.5.10/retry_interceptor.go:62","msg":"retrying of unary invoker failed","target":"etcd-endpoints://0xc000494380/192.168.186.146:2379","attempt":0,"error":"rpc error: code = DeadlineExceeded desc = context deadline exceeded"}
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Writing new Static Pod manifests to "/etc/kubernetes/tmp/kubeadm-upgraded-manifests2476401605"
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Preparing for "kube-apiserver" upgrade
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Current and new manifests of kube-apiserver are equal, skipping upgrade
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Preparing for "kube-controller-manager" upgrade
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Current and new manifests of kube-controller-manager are equal, skipping upgrade
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Preparing for "kube-scheduler" upgrade
-[Upgrade Apply CTL][OUT] [upgrade/staticpods] Current and new manifests of kube-scheduler are equal, skipping upgrade
-[Upgrade Apply CTL][OUT] [upload-config] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
-[Upgrade Apply CTL][OUT] [kubelet] Creating a ConfigMap "kubelet-config" in namespace kube-system with the configuration for the kubelets in the cluster
-[Upgrade Apply CTL][OUT] [upgrade] Backing up kubelet config file to /etc/kubernetes/tmp/kubeadm-kubelet-config1706971375/config.yaml
-[Upgrade Apply CTL][OUT] [kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
-[Upgrade Apply CTL][OUT] [kubeconfig] Writing "admin.conf" kubeconfig file
-[Upgrade Apply CTL][OUT] [kubeconfig] Writing "super-admin.conf" kubeconfig file
-[Upgrade Apply CTL][OUT] [bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to get nodes
-[Upgrade Apply CTL][OUT] [bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
-[Upgrade Apply CTL][OUT] [bootstrap-token] Configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
-[Upgrade Apply CTL][OUT] [bootstrap-token] Configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
-[Upgrade Apply CTL][OUT] [addons] Applied essential addon: CoreDNS
-[Upgrade Apply CTL][OUT] [addons] Applied essential addon: kube-proxy
-[Upgrade Apply CTL][OUT] 
-[Upgrade Apply CTL][OUT] [upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.29.15". Enjoy!
-[Upgrade Apply CTL][OUT] 
-[Upgrade Apply CTL][OUT] [upgrade/kubelet] Now that your control plane is upgraded, please proceed with upgrading your kubelets if you haven't already done so.
-[Upgrade Node][OUT] Because This is a Controller Node: it will be applied upgrade on it already and other Worker nodes would pull the new Cluster Version, here: v1.29.15.
-[Uncordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
-[Verify Core DNS Proxy][OUT] kubeproxy 1.29.15
-[Pull Repo Key][ERR][on line matching(rdr_err(some))] ssh: Could not resolve hostname wait: Temporary failure in name resolution
-[Pull Repo Key][ERR][on line matching(rdr_err(some))] ssh: Could not resolve hostname wait: Temporary failure in name resolution
-[Pull Repo Key][ERR][on line matching(rdr_err(some))] ssh: Could not resolve hostname wait: Temporary failure in name resolution
-[Pull Repo Key][ERR][on line matching(rdr_err(some))] ssh: Could not resolve hostname wait: Temporary failure in name resolution
+[Discover Nodes][OUT] controller.creditizens.net
+[Discover Nodes][OUT] node1.creditizens.net
+[Discover Nodes][OUT] node2.creditizens.net
+[Discover Nodes][OUT] kubeadm 1.29.15
+[Discover Nodes][OUT] containerd 1.7.25
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:7 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Reading package lists...
+[Pull Repo Key][OUT] Building dependency tree...
+[Pull Repo Key][OUT] Reading state information...
+[Pull Repo Key][OUT] curl is already the newest version (7.81.0-1ubuntu1.20).
+[Pull Repo Key][OUT] apt-transport-https is already the newest version (2.4.13).
+[Pull Repo Key][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Pull Repo Key][OUT] curl install and apt-transport-https checked
+[Pull Repo Key][OUT] successfully pulled the keyrings
+[Pull Repo Key][OUT] deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+[Pull Repo Key][OUT] successfully update the kubernetes repository to version 1.29. Just wait for last update before next step starts..... waitoooooo.....
+[Pull Repo Key][OUT] Hit:1 http://fr.archive.ubuntu.com/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:2 http://fr.archive.ubuntu.com/ubuntu jammy-updates InRelease
+[Pull Repo Key][OUT] Hit:3 http://fr.archive.ubuntu.com/ubuntu jammy-backports InRelease
+[Pull Repo Key][OUT] Hit:4 https://download.docker.com/linux/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Hit:5 http://security.ubuntu.com/ubuntu jammy-security InRelease
+[Pull Repo Key][OUT] Hit:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease
+[Pull Repo Key][OUT] Hit:7 https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu jammy InRelease
+[Pull Repo Key][OUT] Reading package lists...
+[Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+[Cordon][OUT] This a single controller node, will skip Cordon Step for it to stay reachable on upgrade.
+[Drain][OUT] This a single controller node, will skip Drain Step for it to stay reachable on upgrade.
+[Upgrade Plan][OUT] Canceled hold on kubeadm.
+[Upgrade Plan][OUT] Canceled hold on kubelet.
+[Upgrade Plan][OUT] Canceled hold on kubectl.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] containerd.io is already the newest version (1.7.25-1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 231 not upgraded.
+[Upgrade Plan][OUT] Reading package lists...
+[Upgrade Plan][OUT] Building dependency tree...
+[Upgrade Plan][OUT] Reading state information...
+[Upgrade Plan][OUT] kubeadm is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] kubectl is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] kubelet is already the newest version (1.29.15-1.1).
+[Upgrade Plan][OUT] 0 upgraded, 0 newly installed, 0 to remove and 232 not upgraded.
+[Upgrade Plan][OUT] kubeadm set on hold.
+[Upgrade Plan][OUT] kubelet set on hold.
+[Upgrade Plan][OUT] kubectl set on hold.
+[Upgrade Plan][OUT] [upgrade/config] Making sure the configuration is correct:
+[Upgrade Plan][OUT] [upgrade/config] Reading configuration from the cluster...
+[Upgrade Plan][OUT] [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+[Upgrade Plan][OUT] [preflight] Running pre-flight checks.
+[Upgrade Plan][OUT] [upgrade] Running cluster health checks
+[Upgrade Plan][OUT] [upgrade] Fetching available versions to upgrade to
+[Upgrade Plan][OUT] [upgrade/versions] Cluster version: v1.29.15
+[Upgrade Plan][OUT] [upgrade/versions] kubeadm version: v1.29.15
+[Upgrade Plan][ERR][on line matching(rdr_err(some))] I0518 02:19:17.405798   65451 version.go:256] remote version is much newer: v1.33.1; falling back to: stable-1.29
+[Upgrade Plan][OUT] [upgrade/versions] Target version: v1.29.15
+[Upgrade Plan][OUT] [upgrade/versions] Latest version in the v1.29 series: v1.29.15
+[Upgrade Plan][OUT] 
+[Upgrade Plan][OUT] kubeadm_plan 1.29.15
+[Upgrade Plan][OUT] kubelet_plan 1.29.15
+[Upgrade Plan][OUT] kubectl_plan 1.29.15
+[Upgrade Plan][OUT] containerd_plan 1.7.25

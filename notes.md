@@ -950,9 +950,32 @@ sudo -n apt update`
 instead of using `.iter().cloned().collect::<Vec<_>>().join("\n")` on `Vec<Type>`
 we can use `.to_vec()` to make it shorter and more efficient: `.to_vec().join("\n")`
 
+# Rust exit early in conditional (not loops)
+Can't use `break` outside of a loop like in a conditional so use a `return` instead
+```rust
+if node_type == "Worker" {
+    return Ok(()); // exits the function cleanly
+```
 
+## Rust `tuples` access values by index
 
-
-
-
+so here it is not like in `Python` using `[index]` but using `dot` notation:
+```rust
+fn parse_versions(version: &str) -> (u32, u32, u32) {
+  let parts: Vec<u32> = version
+    .split('.')
+    .map(|s| s.parse().unwrap_or(0))
+    .collect();
+  (parts[0], parts[1], parts[2])
+}
+let a = parse_versions("1.29.15");
+let b = parse_versions("1.30.13");
+if a.1 < b.1 {
+    println!("{:?}", a);
+} else {
+    println!("{:?}", b)
+}
+Outputs:
+(1, 29, 15)
+```
 

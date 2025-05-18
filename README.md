@@ -17,3 +17,9 @@
   - `TUI` when it is `red` step and stops, will display error message. User can only re-enter the version to restart all, or user need to contact `devs` to fix app
 
 
+## Tips
+- Do restart `kubelet` and `containerd` before starting the app to be sure to have the cluster available during `upgrade plan` and `upgrade apply` steps.
+- You need to go and find the right versions of `kube` components which is assumed that they all have same version and `containerd` compatible one.
+  - kube component, just enter minor version: `1.29` for example
+  - containerd, enter the full version: `1.7.25-1` for example
+  After the app will search for the versionsa nd parse what is needed for each steps

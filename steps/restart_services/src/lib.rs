@@ -32,9 +32,9 @@ impl Step for RestartServices {
         let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
         let node_name = pipeline_state.log.clone().shared_state_iter("node_name")[0].clone();
  
-        let command = r#"sudo systemctl daemon-reload &&  sudo systemctl restart kubelet"#;
+        let command = r#"sudo systemctl daemon-reload && sudo systemctl restart kubelet"#;
         let ssh_command = format!(
-          r#"ssh {} 'sudo systemctl daemon-reload &&  sudo systemctl restart kubelet'"#,
+          r#"ssh {} sudo systemctl daemon-reload && sudo systemctl restart kubelet"#,
           node_name,
         );
         // Prepare the child process (standard Rust async Command)

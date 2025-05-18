@@ -27,38 +27,42 @@ impl Step for DiscoverNodes {
     _pipeline_state: &mut PipelineState,
     node_state_tracker: &mut NodeUpdateTrackerState,
   ) -> Result<(), StepError> {
-    // The shell command to run
-    let shell_cmd = r#"export KUBECONFIG=$HOME/.kube/config; kubectl get nodes --no-headers | awk '{print $1}' && kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm "$1 $NF}' && containerd --version | awk '{ print "containerd "$3 }'"#;
-    /*
-    let shell_cmd = r#"
-      which kubectl && kubectl version --client &&
-      export KUBECONFIG=$HOME/.kube/config;
-      nodes=""; 
-      for elem in $(kubectl get nodes --no-headers | awk '{print $1}'); 
-      do nodes="$nodes $elem"; 
-      done; 
-      echo $nodes | xargs
-    "#;
-     */
+
     // Prepare the child process (standard Rust async Command)
     // type of `child` is `tokio::process::Child`
     // we run discovery node only once at the beginning then the line parser function will turn this field `discovery_already_done` to `true`
-    // so we will skip for next nodes, this makes life easy no need to filter everywhere the state
+    // we won't skip this step but just send the content of next node to work on taking it from the state `NodeUpdateTrackerState`
     if node_state_tracker.discovery_already_done {
-      let child = Command::new("bash")
+      // we get here the next node to work on from the list of node `TO DO` and will send it in the stream which is gonna be capture by the line parser
+      let next_node_to_do = node_state_tracker.discovered_node[0].clone().to_string();
+      // getting error with curly braces as Rust interprets `$NF` as command, so will inject those as raw input in the String formatting
+      let subsequent_discovery_cmd = [
+        r#"kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm "$1 $NF }'"#,
+        r#"containerd --version | awk '{ print "containerd "$3 }'"#,
+        &format!(r#"echo {}"#, &next_node_to_do),
+      ];
+      for idx in 0..subsequent_discovery_cmd.len() {
+        // we can concatenate `String` to `&str` using `+` sign
+        // add little space for the command to come after with a little space from ssh..
+        let cmd = format!("ssh {} ", &next_node_to_do) + subsequent_discovery_cmd[idx];
+        
+        let child = Command::new("bash")
           .arg("-c")
-          .arg("echo 'Discovery Node already done before, we skip this step here as we have track of which nodes needs to be done.'")
+          .arg(cmd)
           .stdout(std::process::Stdio::piped())
           .stderr(std::process::Stdio::piped())
           .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`
 
-      // Stream output + handle timeout via helper
-      stream_child(self.name(), child, output_tx.clone()).await
-        .map_err(|e| StepError::Other(e.to_string()))?;
+        // Stream output + handle timeout via helper
+        stream_child(self.name(), child, output_tx.clone()).await
+          .map_err(|e| StepError::Other(e.to_string()))?;
+      }
     } else {
+      // The shell command to run
+      let first_discovery_cmd = r#"export KUBECONFIG=$HOME/.kube/config; kubectl get nodes --no-headers | awk '{print $1}' && kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm "$1 $NF}' && containerd --version | awk '{ print "containerd "$3 }'"#;
       let child = Command::new("bash")
           .arg("-c")
-          .arg(shell_cmd)
+          .arg(first_discovery_cmd)
           .stdout(std::process::Stdio::piped())
           .stderr(std::process::Stdio::piped())
           .spawn()?; // This returns std::io::Error, which StepError handles via `#[from]`

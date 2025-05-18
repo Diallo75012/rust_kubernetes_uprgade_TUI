@@ -45,7 +45,7 @@ pub fn discover_nodes_state_filter(state_node_tracking: &mut NodeUpdateTrackerSt
 }
 
 
-
+/* This will be for first node discovery and also for subsequent steps to update the shared state and streamed parse lines  */
 pub fn state_updater_for_ui_good_display(
   step: &'static str,
   line: &str,
@@ -126,8 +126,10 @@ pub fn state_updater_for_ui_good_display(
           "PARSED NAME NODE DISCOVERED:",
           &parsed_name
         );
-        // we add the node name to the discovered nodes
-        node_update_tracker_state.discovered_node.push(parsed_name);
+        // we add the node name to the discovered nodes only if it is not already there as it has to work for first discovery and subsequent ones
+        if !node_update_tracker_state.discovered_node.to_vec().join("\n").contains(&parsed_name) {
+          node_update_tracker_state.discovered_node.push(parsed_name);
+        }
         // let _ =  print_debug_log_file(
         //   "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
         //   "check what inside vec discover nodde:",
@@ -167,38 +169,6 @@ pub fn state_updater_for_ui_good_display(
     // we mark this step already done so for next round, it will be skipped 
     node_update_tracker_state.discovery_already_done = true;
   }	
-}
-
-/* this function is for subsequent round runs to just get the node name and role */
-// versions will be pulled and updated accordingly when the step after madison is going to update the TUI with newest version
-// could add logic to get actual versions, but will not do for the moment, it has to work in the simple form
-pub fn next_rounds_node_state_information_update(
-  shared_state: &mut PipelineState,
-  node_update_tracker_state: &mut NodeUpdateTrackerState,
-  ) {
- 
-  // we get first node available in the TO DO list of nodes to upgrade and parse it properly
-  let name = node_update_tracker_state.discovered_node[0].clone();
-  // update the shared state infos
-  shared_state.update_shared_state_info("node_name", &name);
-  // debug to see node name
-  let _ =  print_debug_log_file(
-    "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
-    "NEW ROUND discover node [0]",
-    &name
-  );   
-
-  // then we update the `node_type` field of `shared_state` PipelineState`
-  if node_update_tracker_state.discovered_node[0].contains("controller") {
-    // update the `node_type` and the `status`
-    shared_state.update_shared_state_node_type(ClusterNodeType::Controller);
-    shared_state.update_shared_state_status(UpgradeStatus::InProcess);
-  } else {
-    // update the `node_type` and the `status`
-    shared_state.update_shared_state_node_type(ClusterNodeType::Worker);
-    shared_state.update_shared_state_status(UpgradeStatus::InProcess);	
-  }
-
 }
 
 /** Madison Parser **/
@@ -331,6 +301,10 @@ pub fn check_version_upgrade_apply_on_controller(
     desired_version_state: &mut DesiredVersions,
     pipeline_state: &mut PipelineState,	
   ) -> anyhow::Result<()> {
+  // we skip if the node is a `Worker` node
+  if pipeline_state.log.clone().shared_state_iter("node_role")[0].clone() == "worker" {
+    return Ok(());
+  }
   // this will check the content of the output of `upgrade plan` which will confirm that our new `kubeadm` version is available and we can apply
   // we make this function Fail the app and stop at that step if it is not present
   let version = desired_version_state.madison_parsed_upgrade_apply_version.clone(); 
@@ -393,6 +367,7 @@ pub fn check_node_upgrade_state_and_kubeproxy_version(
        "VERIFY LAST STEP PARSED FUNCTION:\n",
        "Inside of it beginning of function"
      );
+
   // First we check if the upgrade has been done by checking state of the upgrade which should have been changed by the previous step
   // if it is not we invalidate step and return error
   let node_status = pipeline_state.log.clone().shared_state_iter("upgrade_status")[0].clone();

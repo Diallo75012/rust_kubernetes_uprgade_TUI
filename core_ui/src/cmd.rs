@@ -66,7 +66,7 @@ pub async fn stream_child(
 
   // Wait for the process to finish with a timeout: need conditionals here to have different timeout duration for each steps.
   if step == "Discover Nodes" {
-    let status = timeout(Duration::from_secs(10), child.wait())
+    let status = timeout(Duration::from_secs(60), child.wait())
       .await
       .context(format!("Timeout waiting for step `{}`", step))??;
     if !status.success() {
@@ -74,14 +74,14 @@ pub async fn stream_child(
     }	
   } else if step == "Pull Repository Key" {
       // hre we put 100s as it can hang a bit
-  	  let status = timeout(Duration::from_secs(100), child.wait())
+  	  let status = timeout(Duration::from_secs(200), child.wait())
   	    .await
   	    .context(format!("Timeout waiting for step `{}`", step))??;
       if !status.success() {
         return Err(anyhow::anyhow!("Command exited with status: {}", status));
       }
   } else if step == "Madison Version" {
-  	  let status = timeout(Duration::from_secs(20), child.wait())
+  	  let status = timeout(Duration::from_secs(30), child.wait())
   	    .await
   	    .context(format!("Timeout waiting for step `{}`", step))??;
       if !status.success() {
@@ -89,7 +89,7 @@ pub async fn stream_child(
       }
   } else if step == "Cordon" {
       // we give it 60s
-  	  let status = timeout(Duration::from_secs(60), child.wait())
+  	  let status = timeout(Duration::from_secs(100), child.wait())
   	    .await
   	    .context(format!("Timeout waiting for step `{}`", step))??;
       if !status.success() {
@@ -97,7 +97,7 @@ pub async fn stream_child(
       }
   } else if step == "Drain" {
      // we give it 60s
-  	 let status = timeout(Duration::from_secs(60), child.wait())
+  	 let status = timeout(Duration::from_secs(100), child.wait())
   	   .await
   	   .context(format!("Timeout waiting for step `{}`", step))??;
      if !status.success() {
@@ -112,32 +112,32 @@ pub async fn stream_child(
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
   } else if step == "Upgrade Apply CTL" {
-     // here probably we need to match kubernetes timeout with is default to 5mn=300s + 20s bonus time
-  	 let status = timeout(Duration::from_secs(320), child.wait())
+     // here probably we need to match kubernetes timeout with is default to 5mn=300s + 60s bonus time
+  	 let status = timeout(Duration::from_secs(360), child.wait())
   	   .await
   	   .context(format!("Timeout waiting for step `{}`", step))??;
      if !status.success() {
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
   } else if step == "Upgrade Node" {
-     // here probably we need to match kubernetes timeout with is default to 5mn=300s + 20s bonus time
-         let status = timeout(Duration::from_secs(320), child.wait())
+     // here probably we need to match kubernetes timeout with is default to 5mn=300s + 60s bonus time
+         let status = timeout(Duration::from_secs(360), child.wait())
            .await
            .context(format!("Timeout waiting for step `{}`", step))??;
      if !status.success() {
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
   } else if step == "Restart Services" {
-         // this should be quick so just 20s
-         let status = timeout(Duration::from_secs(20), child.wait())
+         // this should be quick so just 30s
+         let status = timeout(Duration::from_secs(30), child.wait())
            .await
            .context(format!("Timeout waiting for step `{}`", step))??;
      if !status.success() {
        return Err(anyhow::anyhow!("Command exited with status: {}", status));
      }
   } else if step == "Verify Core DNS Proxy" {
-         // This should be quick so just 20s
-         let status = timeout(Duration::from_secs(20), child.wait())
+         // This should be quick so just 30s
+         let status = timeout(Duration::from_secs(30), child.wait())
            .await
            .context(format!("Timeout waiting for step `{}`", step))??;
      if !status.success() {
