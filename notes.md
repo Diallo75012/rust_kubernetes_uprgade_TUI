@@ -946,6 +946,61 @@ sudo -n apt update`
 **Note**: use `%<user group> if it is for a group instead of a single user`
 ```
 
+- `Race` issue: got some events not being received in the stream even if they hhad ran properly:
+  **Solution**: I have changes the `try_recv()` for `recv()` to make sure it is blocking and waiting to `recv` the event.
+                But chatGPT told me that i should use `recv()` to make sure the first line is received and then `try_recv` to drain all other lines.
+                And if nothign is send to use a timeout system to make sure I exit the loop as `recv()` would be indefinetely waiting.
+                **But I will not do that, I don't like it and seems stupid to me, so i will just keep the `try_recv()` and even if some events are not**
+                **captured, behind the scene the `run()` functions of each steps runs anyways.**
+
+Explanation of this special case:
+```markdown
+The logs are sent via `tx_log.send(...)` after the call to `run()` has completed, but before your loop calls `try_recv()`.
+In that case, `try_recv()` sees the channel is empty in that exact moment, so it skips the entire message queue for that step.
+That’s exactly the kind of race condition `recv().await`is designed to prevent.
+```
+
+- Get `kubeadm` `plan/apply` fail
+Because under the hood it is using `kubectl` it needs permissions, I have added an export ont he shell of the `kubeconfig` path
+but sometimes. it doesn't work, therefore, after long talk with chatGPT I ahve explored the flags available to the commands `kubeadm uprgade plan/apply`
+and foudn that there is a flag called `--kubeconfig=<path of .kube/conf file>`
+Eg.: with `sudo kubeadm uprgade apply`
+```bash
+sudo kubeadm upgrade apply --help | grep "kube"
+  kubeadm upgrade apply [version]
+      --config string                      Path to a kubeadm configuration file.
+      --kubeconfig string                  The kubeconfig file to use when talking to the cluster.
+                                           If the flag is not set, a set of standard locations can be searched for an existing kubeconfig file.
+                                           (default "/etc/kubernetes/admin.conf")
+```
+
+- Step `upgrade plan` to `upgrade apply` too quick
+I had several times the node not being ready. So here it is because we have a `race` like condition when the step is done it needs a little delay for all pods
+to be ready, specially that there are some `health` pods `jobs` which need to be done.
+**Solution:** I have added to the command `plan` and `apply` a loop that checks if the `node` is `ready` before any run of `uprgade plan` or `upgrade apply`
+
+
+- downgrading can be tricky so the code can't handle that 100%
+Sometimes I can't downgrade and need to get rid of new fields added to the `kubeproxyconfiguration`
+as in version 1.30 i got an error on upgrade and i want it to work from 1.29 to 1.30 and fix everything before considering the app works and doing all uprgades.
+But we need to perform some steps manually when downgrading not matter what...
+so here we need to downgrade manually CoreDNS image:
+```bash
+kubectl -n kube-system set image deployment/coredns coredns=k8s.gcr.io/coredns/coredns:v1.10.1
+```
+so here we nee to get rid of a field added in version 1.30
+```bash
+# warning : W0519 21:17:25.009245  192591 configset.go:177] error unmarshaling configuration 
+# schema.GroupVersionKind{Group:"kubelet.config.k8s.io", Version:"v1beta1", Kind:"KubeletConfiguration"}: 
+# strict decoding error: unknown field "logging.options.text"
+k edit configmap -n kube-system kubelet-config
+# then get rid of `text` field
+```
+```bash
+# then uprgade plan and will be good
+sudo kubeadm upgrade plan
+```
+
 ## Rust use `to_vec()`
 instead of using `.iter().cloned().collect::<Vec<_>>().join("\n")` on `Vec<Type>`
 we can use `.to_vec()` to make it shorter and more efficient: `.to_vec().join("\n")`
@@ -956,6 +1011,7 @@ Can't use `break` outside of a loop like in a conditional so use a `return` inst
 if node_type == "Worker" {
     return Ok(()); // exits the function cleanly
 ```
+ 
 
 ## Rust `tuples` access values by index
 
@@ -978,4 +1034,24 @@ if a.1 < b.1 {
 Outputs:
 (1, 29, 15)
 ```
+
+## Rust `try_recv()` vs `recv()`
+I have been using `try_recv()` but I have noticed that for some steps, even if well executed in the logs, doesn't seem to be received or not appear
+other logs which are capturing the received lines...
+This is because probably their execution is so fast as we are skipping those steps depending on which step it is and which type of node (`controller/worker`).
+| Function       | Behavior                                                                                           |
+| -------------- | -------------------------------------------------------------------------------------------------- |
+| `try_recv()`   | Non-blocking — returns `Err(TryRecvError::Empty)` **immediately** if there's nothing available yet |
+| `recv().await` | Async-blocking — **waits until a message is available** on the channel before continuing           |
+
+- therefore, to prevent the `race issue`
+We have explained above in the `issues` how this could happen but will repeat it here in case this file is navigated using 'ctrl+f':
+```markdown
+The logs are sent via `tx_log.send(...)` after the call to `run()` has completed, but before your loop calls `try_recv()`.
+In that case, `try_recv()` sees the channel is empty in that exact moment, so it skips the entire message queue for that step.
+That’s exactly the kind of race condition `recv().await`is designed to prevent.
+```
+But i have decided to keep the `try_recv()`.
+
+
 

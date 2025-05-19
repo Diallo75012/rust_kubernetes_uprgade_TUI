@@ -87,7 +87,12 @@ impl Step for PullRepoKey {
         } else {
           let _multi_command = for idx in 0..commands.len() {
             let cmd = commands[idx];
-            let ssh_cmd = format!(r#"ssh {} {}"#, node_name, cmd);
+            let ssh_cmd = format!(r#"ssh {} {}"#, &node_name, cmd);
+            let _ = print_debug_log_file(
+              "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+              "Pull Repo Key (SSH CMD): ",
+              &ssh_cmd
+            );
             let child = Command::new("bash")
               .arg("-c")
               .arg(ssh_cmd)

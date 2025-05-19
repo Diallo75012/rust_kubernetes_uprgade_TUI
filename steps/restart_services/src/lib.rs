@@ -10,7 +10,10 @@ use core_ui::{
   },
 };
 use shared_traits::step_traits::{Step, StepError};
-
+use shared_fn::{
+  //parse_version::parse_versions,
+  debug_to_file::print_debug_log_file,
+};
 
 pub struct RestartServices;
 
@@ -50,7 +53,12 @@ impl Step for RestartServices {
           let _ = stream_child(self.name(), child, output_tx.clone()).await
             .map_err(|e| StepError::Other(e.to_string()));	
         } else {
-        
+
+          let _ = print_debug_log_file(
+            "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+            "Restart Services SSH CMD (Worker): ",
+            &ssh_command
+          ); 
           let child = Command::new("bash")
             .arg("-c")
             .arg(ssh_command)

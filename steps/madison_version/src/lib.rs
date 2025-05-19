@@ -10,7 +10,10 @@ use core_ui::{
   },
 };
 use shared_traits::step_traits::{Step, StepError};
-
+use shared_fn::{
+  //parse_version::parse_versions,
+  debug_to_file::print_debug_log_file,
+};
 
 pub struct MadisonVersion;
 
@@ -55,7 +58,11 @@ impl Step for MadisonVersion {
           node_name,
           user_desired_kube_verison_parsed
         );
-
+        let _ =  print_debug_log_file(
+          "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+          "MADISON CMD SSH TO WORKER:",
+          &worker_command_formatted
+        );
         // Prepare the child process (standard Rust async Command)
         // type of `child` is `tokio::process::Child`
         if &node_type == "Controller" {

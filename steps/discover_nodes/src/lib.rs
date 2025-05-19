@@ -10,7 +10,10 @@ use core_ui::{
   },
 };
 use shared_traits::step_traits::{Step, StepError};
-
+use shared_fn::{
+  //parse_version::parse_versions,
+  debug_to_file::print_debug_log_file,
+};
 
 pub struct DiscoverNodes;
 
@@ -28,11 +31,18 @@ impl Step for DiscoverNodes {
     node_state_tracker: &mut NodeUpdateTrackerState,
   ) -> Result<(), StepError> {
 
+
+    let discovery_already_done_ot_not = node_state_tracker.discovery_already_done;
+    let _ = print_debug_log_file(
+      "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+      "Discovery Node ALready Done Or Not: ",
+      &format!("Discovery node already done? : {}", discovery_already_done_ot_not)
+    ); 
     // Prepare the child process (standard Rust async Command)
     // type of `child` is `tokio::process::Child`
     // we run discovery node only once at the beginning then the line parser function will turn this field `discovery_already_done` to `true`
     // we won't skip this step but just send the content of next node to work on taking it from the state `NodeUpdateTrackerState`
-    if node_state_tracker.discovery_already_done {
+    if discovery_already_done_ot_not {
       // we get here the next node to work on from the list of node `TO DO` and will send it in the stream which is gonna be capture by the line parser
       let next_node_to_do = node_state_tracker.discovered_node[0].clone().to_string();
       // getting error with curly braces as Rust interprets `$NF` as command, so will inject those as raw input in the String formatting
@@ -45,7 +55,11 @@ impl Step for DiscoverNodes {
         // we can concatenate `String` to `&str` using `+` sign
         // add little space for the command to come after with a little space from ssh..
         let cmd = format!("ssh {} ", &next_node_to_do) + subsequent_discovery_cmd[idx];
-        
+        let _ = print_debug_log_file(
+          "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+          "Discovery Node SSH CMD (Workers..): ",
+          &cmd
+        );        
         let child = Command::new("bash")
           .arg("-c")
           .arg(cmd)
@@ -60,6 +74,11 @@ impl Step for DiscoverNodes {
     } else {
       // The shell command to run
       let first_discovery_cmd = r#"export KUBECONFIG=$HOME/.kube/config; kubectl get nodes --no-headers | awk '{print $1}' && kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm "$1 $NF}' && containerd --version | awk '{ print "containerd "$3 }'"#;
+      let _ = print_debug_log_file(
+        "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+        "Discovery Node SSH CMD (Workers..): ",
+        first_discovery_cmd
+      );
       let child = Command::new("bash")
           .arg("-c")
           .arg(first_discovery_cmd)

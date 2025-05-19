@@ -116,6 +116,12 @@ pub async fn run_upgrade_steps<B: Backend>(
     // this is custom function made to get some logs as the `tui` doesn't permit to see `println/eprintln` so we write to a file.
     let _ = print_debug_log_file("/home/creditizens/kubernetes_upgrade_rust_tui/debugging/debugging_logs.txt", "WILL STARTooo" , step.name());
 
+
+    if step.name() == "Uprgade Apply CTL" {
+    	// we sleep a bit to give the time for the node to be ready as i get frequently node not ready state in the next step `Upgrade Apply cTL`
+    	sleep(Duration::from_secs(60)).await;
+    }
+
     /* 3.2 run the step – this awaits until its child process ends */
     // we borrow `tx_log` (transmitter buffer/output)
     match step.run(&tx_log, desired_versions, pipeline_state, node_update_tracker_state).await {
@@ -181,8 +187,6 @@ pub async fn run_upgrade_steps<B: Backend>(
             let _ = check_upgrade_plan_version_and_update_shared_state_versions(&line, desired_versions, pipeline_state);
             let _ = check_upgrade_plan_output_available_next_version(&line, desired_versions);
      	  }
-     	  // we sleep a bit to give the time for the node to be ready as i get frequently node not ready state in the next step `Upgrade Apply cTL`
-     	  sleep(Duration::from_secs(15)).await;
       	},
       	"Upgrade Apply CTL" => {
       	  let node_type_in_step = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();

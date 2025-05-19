@@ -34,6 +34,7 @@ impl Step for UpgradePlan {
       
       // we capture the `node_type`
       let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
+      let node_name = pipeline_state.log.clone().shared_state_iter("node_name")[0].clone();
       let _ = print_debug_log_file(
         "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
         "UpgradePlan Node Type",
@@ -80,7 +81,9 @@ impl Step for UpgradePlan {
       // let apt_update = "sudo -n apt-get update -y";
       let restart_kubelet_and_containerd = "sudo systemctl restart kubelet containerd";
       // upgrade plan is non interactive and do not prompt anything
-      let upgrade_plan = "sudo kubeadm upgrade plan";
+
+      let upgrade_plan = "export KUBECONFIG=$HOME/.kube/config; until kubectl get nodes &> /dev/null; do sleep 5; done; sudo kubeadm upgrade plan --kubeconfig=/home/creditizens/.kube/config";
+      let upgrade_plan_downgrade = "export KUBECONFIG=$HOME/.kube/config; until kubectl get nodes &> /dev/null; do sleep 5; done; kubectl -n kube-system set image deployment/coredns coredns=k8s.gcr.io/coredns/coredns:v1.10.1; until kubectl get nodes &> /dev/null; do sleep 5; done; sudo kubeadm upgrade plan --kubeconfig=/home/creditizens/.kube/config"; 
       let kubeadm_plan = r#"kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm_plan "$1 $NF }'"#;
       let kubelet_plan = r#"kubelet --version | awk '{ print $2 }' | awk -F "[v]" '{ print "kubelet_plan "$1 $NF }'"#;
       let kubectl_plan = r#"kubectl version | awk 'NR==1{ print $3 }' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF }'"#;
@@ -109,14 +112,15 @@ impl Step for UpgradePlan {
         hold_versions_back,
         //apt_update,
         restart_kubelet_and_containerd,
-        upgrade_plan,
+        upgrade_plan_downgrade,
         kubeadm_plan,
         kubelet_plan,
         kubectl_plan,
         containerd_plan,
       );
 
-      let command_worker_upgrade_components = format!(r#"{} && {} && {} && {} && {} && {} && {} && {} && {}"#,
+      let command_worker_upgrade_components = format!(r#"ssh {} {} && {} && {} && {} && {} && {} && {} && {} && {}"#,
+        &node_name,
         unhold_versions, 
         containerd_version_upgrade,
         kube_versions_upgrade,
@@ -129,7 +133,8 @@ impl Step for UpgradePlan {
         containerd_plan,
       );
 
-      let command_worker_downgrade = format!(r#"{} && {} && {} && {} && {} && {} && {} && {} && {} && {}"#,
+      let command_worker_downgrade = format!(r#"ssh {} {} && {} && {} && {} && {} && {} && {} && {} && {} && {}"#,
+        &node_name,
         export_kube_config,
         unhold_versions, 
         containerd_version_upgrade,

@@ -168,6 +168,11 @@ pub fn state_updater_for_ui_good_display(
     shared_state.update_shared_state_info("node_name", &name);
     // we mark this step already done so for next round, it will be skipped 
     node_update_tracker_state.discovery_already_done = true;
+    let _ =  print_debug_log_file(
+      "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+      "DISCOVERY ALREADY DONE set to TRUE",
+      &format!("Discovery node set to true?: {}", node_update_tracker_state.discovery_already_done)
+    );
   }	
 }
 
@@ -439,6 +444,15 @@ pub fn check_node_upgrade_state_and_kubeproxy_version(
   let name = node_name.to_string();
   if node_tracker.discovered_node.contains(&name) {
   	return Err(anyhow::anyhow!("Node name is still inside the list of nodes TO_DO.. Nazeeeeeee?!"));
+  }
+  // we fail it if this is not set to true, should have been set just in discovery node parser function already... so if it is `false` we fail it
+  if !node_tracker.discovery_already_done {
+    let _ =  print_debug_log_file(
+      "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+      "DISCOVERY ALREADY DONE set to TRUE (In verify last step)",
+      &format!("Discovery node set to true?: {}", node_tracker.discovery_already_done)
+    );
+  	return Err(anyhow::anyhow!("Discovery Node Should be set to True but found False"));
   }
   Ok(())
 }

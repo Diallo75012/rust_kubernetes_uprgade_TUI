@@ -55,10 +55,11 @@ impl Step for UpgradeApplyCtl {
 
           // here we check and try a downgrade if the version desired `target_kube_version` is lower than the actual kube version
           if parse_versions(&target_kube_version).1 < parse_versions(&kube_actual_version).1 {
-            let command = format!(r#"export KUBECONFIG=$HOME/.kube/config; sudo kubeadm upgrade apply v{} --allow-downgrades --yes"#, target_kube_version);
+            // we add the `until kubectl get nodes; do sleep 5; done` so that node is ready as we get errors for node not ready
+            let command = format!(r#"export KUBECONFIG=$HOME/.kube/config; until kubectl get nodes &> /dev/null; do sleep 5; done; sudo kubeadm upgrade apply v{} --yes --kubeconfig=/home/creditizens/.kube/config"#, target_kube_version);
             let _ = print_debug_log_file(
               "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
-              "FULL Upgrade Apply CMD (with --allow-downgrades)",
+              "FULL Upgrade Apply CMD (normal)",
               &command
             );
 
@@ -76,7 +77,7 @@ impl Step for UpgradeApplyCtl {
 
           } else {  
 
-            let command = format!(r#"export KUBECONFIG=$HOME/.kube/config; sudo kubeadm upgrade apply v{} --yes"#, target_kube_version);
+            let command = format!(r#"export KUBECONFIG=$HOME/.kube/config; until kubectl get nodes &> /dev/null; do sleep 5; done; sudo kubeadm upgrade apply v{} --yes --kubeconfig=/home/creditizens/.kube/config"#, target_kube_version);
             let _ = print_debug_log_file(
               "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
               "FULL Upgrade Apply CMD",
