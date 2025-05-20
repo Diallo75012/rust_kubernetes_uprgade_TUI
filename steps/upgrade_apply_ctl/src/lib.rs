@@ -35,6 +35,7 @@ impl Step for UpgradeApplyCtl {
 
         // we capture the `node_type`
         let node_type = pipeline_state.log.clone().shared_state_iter("node_role")[0].clone();
+        let kube_desired_version_clone_madison_pulled_full_version = desired_versions.madison_pulled_full_version.clone();
         let kube_actual_version = pipeline_state.log.clone().shared_state_iter("kubeadm_v")[0].clone();
         let target_kube_version = desired_versions.madison_parsed_upgrade_apply_version.clone();
         let _ = print_debug_log_file(
@@ -56,7 +57,7 @@ impl Step for UpgradeApplyCtl {
           // here we check and try a downgrade if the version desired `target_kube_version` is lower than the actual kube version
           if parse_versions(&target_kube_version).1 < parse_versions(&kube_actual_version).1 {
             // we add the `until kubectl get nodes; do sleep 5; done` so that node is ready as we get errors for node not ready
-            let command = format!(r#"export KUBECONFIG=$HOME/.kube/config; until kubectl get nodes &> /dev/null; do sleep 5; done; sudo kubeadm upgrade apply v{} --yes --kubeconfig=/home/creditizens/.kube/config"#, target_kube_version);
+            let command = format!(r#"export KUBECONFIG=$HOME/.kube/config; sudo systemctl restart kubelet; until kubectl get nodes &> /dev/null; do sleep 5; done; sudo kubeadm upgrade apply v{} --yes --kubeconfig=/home/creditizens/.kube/config"#, target_kube_version);
             let _ = print_debug_log_file(
               "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
               "FULL Upgrade Apply CMD (normal)",
@@ -75,9 +76,34 @@ impl Step for UpgradeApplyCtl {
               .map_err(|e| StepError::Other(e.to_string()))?;
             Ok(())
 
-          } else {  
+          } else {
 
-            let command = format!(r#"export KUBECONFIG=$HOME/.kube/config; until kubectl get nodes &> /dev/null; do sleep 5; done; sudo kubeadm upgrade apply v{} --yes --kubeconfig=/home/creditizens/.kube/config"#, target_kube_version);
+            let mut command = "".to_string();
+
+            let minor_desired_v = kube_desired_version_clone_madison_pulled_full_version
+              .split(".")
+              .nth(1)
+              .and_then(|v| v.parse::<u8>().ok());
+            let minor_actual_v = kube_actual_version
+              .split(".")
+              .nth(1)
+              .and_then(|v| v.parse::<u8>().ok());
+
+            if let (Some(desired), Some(actual)) = (minor_desired_v, minor_actual_v) {
+              if desired > actual {
+                let format_command = format!(
+                  r#"export KUBECONFIG=$HOME/.kube/config; sudo systemctl restart kubelet; until kubectl get nodes &> /dev/null; do sleep 60; done; sudo kubeadm upgrade apply v{} --yes --ignore-preflight-errors=CreateJob,ControlPlaneNodesReady --kubeconfig=/home/creditizens/.kube/config"#,
+                  target_kube_version
+                );
+                command.push_str(&format_command);
+              } else {
+                let format_command = format!(
+                  r#"export KUBECONFIG=$HOME/.kube/config; sudo systemctl restart kubelet; until kubectl get nodes &> /dev/null; do sleep 60; done; sudo kubeadm upgrade apply v{} --yes --kubeconfig=/home/creditizens/.kube/config"#,
+                  target_kube_version
+                );
+                command.push_str(&format_command);              	
+              }
+            }
             let _ = print_debug_log_file(
               "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
               "FULL Upgrade Apply CMD",

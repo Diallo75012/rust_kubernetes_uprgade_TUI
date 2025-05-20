@@ -117,9 +117,18 @@ pub async fn run_upgrade_steps<B: Backend>(
     let _ = print_debug_log_file("/home/creditizens/kubernetes_upgrade_rust_tui/debugging/debugging_logs.txt", "WILL STARTooo" , step.name());
 
 
-    if step.name() == "Uprgade Apply CTL" {
+    if step.name() == "Uprgade Apply CTL" && node_update_tracker_state.discovery_already_done {
     	// we sleep a bit to give the time for the node to be ready as i get frequently node not ready state in the next step `Upgrade Apply cTL`
-    	sleep(Duration::from_secs(60)).await;
+    	sleep(Duration::from_secs(100)).await;
+    } else {
+        // we log why the sleep didn't happen
+    	let _ = print_debug_log_file(
+    	  "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/debugging_logs.txt", "WILL STARTooo",
+    	  &format!(
+    	    "Sleep didn't happen for step: {}... maybe because of discovery_already done (false?): {}",
+    	    step.name(),
+    	    node_update_tracker_state.discovery_already_done
+    	  ));
     }
 
     /* 3.2 run the step – this awaits until its child process ends */

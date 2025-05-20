@@ -73,8 +73,8 @@ pub async fn stream_child(
       return Err(anyhow::anyhow!("Command exited with status: {}", status));
     }	
   } else if step == "Pull Repository Key" {
-      // hre we put 100s as it can hang a bit
-  	  let status = timeout(Duration::from_secs(200), child.wait())
+      // hre we put 360s as it can hang a bit
+  	  let status = timeout(Duration::from_secs(360), child.wait())
   	    .await
   	    .context(format!("Timeout waiting for step `{}`", step))??;
       if !status.success() {
@@ -113,7 +113,7 @@ pub async fn stream_child(
      }
   } else if step == "Upgrade Apply CTL" {
      // here probably we need to match kubernetes timeout with is default to 5mn=300s + 60s bonus time
-  	 let status = timeout(Duration::from_secs(360), child.wait())
+  	 let status = timeout(Duration::from_secs(460), child.wait())
   	   .await
   	   .context(format!("Timeout waiting for step `{}`", step))??;
      if !status.success() {
@@ -121,7 +121,7 @@ pub async fn stream_child(
      }
   } else if step == "Upgrade Node" {
      // here probably we need to match kubernetes timeout with is default to 5mn=300s + 60s bonus time
-         let status = timeout(Duration::from_secs(360), child.wait())
+         let status = timeout(Duration::from_secs(460), child.wait())
            .await
            .context(format!("Timeout waiting for step `{}`", step))??;
      if !status.success() {

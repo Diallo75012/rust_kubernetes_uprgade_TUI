@@ -48,7 +48,7 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
 
   let log_upgrade_status = shared_state.log.shared_state_iter("upgrade_status")[0].clone();
 
-  f.render_widget(Paragraph::new("Rust K8s Upgrade – Creditizens - v0.1.0"), header[1]);
+  f.render_widget(Paragraph::new("K8s Upgrade - RUSTxCTZ - v1"), header[1]);
   // so here will probably need to get the value from the `PipelineState` and inject to &str
   // f.render_widget(Paragraph::new("Upgrade State<...>"), header[3]);
   f.render_widget(Paragraph::new(log_upgrade_status).style(Style::default().fg(Color::Green)), header[3]);

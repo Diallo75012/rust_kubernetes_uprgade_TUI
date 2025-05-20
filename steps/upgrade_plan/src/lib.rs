@@ -71,8 +71,8 @@ impl Step for UpgradePlan {
       // and will compare those to the one saved in state in `core_ui/src/parse_lines.rs`... and use at the end of `engine/src/lib/rs`
       let export_kube_config = "export KUBECONFIG=$HOME/.kube/config";
       let unhold_versions = "sudo apt-mark unhold kubeadm kubelet kubectl";
-      let containerd_version_upgrade = format!("sudo apt-get install containerd.io={}", containerd_desired_version_clone_madison_pulled_full_version);
-      let kube_versions_upgrade = format!("sudo apt-get install -y kubeadm={v} kubelet={v} kubectl={v}", v = kube_desired_version_clone_madison_pulled_full_version);
+      let containerd_version_upgrade = format!("sudo apt-get install containerd.io={}", &containerd_desired_version_clone_madison_pulled_full_version);
+      let kube_versions_upgrade = format!("sudo apt-get install -y kubeadm={v} kubelet={v} kubectl={v}", v = &kube_desired_version_clone_madison_pulled_full_version);
       let kube_versions_upgrade_allow_downgrades = format!(
         "sudo apt-get install -y kubeadm={v} kubelet={v} kubectl={v} --allow-downgrades",
         v = kube_desired_version_clone_madison_pulled_full_version
@@ -82,8 +82,30 @@ impl Step for UpgradePlan {
       let restart_kubelet_and_containerd = "sudo systemctl restart kubelet containerd";
       // upgrade plan is non interactive and do not prompt anything
 
-      let upgrade_plan = "export KUBECONFIG=$HOME/.kube/config; until kubectl get nodes &> /dev/null; do sleep 5; done; sudo kubeadm upgrade plan --kubeconfig=/home/creditizens/.kube/config";
-      let upgrade_plan_downgrade = "export KUBECONFIG=$HOME/.kube/config; until kubectl get nodes &> /dev/null; do sleep 5; done; kubectl -n kube-system set image deployment/coredns coredns=k8s.gcr.io/coredns/coredns:v1.10.1; until kubectl get nodes &> /dev/null; do sleep 5; done; sudo kubeadm upgrade plan --kubeconfig=/home/creditizens/.kube/config"; 
+      let minor_desired_v = kube_desired_version_clone_madison_pulled_full_version
+        .split(".")
+        .nth(1)
+        .and_then(|v| v.parse::<u8>().ok());
+      let minor_actual_v = kube_actual_version
+        .split(".")
+        .nth(1)
+        .and_then(|v| v.parse::<u8>().ok());
+      let upgrade_plan = &mut  "".to_string();
+      if let (Some(desired), Some(actual)) = (minor_desired_v, minor_actual_v) {
+        if desired > actual {
+          // tryng the option `--ignore-preflight-errors=CreateJob,ControlPlaneNodesReady
+          //as it always fails only on upgrade different version for that reason of healthcheck job timeout (15s)
+                                                                                                         //until kubectl version --short | grep "Server Version" &> /dev/null; do sleep 5; done
+          upgrade_plan.push_str("export KUBECONFIG=$HOME/.kube/config && sudo systemctl restart kubelet && until kubectl get nodes &> /dev/null; do sleep 60; done && sudo kubeadm upgrade plan --ignore-preflight-errors=CreateJob,ControlPlaneNodesReady --kubeconfig=/home/creditizens/.kube/config");
+        } else {
+          upgrade_plan.push_str("export KUBECONFIG=$HOME/.kube/config && sudo systemctl restart kubelet && until kubectl get nodes &> /dev/null; do sleep 60; done && sudo kubeadm upgrade plan --kubeconfig=/home/creditizens/.kube/config");
+        }
+      }
+      let upgrade_plan_downgrade = "export KUBECONFIG=$HOME/.kube/config && sudo systemctl restart kubelet && until kubectl get nodes &> /dev/null; do sleep 5; done && \
+        kubectl -n kube-system set image deployment/coredns coredns=registry.k8s.io/coredns/coredns:v1.10.1 && \
+        kubectl -n kube-system get configmap kubelet-config -o json | jq '(.data.kubelet | fromjson) as $k | ($k.logging.options | del(.text)) as $opts | $k | .logging.options = $opts | {data: {kubelet: (.) | tojson}}' | \
+        kubectl -n kube-system patch configmap kubelet-config --patch-file=/dev/stdin && \
+        sudo kubeadm upgrade plan --kubeconfig=/home/creditizens/.kube/config";
       let kubeadm_plan = r#"kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm_plan "$1 $NF }'"#;
       let kubelet_plan = r#"kubelet --version | awk '{ print $2 }' | awk -F "[v]" '{ print "kubelet_plan "$1 $NF }'"#;
       let kubectl_plan = r#"kubectl version | awk 'NR==1{ print $3 }' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF }'"#;
@@ -119,8 +141,8 @@ impl Step for UpgradePlan {
         containerd_plan,
       );
 
-      let command_worker_upgrade_components = format!(r#"ssh {} {} && {} && {} && {} && {} && {} && {} && {} && {}"#,
-        &node_name,
+      let command_worker_upgrade_components = format!(
+        r#"ssh {node} {} && ssh {node} {} && ssh {node} {} && ssh {node} {} && ssh {node} {} && ssh {node} {} && ssh {node} {} && ssh {node} {} && ssh {node} {}"#,
         unhold_versions, 
         containerd_version_upgrade,
         kube_versions_upgrade,
@@ -131,10 +153,11 @@ impl Step for UpgradePlan {
         kubelet_plan,
         kubectl_plan,
         containerd_plan,
+        node = &node_name,
       );
 
-      let command_worker_downgrade = format!(r#"ssh {} {} && {} && {} && {} && {} && {} && {} && {} && {} && {}"#,
-        &node_name,
+      let command_worker_downgrade = format!(
+        r#"ssh {node} {} && ssh {node} {} && ssh {node} {} && ssh {node} {} && ssh {node} {} && ssh {node} {} && ssh {node} {} && ssh {node} {} && ssh {node} {} && ssh {node} {}"#,
         export_kube_config,
         unhold_versions, 
         containerd_version_upgrade,
@@ -146,6 +169,7 @@ impl Step for UpgradePlan {
         kubelet_plan,
         kubectl_plan,
         containerd_plan,
+        node = &node_name,
       );
 
       // Prepare the child process (standard Rust async Command)

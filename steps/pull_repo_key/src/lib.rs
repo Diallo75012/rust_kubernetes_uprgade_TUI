@@ -67,6 +67,40 @@ impl Step for PullRepoKey {
           ),
           "sudo -n apt-get update -y",
         ];
+
+        // for ssh we need to repeat ssh <node name> even int he command after the pipe
+        let ssh_node_name = format!("ssh {}", &node_name);
+        let commands_ssh = [
+          &format!(
+            "{} sudo -n apt-get update -y",
+            &ssh_node_name,
+          ),
+          &format!(
+            "{} sudo -n apt-get install -y curl apt-transport-https",
+            &ssh_node_name
+          ),
+          "echo 'curl install and apt-transport-https checked'",
+          &format!(
+            r#"{ssh_node} curl -fsSL https://pkgs.k8s.io/core:/stable:/v{}/deb/Release.key | {ssh_node} sudo gpg --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg"#,
+            user_desired_kube_version_parsed,
+            ssh_node = &ssh_node_name,
+          ),
+          "echo 'successfully pulled the keyrings'",
+          &format!(
+            r#"{ssh_node} echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{}/deb/ /' | {ssh_node} sudo tee /etc/apt/sources.list.d/kubernetes.list"#,
+            user_desired_kube_version_parsed,
+            ssh_node = &ssh_node_name,
+          ),
+          &format!(
+            r#"echo 'successfully update the kubernetes repository to version {}. Just wait for last update before next step starts..... waitoooooo.....'"#,
+            user_desired_kube_version_parsed,
+          ),
+          &format!(
+            "{} sudo -n apt-get update -y",
+            &ssh_node_name,
+          ),
+        ];
+
         // Prepare the child process (standard Rust async Command)
         // type of `child` is `tokio::process::Child`
         if &node_type == "Controller" {
@@ -85,9 +119,9 @@ impl Step for PullRepoKey {
           };
           Ok(())
         } else {
-          let _multi_command = for idx in 0..commands.len() {
-            let cmd = commands[idx];
-            let ssh_cmd = format!(r#"ssh {} {}"#, &node_name, cmd);
+          let _multi_command = for idx in 0..commands_ssh.len() {
+            let ssh_cmd = commands_ssh[idx];
+            // let ssh_cmd = format!(r#"ssh {} {}"#, &node_name, cmd);
             let _ = print_debug_log_file(
               "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
               "Pull Repo Key (SSH CMD): ",

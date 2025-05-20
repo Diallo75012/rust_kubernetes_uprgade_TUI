@@ -37,8 +37,8 @@ impl Step for RestartServices {
  
         let command = r#"sudo systemctl daemon-reload && sudo systemctl restart kubelet"#;
         let ssh_command = format!(
-          r#"ssh {} sudo systemctl daemon-reload && sudo systemctl restart kubelet"#,
-          node_name,
+          r#"ssh {node} sudo systemctl daemon-reload; ssh {node} sudo systemctl restart kubelet"#,
+          node = &node_name,
         );
         // Prepare the child process (standard Rust async Command)
         // type of `child` is `tokio::process::Child`
