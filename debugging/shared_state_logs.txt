@@ -1,191 +1,7 @@
 
 
 message: Desired Versions State: 
-step started: kube desired version: 1.30
-contaienrd desired version: 1.7.25-1
-
-message: Discovery Node ALready Done Or Not: 
-step started: Discovery node already done? : false
-
-message: Discovery Node SSH CMD (Workers..): 
-step started: export KUBECONFIG=$HOME/.kube/config; kubectl get nodes --no-headers | awk '{print $1}' && kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm "$1 $NF}' && containerd --version | awk '{ print "containerd "$3 }'
-
-message: Inside While Loop Discovery Nodes Step Before CleanUp (node update tracker state: discovered_node):
-
-step started: 
-
-message: Line: 
-step started: [Discover Nodes][OUT] controller.creditizens.net
-
-
-message: PARSED NAME NODE DISCOVERED:
-step started: controller.creditizens.net
-
-message: EVOLUTION OF discover node [0]
-step started: controller.creditizens.net
-
-message: IS CONTROLLER discover node [0]
-step started: controller.creditizens.net
-
-message: DISCOVERY ALREADY DONE set to TRUE
-step started: Discovery node set to true?: true
-
-message: Inside While Loop Discovery Nodes Step Before CleanUp (node update tracker state: discovered_node):
-
-step started: controller.creditizens.net
-
-message: Line: 
-step started: [Discover Nodes][OUT] node1.creditizens.net
-
-
-message: PARSED NAME NODE DISCOVERED:
-step started: node1.creditizens.net
-
-message: EVOLUTION OF discover node [0]
-step started: controller.creditizens.net
-
-message: IS CONTROLLER discover node [0]
-step started: controller.creditizens.net
-
-message: DISCOVERY ALREADY DONE set to TRUE
-step started: Discovery node set to true?: true
-
-message: Inside While Loop Discovery Nodes Step Before CleanUp (node update tracker state: discovered_node):
-
-step started: controller.creditizens.net
-node1.creditizens.net
-
-message: Line: 
-step started: [Discover Nodes][OUT] node2.creditizens.net
-
-
-message: PARSED NAME NODE DISCOVERED:
-step started: node2.creditizens.net
-
-message: EVOLUTION OF discover node [0]
-step started: controller.creditizens.net
-
-message: IS CONTROLLER discover node [0]
-step started: controller.creditizens.net
-
-message: DISCOVERY ALREADY DONE set to TRUE
-step started: Discovery node set to true?: true
-
-message: Inside While Loop Discovery Nodes Step Before CleanUp (node update tracker state: discovered_node):
-
-step started: controller.creditizens.net
-node1.creditizens.net
-node2.creditizens.net
-
-message: Line:    
-step started: [Discover Nodes][OUT] kubeadm 1.29.15
-
-
-message: Shared State Log keys/values:
-
-step started: MyStruct Contents:
-node_name: controller.creditizens.net
-kubeadm_v: 1.29.15
-
-containerd_v: Wait for Update...
-node_role: Controller
-kubelet_v: 1.29.15
-
-upgrade_status: Step In Process...
-kubectl_v: 1.29.15
-
-
-
-message: EVOLUTION OF discover node [0]
-step started: controller.creditizens.net
-
-message: IS CONTROLLER discover node [0]
-step started: controller.creditizens.net
-
-message: DISCOVERY ALREADY DONE set to TRUE
-step started: Discovery node set to true?: true
-
-message: Inside While Loop Discovery Nodes Step Before CleanUp (node update tracker state: discovered_node):
-
-step started: controller.creditizens.net
-node1.creditizens.net
-node2.creditizens.net
-
-message: Line: 
-step started: [Discover Nodes][OUT] containerd 1.7.25
-
-
-message: Line index[3]: 
-step started: 1.7.25
-
-
-message: Shared State Log keys/values after containerd version state update:
-
-step started: MyStruct Contents:
-node_name: controller.creditizens.net
-kubeadm_v: 1.29.15
-
-containerd_v: 1.7.25
-
-node_role: Controller
-kubelet_v: 1.29.15
-
-upgrade_status: Step In Process...
-kubectl_v: 1.29.15
-
-
-
-message: EVOLUTION OF discover node [0]
-step started: controller.creditizens.net
-
-message: IS CONTROLLER discover node [0]
-step started: controller.creditizens.net
-
-message: DISCOVERY ALREADY DONE set to TRUE
-step started: Discovery node set to true?: true
-
-message: Pull Repo Key (User desired kube version parsed): 
-step started: 1.30
-
-message: MADISON CMD SSH TO WORKER:
-step started: ssh controller.creditizens.net sudo -n apt-cache madison kubectl | grep '1.30' | awk 'NR==1{print $0}'
-
-message: Inside Parser Madison (full line): 
-step started: [Madison Version][OUT]    kubectl | 1.30.13-1.1 | https://pkgs.k8s.io/core:/stable:/v1.30/deb  Packages
-
-
-message: Inside Parser Madison (formatted version): 
-step started: 1.30
-
-message: Inside Parser Madison (parsed line): 
-step started: 1.30.13-1.1
-
-message: Inside Parser Madison (parsed_upgrade_apply_version): 
-step started: 1.30.13
-
-message: ***********************************************************Inside Parser Madison (parsed line): 
-step started: 1.30.13
-
-message: Desired Versions Full Version: 
-step started: 1.30.13-1.1
-
-message: UpgradePlan Node Type
-step started: Controller
-
-message: Upgrade Apply (Target Kube Version): 
-step started: 1.30.13
-
-message: Upgrade Plan Version For Plan (Kube Components): 
-step started: 1.30.13-1.1
-
-message: Upgrade Plan Version For Plan (Containerd Components): 
-step started: 1.7.25-1
-
-message: FULL UpgradePlan CMD
-step started: export KUBECONFIG=$HOME/.kube/config && sudo apt-mark unhold kubeadm kubelet kubectl && sudo apt-get install containerd.io=1.7.25-1 && sudo apt-get install -y kubeadm=1.30.13-1.1 kubelet=1.30.13-1.1 kubectl=1.30.13-1.1 && sudo apt-mark hold kubeadm kubelet kubectl && sudo systemctl restart kubelet containerd && export KUBECONFIG=$HOME/.kube/config && sudo systemctl restart kubelet && until kubectl get nodes &> /dev/null; do sleep 60; done && sudo kubeadm upgrade plan --ignore-preflight-errors=CreateJob,ControlPlaneNodesReady --kubeconfig=/home/creditizens/.kube/config && kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm_plan "$1 $NF }' && kubelet --version | awk '{ print $2 }' | awk -F "[v]" '{ print "kubelet_plan "$1 $NF }' && kubectl version | awk 'NR==1{ print $3 }' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF }' && containerd --version | awk '{ print "containerd_plan "$3 }'
-
-message: Desired Versions State: 
-step started: kube desired version: 1.29
+step started: kube desired version: 1.31
 contaienrd desired version: 1.7.25-1
 
 message: Discovery Node ALready Done Or Not: 
@@ -268,15 +84,15 @@ step started: [Discover Nodes][OUT] kubeadm 1.30.13
 message: Shared State Log keys/values:
 
 step started: MyStruct Contents:
-kubectl_v: 1.30.13
+kubelet_v: 1.30.13
 
-node_name: controller.creditizens.net
 node_role: Controller
-upgrade_status: Step In Process...
 kubeadm_v: 1.30.13
 
 containerd_v: Wait for Update...
-kubelet_v: 1.30.13
+upgrade_status: Step In Process...
+node_name: controller.creditizens.net
+kubectl_v: 1.30.13
 
 
 
@@ -306,16 +122,16 @@ step started: 1.7.25
 message: Shared State Log keys/values after containerd version state update:
 
 step started: MyStruct Contents:
-kubectl_v: 1.30.13
+kubelet_v: 1.30.13
 
-node_name: controller.creditizens.net
 node_role: Controller
-upgrade_status: Step In Process...
 kubeadm_v: 1.30.13
 
 containerd_v: 1.7.25
 
-kubelet_v: 1.30.13
+upgrade_status: Step In Process...
+node_name: controller.creditizens.net
+kubectl_v: 1.30.13
 
 
 
@@ -329,241 +145,57 @@ message: DISCOVERY ALREADY DONE set to TRUE
 step started: Discovery node set to true?: true
 
 message: Pull Repo Key (User desired kube version parsed): 
-step started: 1.29
+step started: 1.31
 
 message: MADISON CMD SSH TO WORKER:
-step started: ssh controller.creditizens.net sudo -n apt-cache madison kubectl | grep '1.29' | awk 'NR==1{print $0}'
+step started: ssh controller.creditizens.net sudo -n apt-cache madison kubectl | grep '1.31' | awk 'NR==1{print $0}'
 
 message: Inside Parser Madison (full line): 
-step started: [Madison Version][OUT]    kubectl | 1.29.15-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+step started: [Madison Version][OUT]    kubectl | 1.31.9-1.1 | https://pkgs.k8s.io/core:/stable:/v1.31/deb  Packages
 
 
 message: Inside Parser Madison (formatted version): 
-step started: 1.29
+step started: 1.31
 
 message: Inside Parser Madison (parsed line): 
-step started: 1.29.15-1.1
+step started: 1.31.9-1.1
 
 message: Inside Parser Madison (parsed_upgrade_apply_version): 
-step started: 1.29.15
+step started: 1.31.9
 
 message: ***********************************************************Inside Parser Madison (parsed line): 
-step started: 1.29.15
+step started: 1.31.9
 
 message: Desired Versions Full Version: 
-step started: 1.29.15-1.1
+step started: 1.31.9-1.1
 
 message: UpgradePlan Node Type
 step started: Controller
 
 message: Upgrade Apply (Target Kube Version): 
-step started: 1.29.15
+step started: 1.31.9
 
 message: Upgrade Plan Version For Plan (Kube Components): 
-step started: 1.29.15-1.1
-
-message: Upgrade Plan Version For Plan (Containerd Components): 
-step started: 1.7.25-1
-
-message: FULL UpgradePlan CMD DOWNGRADE
-step started: export KUBECONFIG=$HOME/.kube/config && sudo apt-mark unhold kubeadm kubelet kubectl && sudo apt-get install containerd.io=1.7.25-1 && sudo apt-get install -y kubeadm=1.29.15-1.1 kubelet=1.29.15-1.1 kubectl=1.29.15-1.1 --allow-downgrades && sudo apt-mark hold kubeadm kubelet kubectl && sudo systemctl restart kubelet containerd && export KUBECONFIG=$HOME/.kube/config && sudo systemctl restart kubelet && until kubectl get nodes &> /dev/null; do sleep 5; done && kubectl -n kube-system set image deployment/coredns coredns=registry.k8s.io/coredns/coredns:v1.10.1 && kubectl -n kube-system get configmap kubelet-config -o json | jq '(.data.kubelet | fromjson) as $k | ($k.logging.options | del(.text)) as $opts | $k | .logging.options = $opts | {data: {kubelet: (.) | tojson}}' | kubectl -n kube-system patch configmap kubelet-config --patch-file=/dev/stdin && sudo kubeadm upgrade plan --kubeconfig=/home/creditizens/.kube/config && kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm_plan "$1 $NF }' && kubelet --version | awk '{ print $2 }' | awk -F "[v]" '{ print "kubelet_plan "$1 $NF }' && kubectl version | awk 'NR==1{ print $3 }' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF }' && containerd --version | awk '{ print "containerd_plan "$3 }'
-
-message: Desired Versions State: 
-step started: kube desired version: 1.30
-contaienrd desired version: 1.7.25-1
-
-message: Discovery Node ALready Done Or Not: 
-step started: Discovery node already done? : false
-
-message: Discovery Node SSH CMD (Workers..): 
-step started: export KUBECONFIG=$HOME/.kube/config; kubectl get nodes --no-headers | awk '{print $1}' && kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm "$1 $NF}' && containerd --version | awk '{ print "containerd "$3 }'
-
-message: Inside While Loop Discovery Nodes Step Before CleanUp (node update tracker state: discovered_node):
-
-step started: 
-
-message: Line: 
-step started: [Discover Nodes][OUT] controller.creditizens.net
-
-
-message: PARSED NAME NODE DISCOVERED:
-step started: controller.creditizens.net
-
-message: EVOLUTION OF discover node [0]
-step started: controller.creditizens.net
-
-message: IS CONTROLLER discover node [0]
-step started: controller.creditizens.net
-
-message: DISCOVERY ALREADY DONE set to TRUE
-step started: Discovery node set to true?: true
-
-message: Inside While Loop Discovery Nodes Step Before CleanUp (node update tracker state: discovered_node):
-
-step started: controller.creditizens.net
-
-message: Line: 
-step started: [Discover Nodes][OUT] node1.creditizens.net
-
-
-message: PARSED NAME NODE DISCOVERED:
-step started: node1.creditizens.net
-
-message: EVOLUTION OF discover node [0]
-step started: controller.creditizens.net
-
-message: IS CONTROLLER discover node [0]
-step started: controller.creditizens.net
-
-message: DISCOVERY ALREADY DONE set to TRUE
-step started: Discovery node set to true?: true
-
-message: Inside While Loop Discovery Nodes Step Before CleanUp (node update tracker state: discovered_node):
-
-step started: controller.creditizens.net
-node1.creditizens.net
-
-message: Line: 
-step started: [Discover Nodes][OUT] node2.creditizens.net
-
-
-message: PARSED NAME NODE DISCOVERED:
-step started: node2.creditizens.net
-
-message: EVOLUTION OF discover node [0]
-step started: controller.creditizens.net
-
-message: IS CONTROLLER discover node [0]
-step started: controller.creditizens.net
-
-message: DISCOVERY ALREADY DONE set to TRUE
-step started: Discovery node set to true?: true
-
-message: Inside While Loop Discovery Nodes Step Before CleanUp (node update tracker state: discovered_node):
-
-step started: controller.creditizens.net
-node1.creditizens.net
-node2.creditizens.net
-
-message: Line:    
-step started: [Discover Nodes][OUT] kubeadm 1.29.15
-
-
-message: Shared State Log keys/values:
-
-step started: MyStruct Contents:
-kubeadm_v: 1.29.15
-
-node_name: controller.creditizens.net
-containerd_v: Wait for Update...
-kubelet_v: 1.29.15
-
-kubectl_v: 1.29.15
-
-node_role: Controller
-upgrade_status: Step In Process...
-
-
-message: EVOLUTION OF discover node [0]
-step started: controller.creditizens.net
-
-message: IS CONTROLLER discover node [0]
-step started: controller.creditizens.net
-
-message: DISCOVERY ALREADY DONE set to TRUE
-step started: Discovery node set to true?: true
-
-message: Inside While Loop Discovery Nodes Step Before CleanUp (node update tracker state: discovered_node):
-
-step started: controller.creditizens.net
-node1.creditizens.net
-node2.creditizens.net
-
-message: Line: 
-step started: [Discover Nodes][OUT] containerd 1.7.25
-
-
-message: Line index[3]: 
-step started: 1.7.25
-
-
-message: Shared State Log keys/values after containerd version state update:
-
-step started: MyStruct Contents:
-kubeadm_v: 1.29.15
-
-node_name: controller.creditizens.net
-containerd_v: 1.7.25
-
-kubelet_v: 1.29.15
-
-kubectl_v: 1.29.15
-
-node_role: Controller
-upgrade_status: Step In Process...
-
-
-message: EVOLUTION OF discover node [0]
-step started: controller.creditizens.net
-
-message: IS CONTROLLER discover node [0]
-step started: controller.creditizens.net
-
-message: DISCOVERY ALREADY DONE set to TRUE
-step started: Discovery node set to true?: true
-
-message: Pull Repo Key (User desired kube version parsed): 
-step started: 1.30
-
-message: MADISON CMD SSH TO WORKER:
-step started: ssh controller.creditizens.net sudo -n apt-cache madison kubectl | grep '1.30' | awk 'NR==1{print $0}'
-
-message: Inside Parser Madison (full line): 
-step started: [Madison Version][OUT]    kubectl | 1.30.13-1.1 | https://pkgs.k8s.io/core:/stable:/v1.30/deb  Packages
-
-
-message: Inside Parser Madison (formatted version): 
-step started: 1.30
-
-message: Inside Parser Madison (parsed line): 
-step started: 1.30.13-1.1
-
-message: Inside Parser Madison (parsed_upgrade_apply_version): 
-step started: 1.30.13
-
-message: ***********************************************************Inside Parser Madison (parsed line): 
-step started: 1.30.13
-
-message: Desired Versions Full Version: 
-step started: 1.30.13-1.1
-
-message: UpgradePlan Node Type
-step started: Controller
-
-message: Upgrade Apply (Target Kube Version): 
-step started: 1.30.13
-
-message: Upgrade Plan Version For Plan (Kube Components): 
-step started: 1.30.13-1.1
+step started: 1.31.9-1.1
 
 message: Upgrade Plan Version For Plan (Containerd Components): 
 step started: 1.7.25-1
 
 message: FULL UpgradePlan CMD
-step started: export KUBECONFIG=$HOME/.kube/config && sudo apt-mark unhold kubeadm kubelet kubectl && sudo apt-get install containerd.io=1.7.25-1 && sudo apt-get install -y kubeadm=1.30.13-1.1 kubelet=1.30.13-1.1 kubectl=1.30.13-1.1 && sudo apt-mark hold kubeadm kubelet kubectl && sudo systemctl restart kubelet containerd && export KUBECONFIG=$HOME/.kube/config && sudo systemctl restart kubelet && until kubectl get nodes &> /dev/null; do sleep 60; done && sudo kubeadm upgrade plan --ignore-preflight-errors=CreateJob,ControlPlaneNodesReady --kubeconfig=/home/creditizens/.kube/config && kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm_plan "$1 $NF }' && kubelet --version | awk '{ print $2 }' | awk -F "[v]" '{ print "kubelet_plan "$1 $NF }' && kubectl version | awk 'NR==1{ print $3 }' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF }' && containerd --version | awk '{ print "containerd_plan "$3 }'
+step started: export KUBECONFIG=$HOME/.kube/config && sudo apt-mark unhold kubeadm kubelet kubectl && sudo apt-get install containerd.io=1.7.25-1 && sudo apt-get install -y kubeadm=1.31.9-1.1 kubelet=1.31.9-1.1 kubectl=1.31.9-1.1 && sudo apt-mark hold kubeadm kubelet kubectl && sudo systemctl restart kubelet containerd && export KUBECONFIG=$HOME/.kube/config && sudo systemctl restart kubelet && until kubectl get nodes &> /dev/null; do sleep 60; done && sudo kubeadm upgrade plan --ignore-preflight-errors=CreateJob,ControlPlaneNodesReady --kubeconfig=/home/creditizens/.kube/config && kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm_plan "$1 $NF }' && kubelet --version | awk '{ print $2 }' | awk -F "[v]" '{ print "kubelet_plan "$1 $NF }' && kubectl version | awk 'NR==1{ print $3 }' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF }' && containerd --version | awk '{ print "containerd_plan "$3 }'
 
 message: Upgrade Apply (Target Kube Version): 
-step started: 1.30.13
+step started: 1.31.9
 
 message: FULL Upgrade Apply CMD
-step started: export KUBECONFIG=$HOME/.kube/config; sudo systemctl restart kubelet; until kubectl get nodes &> /dev/null; do sleep 60; done; sudo kubeadm upgrade apply v1.30.13 --yes --ignore-preflight-errors=CreateJob,ControlPlaneNodesReady --kubeconfig=/home/creditizens/.kube/config
+step started: export KUBECONFIG=$HOME/.kube/config; sudo systemctl restart kubelet; until kubectl get nodes &> /dev/null; do sleep 60; done; sudo kubeadm upgrade apply v1.31.9 --yes --ignore-preflight-errors=CreateJob,ControlPlaneNodesReady --kubeconfig=/home/creditizens/.kube/config
 
 message: UPGRADE APPLY UPGRADE STATUS CHECK (changed to Upgraded?):
 
 step started: Upgraded!
 
 message: Upgrade Node (Target Kube Version): 
-step started: 1.30.13
+step started: 1.31.9
 
 message: FULL Upgrade Node SSH Command:
 step started: export KUBECONFIG=$HOME/.kube/config; ssh controller.creditizens.net sudo kubeadm upgrade node
@@ -616,22 +248,22 @@ step started: node1.creditizens.net
 node2.creditizens.net
 
 message: Line:    
-step started: [Discover Nodes][OUT] kubeadm 1.29.15
+step started: [Discover Nodes][OUT] kubeadm 1.30.13
 
 
 message: Shared State Log keys/values:
 
 step started: MyStruct Contents:
-kubelet_v: 1.29.15
+kubelet_v: 1.30.13
+
+kubectl_v: 1.30.13
 
 containerd_v: Wait for Update...
-kubeadm_v: 1.29.15
+upgrade_status: Waiting for update...
+node_role: waiting for update...
+kubeadm_v: 1.30.13
 
 node_name: Wait for Update...
-upgrade_status: Waiting for update...
-kubectl_v: 1.29.15
-
-node_role: waiting for update...
 
 
 message: EVOLUTION OF discover node [0]
@@ -659,17 +291,17 @@ step started: 1.7.25
 message: Shared State Log keys/values after containerd version state update:
 
 step started: MyStruct Contents:
-kubelet_v: 1.29.15
+kubelet_v: 1.30.13
+
+kubectl_v: 1.30.13
 
 containerd_v: 1.7.25
 
-kubeadm_v: 1.29.15
+upgrade_status: Step In Process...
+node_role: Worker
+kubeadm_v: 1.30.13
 
 node_name: node1.creditizens.net
-upgrade_status: Step In Process...
-kubectl_v: 1.29.15
-
-node_role: Worker
 
 
 message: EVOLUTION OF discover node [0]
@@ -703,7 +335,7 @@ message: DISCOVERY ALREADY DONE set to TRUE
 step started: Discovery node set to true?: true
 
 message: Pull Repo Key (User desired kube version parsed): 
-step started: 1.30
+step started: 1.31
 
 message: Pull Repo Key (SSH CMD): 
 step started: ssh node1.creditizens.net sudo -n apt-get update -y
@@ -715,43 +347,43 @@ message: Pull Repo Key (SSH CMD):
 step started: echo 'curl install and apt-transport-https checked'
 
 message: Pull Repo Key (SSH CMD): 
-step started: ssh node1.creditizens.net curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | ssh node1.creditizens.net sudo gpg --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+step started: ssh node1.creditizens.net curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | ssh node1.creditizens.net sudo gpg --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
 message: Pull Repo Key (SSH CMD): 
 step started: echo 'successfully pulled the keyrings'
 
 message: Pull Repo Key (SSH CMD): 
-step started: ssh node1.creditizens.net echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | ssh node1.creditizens.net sudo tee /etc/apt/sources.list.d/kubernetes.list
+step started: ssh node1.creditizens.net echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /' | ssh node1.creditizens.net sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 message: Pull Repo Key (SSH CMD): 
-step started: echo 'successfully update the kubernetes repository to version 1.30. Just wait for last update before next step starts..... waitoooooo.....'
+step started: echo 'successfully update the kubernetes repository to version 1.31. Just wait for last update before next step starts..... waitoooooo.....'
 
 message: Pull Repo Key (SSH CMD): 
 step started: ssh node1.creditizens.net sudo -n apt-get update -y
 
 message: MADISON CMD SSH TO WORKER:
-step started: ssh node1.creditizens.net sudo -n apt-cache madison kubectl | grep '1.30' | awk 'NR==1{print $0}'
+step started: ssh node1.creditizens.net sudo -n apt-cache madison kubectl | grep '1.31' | awk 'NR==1{print $0}'
 
 message: UpgradePlan Node Type
 step started: Worker
 
 message: Upgrade Apply (Target Kube Version): 
-step started: 1.30.13
+step started: 1.31.9
 
 message: Upgrade Plan Version For Plan (Kube Components): 
-step started: 1.30.13-1.1
+step started: 1.31.9-1.1
 
 message: Upgrade Plan Version For Plan (Containerd Components): 
 step started: 1.7.25-1
 
 message: FULL UpgradePlan CMD WORKER
-step started: ssh node1.creditizens.net sudo apt-mark unhold kubeadm kubelet kubectl && ssh node1.creditizens.net sudo apt-get install containerd.io=1.7.25-1 && ssh node1.creditizens.net sudo apt-get install -y kubeadm=1.30.13-1.1 kubelet=1.30.13-1.1 kubectl=1.30.13-1.1 && ssh node1.creditizens.net sudo apt-mark hold kubeadm kubelet kubectl && ssh node1.creditizens.net sudo systemctl restart kubelet containerd && ssh node1.creditizens.net kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm_plan "$1 $NF }' && ssh node1.creditizens.net kubelet --version | awk '{ print $2 }' | awk -F "[v]" '{ print "kubelet_plan "$1 $NF }' && ssh node1.creditizens.net kubectl version | awk 'NR==1{ print $3 }' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF }' && ssh node1.creditizens.net containerd --version | awk '{ print "containerd_plan "$3 }'
+step started: ssh node1.creditizens.net sudo apt-mark unhold kubeadm kubelet kubectl && ssh node1.creditizens.net sudo apt-get install containerd.io=1.7.25-1 && ssh node1.creditizens.net sudo apt-get install -y kubeadm=1.31.9-1.1 kubelet=1.31.9-1.1 kubectl=1.31.9-1.1 && ssh node1.creditizens.net sudo apt-mark hold kubeadm kubelet kubectl && ssh node1.creditizens.net sudo systemctl restart kubelet containerd && ssh node1.creditizens.net kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm_plan "$1 $NF }' && ssh node1.creditizens.net kubelet --version | awk '{ print $2 }' | awk -F "[v]" '{ print "kubelet_plan "$1 $NF }' && ssh node1.creditizens.net kubectl version | awk 'NR==1{ print $3 }' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF }' && ssh node1.creditizens.net containerd --version | awk '{ print "containerd_plan "$3 }'
 
 message: Upgrade Apply (Target Kube Version): 
-step started: 1.30.13
+step started: 1.31.9
 
 message: Upgrade Node (Target Kube Version): 
-step started: 1.30.13
+step started: 1.31.9
 
 message: FULL Upgrade Node SSH Command:
 step started: export KUBECONFIG=$HOME/.kube/config; ssh node1.creditizens.net sudo kubeadm upgrade node
@@ -807,22 +439,22 @@ message: Inside While Loop Discovery Nodes Step Before CleanUp (node update trac
 step started: node2.creditizens.net
 
 message: Line:    
-step started: [Discover Nodes][OUT] kubeadm 1.29.15
+step started: [Discover Nodes][OUT] kubeadm 1.30.13
 
 
 message: Shared State Log keys/values:
 
 step started: MyStruct Contents:
-containerd_v: Wait for Update...
-upgrade_status: Waiting for update...
-kubelet_v: 1.29.15
+kubectl_v: 1.30.13
 
 node_name: Wait for Update...
-kubectl_v: 1.29.15
+kubeadm_v: 1.30.13
+
+kubelet_v: 1.30.13
 
 node_role: waiting for update...
-kubeadm_v: 1.29.15
-
+upgrade_status: Waiting for update...
+containerd_v: Wait for Update...
 
 
 message: EVOLUTION OF discover node [0]
@@ -849,16 +481,16 @@ step started: 1.7.25
 message: Shared State Log keys/values after containerd version state update:
 
 step started: MyStruct Contents:
-containerd_v: 1.7.25
-
-upgrade_status: Step In Process...
-kubelet_v: 1.29.15
+kubectl_v: 1.30.13
 
 node_name: node2.creditizens.net
-kubectl_v: 1.29.15
+kubeadm_v: 1.30.13
+
+kubelet_v: 1.30.13
 
 node_role: Worker
-kubeadm_v: 1.29.15
+upgrade_status: Step In Process...
+containerd_v: 1.7.25
 
 
 
@@ -892,7 +524,7 @@ message: DISCOVERY ALREADY DONE set to TRUE
 step started: Discovery node set to true?: true
 
 message: Pull Repo Key (User desired kube version parsed): 
-step started: 1.30
+step started: 1.31
 
 message: Pull Repo Key (SSH CMD): 
 step started: ssh node2.creditizens.net sudo -n apt-get update -y
@@ -904,43 +536,43 @@ message: Pull Repo Key (SSH CMD):
 step started: echo 'curl install and apt-transport-https checked'
 
 message: Pull Repo Key (SSH CMD): 
-step started: ssh node2.creditizens.net curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | ssh node2.creditizens.net sudo gpg --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+step started: ssh node2.creditizens.net curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | ssh node2.creditizens.net sudo gpg --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
 message: Pull Repo Key (SSH CMD): 
 step started: echo 'successfully pulled the keyrings'
 
 message: Pull Repo Key (SSH CMD): 
-step started: ssh node2.creditizens.net echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | ssh node2.creditizens.net sudo tee /etc/apt/sources.list.d/kubernetes.list
+step started: ssh node2.creditizens.net echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /' | ssh node2.creditizens.net sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 message: Pull Repo Key (SSH CMD): 
-step started: echo 'successfully update the kubernetes repository to version 1.30. Just wait for last update before next step starts..... waitoooooo.....'
+step started: echo 'successfully update the kubernetes repository to version 1.31. Just wait for last update before next step starts..... waitoooooo.....'
 
 message: Pull Repo Key (SSH CMD): 
 step started: ssh node2.creditizens.net sudo -n apt-get update -y
 
 message: MADISON CMD SSH TO WORKER:
-step started: ssh node2.creditizens.net sudo -n apt-cache madison kubectl | grep '1.30' | awk 'NR==1{print $0}'
+step started: ssh node2.creditizens.net sudo -n apt-cache madison kubectl | grep '1.31' | awk 'NR==1{print $0}'
 
 message: UpgradePlan Node Type
 step started: Worker
 
 message: Upgrade Apply (Target Kube Version): 
-step started: 1.30.13
+step started: 1.31.9
 
 message: Upgrade Plan Version For Plan (Kube Components): 
-step started: 1.30.13-1.1
+step started: 1.31.9-1.1
 
 message: Upgrade Plan Version For Plan (Containerd Components): 
 step started: 1.7.25-1
 
 message: FULL UpgradePlan CMD WORKER
-step started: ssh node2.creditizens.net sudo apt-mark unhold kubeadm kubelet kubectl && ssh node2.creditizens.net sudo apt-get install containerd.io=1.7.25-1 && ssh node2.creditizens.net sudo apt-get install -y kubeadm=1.30.13-1.1 kubelet=1.30.13-1.1 kubectl=1.30.13-1.1 && ssh node2.creditizens.net sudo apt-mark hold kubeadm kubelet kubectl && ssh node2.creditizens.net sudo systemctl restart kubelet containerd && ssh node2.creditizens.net kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm_plan "$1 $NF }' && ssh node2.creditizens.net kubelet --version | awk '{ print $2 }' | awk -F "[v]" '{ print "kubelet_plan "$1 $NF }' && ssh node2.creditizens.net kubectl version | awk 'NR==1{ print $3 }' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF }' && ssh node2.creditizens.net containerd --version | awk '{ print "containerd_plan "$3 }'
+step started: ssh node2.creditizens.net sudo apt-mark unhold kubeadm kubelet kubectl && ssh node2.creditizens.net sudo apt-get install containerd.io=1.7.25-1 && ssh node2.creditizens.net sudo apt-get install -y kubeadm=1.31.9-1.1 kubelet=1.31.9-1.1 kubectl=1.31.9-1.1 && ssh node2.creditizens.net sudo apt-mark hold kubeadm kubelet kubectl && ssh node2.creditizens.net sudo systemctl restart kubelet containerd && ssh node2.creditizens.net kubeadm version | awk '{split($0,a,"\""); print a[6]}' | awk -F "[v]" '{ print "kubeadm_plan "$1 $NF }' && ssh node2.creditizens.net kubelet --version | awk '{ print $2 }' | awk -F "[v]" '{ print "kubelet_plan "$1 $NF }' && ssh node2.creditizens.net kubectl version | awk 'NR==1{ print $3 }' | awk -F "[v]" '{ print "kubectl_plan "$1 $NF }' && ssh node2.creditizens.net containerd --version | awk '{ print "containerd_plan "$3 }'
 
 message: Upgrade Apply (Target Kube Version): 
-step started: 1.30.13
+step started: 1.31.9
 
 message: Upgrade Node (Target Kube Version): 
-step started: 1.30.13
+step started: 1.31.9
 
 message: FULL Upgrade Node SSH Command:
 step started: export KUBECONFIG=$HOME/.kube/config; ssh node2.creditizens.net sudo kubeadm upgrade node

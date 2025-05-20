@@ -3,6 +3,16 @@
   I found here an amazing occasion to make something nice, a `TUI` with less dependencies as possible (for my level of coding) and I will learn by trying
   and making mini modules along the way and have `ChatGPT` as my `Senior Enginer Not GateKeeper` guidng me along the way.
 
+
+# Prerequisites:
+- awk
+- visudo : NOPASSWD for user and root admin
+- ssh alredy setup between controller -> workers
+- see documentation for compatible ersion of containerd ith kubernees release version
+- enter full cotinerd version 1.X.XX-X and just minor for kubernetes 1.XX
+
+
+
 # App Desired Flow:
 - user enters a intermediary version or Kuberneter like `1.<...>` in the `TUI` and then the backend would do the full upgrade of the cluster
   - cordon/uncordon
@@ -1055,3 +1065,24 @@ But i have decided to keep the `try_recv()`.
 
 
 
+# 15 Lessons
+
+**15 Scripting Advices:**
+- use of `apt-get` instead of `apt`
+- play with the `awk` commands to see ow the outpt looks like
+- take the chance to explore more rust utiity functions like `retain` or `.to_vec().join("\n")` instead of long `.iter().cloned().collect::<Vec<_>>().join("\n")`
+- do not hesitate to have more states to break down the logic in small pieces or have the right fields in the right states and do `impl` functions to those states and use `enum` to detect types custom ones
+- abstract awa concepts that you sill need to learn, like using `anyhow::Result` to manage errors
+- `||` this is not OR is just boolean true/fals comparison so use `.contains()` or `matches!()`
+- `.contains()`, `matches!()` macro and closures `(| | ...)` are very helpful so use those
+- know `if/else` rules:
+  - if block type returned same as else block returned type
+  - if without else use `;` to close otherwise you will be asked to provide the else block
+  - if/else return for the function must match the function return type
+- For bash `This` is interpreted as a command so fails so wrap it in quotes so that it is not misinterpreted
+- understand `.recv()` vs `.try_recv()` which can create some `race` conditions that makes event not being received while `revc()` will receive all but it nothing sent will wait undefinetly so need contingency for that...
+- use sleep time trick to get event received or to give the time for the cluster to recover state before next step
+- can't use `break` outside of loop so use explicit `return` in conditionals
+- tuple index are not accessed like in Python [index] use dot notation and the number of the index like `my_tuple.2` for index `2`
+- do restart kubelet and containerd services before important steps like `upgrade plan/apply/node` with a loop then which will wait and sleep periodically checking the state of the cluster before starting those steps.
+- use timeouts different for each steps
