@@ -3,6 +3,14 @@
   I found here an amazing occasion to make something nice, a `TUI` with less dependencies as possible (for my level of coding) and I will learn by trying
   and making mini modules along the way and have `ChatGPT` as my `Senior Enginer Not GateKeeper` guidng me along the way.
 
+# Prerequisites:
+- awk
+- visudo : NOPASSWD for user and root admin
+- ssh already setup between controller -> workers
+- see documentation for compatible version of containerd with kubernees release version
+- enter full containerd version 1.X.XX-X and just minor for kubernetes 1.XX
+- adapt `visudo` permissions for scripting, specially for `password` prompts
+
 # App Desired Flow:
 - user enters a intermediary version or Kuberneter like `1.<...>` in the `TUI` and then the backend would do the full upgrade of the cluster
   - cordon/uncordon

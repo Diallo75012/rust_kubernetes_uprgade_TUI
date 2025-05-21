@@ -10,6 +10,7 @@
 - ssh alredy setup between controller -> workers
 - see documentation for compatible ersion of containerd ith kubernees release version
 - enter full cotinerd version 1.X.XX-X and just minor for kubernetes 1.XX
+- adapt `visudo` permissions for scripting, specially for `password` prompts
 
 
 

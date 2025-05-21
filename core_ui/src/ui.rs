@@ -21,6 +21,7 @@ use crate::state::{
   DesiredVersions,
 };
 use std::collections::HashMap;
+use shared_fn::debug_to_file::print_debug_log_file;
 
 
 pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineState, desired_versions: &mut DesiredVersions) {
@@ -124,9 +125,15 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
     ($shared:expr, $desired:expr, $key:expr, $area:expr) => {{
       // just to indicatethat it is a type `String` but have to be cloned to play with it
       let version_parse: String = $shared.shared_state_iter($key)[0].clone();
-      let version_parse_vec = version_parse.split(".").collect::<Vec<&str>>(); // 1.29.15 -> [1,29,15]
-      let shared_version_checker = &format!("{}.{}", version_parse_vec[0], version_parse_vec[1]); // 1.29
-      if *shared_version_checker == $desired {
+      // logging the versions
+      let _ = print_debug_log_file(
+        "/home/creditizens/kubernetes_upgrade_rust_tui/debugging/shared_state_logs.txt",
+        "DRAW UI (ARE VERSION SAME?):\n",
+        &format!("shared states vs desired version : {} - {}", &$shared, &$desired),
+      );
+      //let version_parse_vec = version_parse.split(".").collect::<Vec<&str>>(); // 1.29.15 -> [1,29,15]
+      //let shared_version_checker = &format!("{}.{}", version_parse_vec[0], version_parse_vec[1]); // 1.29
+      if version_parse == $desired {
         let log_v = $shared.shared_state_iter($key)[0].clone();
         let log = Paragraph::new(format!("{} :{}", $key, log_v))
           .style(Style::default().fg(Color::Green));

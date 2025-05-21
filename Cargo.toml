@@ -21,6 +21,7 @@ members = [
     "engine",
     # the one bundling everything above and that will be entrypoint to run the app
     "app",
+    # this for logs and test I did for shared stuff
     "shared_traits",
     "shared_fn",
 ]

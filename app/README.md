@@ -9,7 +9,7 @@ This is the binary crate that starts the program. It:
 ┌────────────┐
 │   app/     │
 └─────┬──────┘
-      │
+│
 ┌─────▼────────┐
 │ main.rs      │
 │ ├─ enable UI │

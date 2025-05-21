@@ -454,5 +454,11 @@ pub fn check_node_upgrade_state_and_kubeproxy_version(
     );
   	return Err(anyhow::anyhow!("Discovery Node Should be set to True but found False"));
   }
+  // we update the versions for the latest one installed 
+  // let new_version = desired_version_state.target_containerd_version.clone(); 
+  // pipeline_state.log.buf.insert("kubeadm_v".to_string(), new_version.to_string());
+  // pipeline_state.log.buf.insert("kubelet_v".to_string(), new_version.to_string());
+  // pipeline_state.log.buf.insert("kubectl_v".to_string(), new_version.to_string());
+
   Ok(())
 }
