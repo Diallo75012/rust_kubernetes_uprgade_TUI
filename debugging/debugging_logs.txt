@@ -305,3 +305,162 @@ step started: Verify Core DNS Proxy
 
 message: SUCCESS STEP ROUND
 step started: Step Went Well!
+
+message: WILL STARTooo
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Discover Nodes... maybe because of discovery_already done (false?): false
+
+message: SUCCESS
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Pull Repo Key
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Pull Repo Key... maybe because of discovery_already done (false?): true
+
+message: WILL STARTooo
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Discover Nodes... maybe because of discovery_already done (false?): false
+
+message: SUCCESS
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Pull Repo Key
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Pull Repo Key... maybe because of discovery_already done (false?): true
+
+message: WILL STARTooo
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Discover Nodes... maybe because of discovery_already done (false?): false
+
+message: SUCCESS
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Pull Repo Key
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Pull Repo Key... maybe because of discovery_already done (false?): true
+
+message: WILL STARTooo
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Discover Nodes... maybe because of discovery_already done (false?): false
+
+message: SUCCESS
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Pull Repo Key
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Pull Repo Key... maybe because of discovery_already done (false?): true
+
+message: WILL STARTooo
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Discover Nodes... maybe because of discovery_already done (false?): false
+
+message: SUCCESS
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Pull Repo Key
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Pull Repo Key... maybe because of discovery_already done (false?): true
+
+message: WILL STARTooo
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Discover Nodes... maybe because of discovery_already done (false?): false
+
+message: SUCCESS
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Discover Nodes... maybe because of discovery_already done (false?): false
+
+message: SUCCESS
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Pull Repo Key
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Pull Repo Key... maybe because of discovery_already done (false?): true
+
+message: WILL STARTooo
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Discover Nodes... maybe because of discovery_already done (false?): false
+
+message: SUCCESS
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Pull Repo Key
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Pull Repo Key... maybe because of discovery_already done (false?): true
+
+message: WILL STARTooo
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Discover Nodes... maybe because of discovery_already done (false?): false
+
+message: SUCCESS
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Pull Repo Key
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Pull Repo Key... maybe because of discovery_already done (false?): true
+
+message: WILL STARTooo
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Discover Nodes... maybe because of discovery_already done (false?): false
+
+message: SUCCESS
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Pull Repo Key
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Pull Repo Key... maybe because of discovery_already done (false?): true
+
+message: WILL STARTooo
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Discover Nodes... maybe because of discovery_already done (false?): false
+
+message: SUCCESS
+step started: Discover Nodes
+
+message: WILL STARTooo
+step started: Pull Repo Key
+
+message: WILL STARTooo
+step started: Sleep didn't happen for step: Pull Repo Key... maybe because of discovery_already done (false?): true

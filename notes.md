@@ -178,12 +178,12 @@ CLI flags (optional) 		| clap
 ## 10. Learning checkpoints
 - [x] Ratatui quick‑start — draw a static layout, then refactor to listen to a watch::Receiver<AppState>. (hep blog)[https://raysuliteanu.medium.com/creating-a-tui-in-rust-e284d31983b3?utm_source=chatgpt.com] 
 - [x] Tokio process streaming — stream child stdout/stderr without blocking UI. Rust Users thread has code for capturing println! output. (forum helper)[https://users.rust-lang.org/t/how-to-intercept-stdout-to-display-inside-tui-layout/78823?utm_source=chatgpt.com]
-- [ ] kube‑rs Controller — follow the “Application controller” guide to reconcile upgrades. (check `Kube.rs`)[https://kube.rs/controllers/application/?utm_source=chatgpt.com]
-- [ ] Spawn & stream: write cmd_exec so kubectl get nodes streams cleanly.
-- [ ] Parser TDD: write #[test] cases for the madison parser using captured sample output.
-- [ ] State machine: represent every high‑level step as enum Phase; drive it with loop { match phase { … } }.
-- [ ] Ratatui basics: build a static layout; then refactor to redraw only when AppState.version_panel changes.
-- [ ] Error bubbles: simulate a failed kubectl drain; show step → red, log detail, and exit gracefully.
+- **X** kube‑rs Controller — follow the “Application controller” guide to reconcile upgrades. (check `Kube.rs`)[https://kube.rs/controllers/application/?utm_source=chatgpt.com]
+- [x] Spawn & stream: write cmd_exec so kubectl get nodes streams cleanly.
+- **X** Parser TDD: write #[test] cases for the madison parser using captured sample output. **NO TDD IN THIS PROJECT!**
+- **X** State machine: represent every high‑level step as enum Phase; drive it with loop { match phase { … } }. **Different design decided...**
+- [x] Ratatui basics: build a static layout; then refactor to redraw only when AppState.version_panel changes.
+- **X** Error bubbles: simulate a failed kubectl drain; show step → red, log detail, and exit gracefully. **TO DO PROBABLY...PROBABLY NOT**
 
 # 11. Nexts
 - [x] make `enum` for node role `worker` or `controller`
@@ -206,8 +206,8 @@ CLI flags (optional) 		| clap
 - [x] add logging in the `engine/src/lib.rs` while loop that runs other rounds to see how the state tracking nodes works
 - [x] fix the logic for the loop that get the right node as there is something wrong it gets back the `unique controller` node again when should be workers..
 - [x] add state to prevent lot of code checking for tracker node upgrade, just a bool field and then skip the step of `node discovery`
-- [ ] do a function logic that will be actioned on next rounds discovery mode instead of skipping it use it to update the new shared state fields
-
+- [x] do a function logic that will be actioned on next rounds discovery mode instead of skipping it use it to update the new shared state fields
+      **Have fixed the macro logic in the `ui.rs` that was comparing `1.xx` to `1.xx.xx` so have fixed it and should work fine now**
 
 # 12. State logic updates of shared_state decision
 ```markdown
@@ -901,14 +901,43 @@ kubeproxy 1.29.15
 ```
 
 ## Rust `if/else` rules
-As i try to make some `if` statements without `else` I get sometimes some compiling errors forcing me to add and `else` statement.
-After some search i foudn thsoe rules that explain more why:
-```markdown
+
+As i try to make some `if` statements without `else` I get sometimes some compiling errors
+forcing me to add an `else` statement.
+
+After some search i found those rules that explain more why:
 - If you have an if without an else, the body must always evaluate to unit, no exceptions.
+```rust
+// Used for side effect (no need for else)
+fn test() {
+    if true {
+        println!("just do this");  // ok
+    }
+    // nothing returned from if, so it's a statement, ends in `;` automatically
+}
+
+// Used as value (you must provide an else)
+fn get_flag() -> bool {
+    let value = if true {
+        true
+    } else {
+        false
+    };
+    value
+}
+
+// This will fail to compile:
+fn bad() {
+    let value = if true {
+        true
+    };  // ERROR: if expression missing else branch
+}
+```
+Because let value = if ... expects an expression with a value, but no else given, so the compiler complains.
+
 - If you have an if and an else, their blocks must evaluate to the same type.
 - If you return the result of an if/else expression from a function,
   the return type of the function must match the type of the expressions in the if and else blocks.
-```
 
 ## Issues
 - `This` used in `bash` interpreted as a command. 
@@ -927,7 +956,7 @@ How to check in `Rust` comparing and having this `OR`:
 - use `.contains()`
 ```
 ```rust
-// `.matches!()`
+// `matches!()`
 if matches!(var, "a" | "b" | "c") { do something }
 // `.contains()`
 let my_selection = ["a", "b", "c"];
@@ -957,10 +986,10 @@ sudo -n apt update`
 **Note**: use `%<user group> if it is for a group instead of a single user`
 ```
 
-- `Race` issue: got some events not being received in the stream even if they hhad ran properly:
+- `Race` issue: got some events not being received in the stream even if they had ran properly:
   **Solution**: I have changes the `try_recv()` for `recv()` to make sure it is blocking and waiting to `recv` the event.
                 But chatGPT told me that i should use `recv()` to make sure the first line is received and then `try_recv` to drain all other lines.
-                And if nothign is send to use a timeout system to make sure I exit the loop as `recv()` would be indefinetely waiting.
+                And if nothing is send to use a timeout system to make sure I exit the loop as `recv()` would be indefinetely waiting.
                 **But I will not do that, I don't like it and seems stupid to me, so i will just keep the `try_recv()` and even if some events are not**
                 **captured, behind the scene the `run()` functions of each steps runs anyways.**
 
@@ -1069,21 +1098,31 @@ But i have decided to keep the `try_recv()`.
 # 15 Lessons
 
 **15 Scripting Advices:**
-- use of `apt-get` instead of `apt`
-- play with the `awk` commands to see ow the outpt looks like
-- take the chance to explore more rust utiity functions like `retain` or `.to_vec().join("\n")` instead of long `.iter().cloned().collect::<Vec<_>>().join("\n")`
-- do not hesitate to have more states to break down the logic in small pieces or have the right fields in the right states and do `impl` functions to those states and use `enum` to detect types custom ones
-- abstract awa concepts that you sill need to learn, like using `anyhow::Result` to manage errors
-- `||` this is not OR is just boolean true/fals comparison so use `.contains()` or `matches!()`
-- `.contains()`, `matches!()` macro and closures `(| | ...)` are very helpful so use those
-- know `if/else` rules:
-  - if block type returned same as else block returned type
-  - if without else use `;` to close otherwise you will be asked to provide the else block
-  - if/else return for the function must match the function return type
-- For bash `This` is interpreted as a command so fails so wrap it in quotes so that it is not misinterpreted
-- understand `.recv()` vs `.try_recv()` which can create some `race` conditions that makes event not being received while `revc()` will receive all but it nothing sent will wait undefinetly so need contingency for that...
-- use sleep time trick to get event received or to give the time for the cluster to recover state before next step
-- can't use `break` outside of loop so use explicit `return` in conditionals
-- tuple index are not accessed like in Python [index] use dot notation and the number of the index like `my_tuple.2` for index `2`
-- do restart kubelet and containerd services before important steps like `upgrade plan/apply/node` with a loop then which will wait and sleep periodically checking the state of the cluster before starting those steps.
-- use timeouts different for each steps
+- 1) use of `apt-get` instead of `apt`
+- 2) play with the `awk` commands to see how the output looks like
+- 3) take the chance to explore more rust utiity functions like `retain`
+     or `.to_vec().join("\n")` instead of long `.iter().cloned().collect::<Vec<_>>().join("\n")`
+- 4) do not hesitate to have more states to break down the logic in small pieces
+     or have the right fields in the right states
+     and do `impl` functions to those states
+     and use `enum` to detect types custom ones
+- 5) abstract away concepts that you sill need to learn, like using `anyhow::Result` to manage errors
+     so here we need to log to a file as well as we won't be able to see the `eprintln`s.. TUI is covering it up...
+- 6) `||` this is not OR is just boolean true/false comparison so use `.contains()` or `matches!()`
+- 7) `.contains()`, `matches!()` macro and closures `(| | ...)` are very helpful so use those
+- 8) know `if/else` rules:
+  - `if block` type returned has to be same as `else block` returned type
+  - `if/else` return for the function must match the function return type
+  - `if` without `else` when used in an expression doesn't work, must provide else side for compiler's `happiness`
+     so something like `let variable = if ....` will fail if it is not returning `()` so if trying to return something
+     meaningful...it will cry!
+- 9) For bash ssh commands not necessarily need quote `` for commands can run also fine directly.. `ssh command`
+- 10) understand `.recv()` vs `.try_recv()` which can create some `race` conditions
+      that makes event not being received while `revc()` will receive all
+      but it nothing sent will wait undefinetly so need contingency for that...
+- 11) use sleep time trick to get event received or to give the time for the cluster to recover state before next step
+- 12) use a loop and some sleep time to wait for the nodes to be ready or for the health check pod to complete its job...
+- 13) tuple index are not accessed like in Python [index] use dot notation and the number of the index like `my_tuple.2` for index `2`
+- 14) do restart kubelet and containerd services before important steps like `upgrade plan/apply/node` with a loop then which will wait and sleep periodically checking the state of the cluster before starting those steps.
+- 15) use timeouts different for each steps
+      Those are timeouts before the step fails.... fail fast but fail at the right moment..

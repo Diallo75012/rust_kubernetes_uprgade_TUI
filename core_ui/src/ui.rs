@@ -40,8 +40,8 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
   let header = Layout::default()
     .direction(Direction::Horizontal)
     .constraints([
-      Constraint::Length(3),
-      Constraint::Length(17),
+      Constraint::Length(1),
+      Constraint::Length(30),
       Constraint::Min(1),
       Constraint::Length(30),
     ])
@@ -50,9 +50,25 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
   let log_upgrade_status = shared_state.log.shared_state_iter("upgrade_status")[0].clone();
 
   f.render_widget(Paragraph::new("K8s Upgrade - RUSTxCTZ - v1"), header[1]);
-  // so here will probably need to get the value from the `PipelineState` and inject to &str
-  // f.render_widget(Paragraph::new("Upgrade State<...>"), header[3]);
-  f.render_widget(Paragraph::new(log_upgrade_status).style(Style::default().fg(Color::Green)), header[3]);
+
+  // we define the spinner only when we have the status `In process...` and paint to terminal TUI else nothing in this new field
+  if shared_state.log.shared_state_iter("upgrade_status")[0].clone().contains("In Process...") {
+    let spinner = throbber_widgets_tui::Throbber::default()
+      .label(log_upgrade_status)
+      // style for the text `label`
+      .style(ratatui::style::Style::default().fg(ratatui::style::Color::Green))
+      // style for the spinner itself..
+      .throbber_style(ratatui::style::Style::default().fg(ratatui::style::Color::Green).add_modifier(ratatui::style::Modifier::BOLD))
+      // type of `spinner`
+      .throbber_set(throbber_widgets_tui::BLACK_CIRCLE)
+      // action of spinner `Spin` for us
+      .use_type(throbber_widgets_tui::WhichUse::Spin);
+    // we paint to the TUI
+    f.render_widget(spinner, header[3]);
+  } else {
+    // else we will render whatever the state is and will also show `Upgraded!` at the end...
+  	f.render_widget(Paragraph::new(log_upgrade_status).style(Style::default().fg(Color::Green)), header[3]);
+  }
 
   // Here we splite the `body` in `horizontal direction` body -> split
   let body = Layout::default()
@@ -79,11 +95,12 @@ pub fn draw_ui(f: &mut Frame, state: &mut AppState, shared_state: &mut PipelineS
     ListItem::new(s.name).style(style)
     // after here we collect to a `Vec<ListItem>` as defined above so will infer it (no need to `.collect<Vec<ListItem>>()`)
   }).collect();
+  
   // some styling to the list of items presented on the sidebar: `block`, `title`, `borders`
-  let sidebar = List::new(items).block(Block::default().title("Steps").borders(Borders::ALL));
+  let sidebar_steps_list = List::new(items).block(Block::default().title("Steps").borders(Borders::ALL));
   // we put the content of the sidebar in the `body` horizontal split which is located at `body[0]`
   // using `ratatui` `.render_widget()` 'painter' (so actually writing to the layout created TUI)
-  f.render_widget(sidebar, body[0]);
+  f.render_widget(sidebar_steps_list, body[0]);
 
   // This is the `body` log pane so center part that will display the commands output
   // `state.log` is a `RingBuffer<VecQue, usize>`

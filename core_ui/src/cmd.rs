@@ -73,7 +73,7 @@ pub async fn stream_child(
       return Err(anyhow::anyhow!("Command exited with status: {}", status));
     }	
   } else if step == "Pull Repository Key" {
-      // hre we put 360s as it can hang a bit
+      // here we put 360s as it can hang a bit
   	  let status = timeout(Duration::from_secs(360), child.wait())
   	    .await
   	    .context(format!("Timeout waiting for step `{}`", step))??;
