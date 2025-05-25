@@ -208,6 +208,8 @@ CLI flags (optional) 		| clap
 - [x] add state to prevent lot of code checking for tracker node upgrade, just a bool field and then skip the step of `node discovery`
 - [x] do a function logic that will be actioned on next rounds discovery mode instead of skipping it use it to update the new shared state fields
       **Have fixed the macro logic in the `ui.rs` that was comparing `1.xx` to `1.xx.xx` so have fixed it and should work fine now**
+- [x] add spinner example but not fulluy stream repainting the `tui`, just in `ui.rs` if state is in process, just for demo of areas in `tui`
+
 
 # 12. State logic updates of shared_state decision
 ```markdown
